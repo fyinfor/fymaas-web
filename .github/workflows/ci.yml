@@ -2,16 +2,6 @@ name: CI
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - 'main'
-      - 'v*-dev'
-    tags:
-      - '*.*.*'
-  pull_request:
-    branches:
-      - 'main'
-      - 'v*-dev'
 
 permissions:
   contents: write
@@ -50,32 +40,9 @@ jobs:
           path: |
             ${{ github.workspace }}/node_modules
 
-  build:
-    needs:
-      - deps
-    if: github.event_name == 'pull_request'
-    timeout-minutes: 30
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          persist-credentials: false
-      - name: Unarchive Node Modules
-        timeout-minutes: 5
-        uses: actions/cache/restore@v4
-        with:
-          key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          path: |
-            ${{ github.workspace }}/node_modules
-      - name: Build
-        run: scripts/build
-
   build-publish:
     needs:
       - deps
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     steps:

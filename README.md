@@ -105,8 +105,8 @@ git push origin main
 
 ### CI / 产物
 
-- `main` / `v*-dev` / tag 推送后，本仓库的 GitHub Actions 会独立构建 UI，并发布到本仓库 Release，tag 为 `ui-<version>`（`main` 对应 `ui-latest`）。
-- 前端 CICD 不触发后端；后端 Pack 在 `fyinfor/fymaas` 仓库独立运行。
+- UI 打包只接受手动触发：在 GitHub Actions 里跑本仓库的 `CI` workflow（选分支或 tag）。
+- 产物发布到本仓库 Release，tag 为 `ui-<version>`（从 `main` 触发对应 `ui-latest`）。不自动跑、也不触发后端。
 
 ### 注意
 
