@@ -1,7 +1,12 @@
 name: CI
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      push_to_acr:
+        description: 同步推送到阿里云 ACR（国内拉取用，不是镜像加速器）
+        type: boolean
+        default: true
 
 permissions:
   contents: write
