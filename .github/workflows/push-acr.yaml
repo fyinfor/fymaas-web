@@ -1,0 +1,110 @@
+# 把已经打好的 GHCR 镜像复制到阿里云 ACR，方便国内拉取。
+# 不重新构建镜像。阿里云「镜像加速器」不能推送，目标必须是 ACR。
+#
+# 仓库 Secrets：
+#   ACR_USERNAME  ACR 登录用户名
+#   ACR_PASSWORD  ACR 登录密码
+# 可选 Variables：
+#   ACR_REGISTRY   默认 registry.cn-shanghai.aliyuncs.com
+#   ACR_NAMESPACE  默认 fyinfor
+
+name: Push ACR
+
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: 要同步到 ACR 的镜像
+        type: choice
+        options:
+          - fymaas-web
+          - fymaas
+          - both
+        default: fymaas-web
+      tag:
+        description: 源 / 目标 tag
+        type: string
+        default: latest
+      acr_registry:
+        description: ACR 地址
+        type: string
+        required: false
+        default: registry.cn-shanghai.aliyuncs.com
+      acr_namespace:
+        description: ACR 命名空间
+        type: string
+        required: false
+        default: fyinfor
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  push:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    env:
+      ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+      ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+    steps:
+      - name: Resolve ACR target
+        id: acr
+        run: |
+          set -euo pipefail
+          REGISTRY="${{ inputs.acr_registry }}"
+          NAMESPACE="${{ inputs.acr_namespace }}"
+          if [[ -z "${REGISTRY}" ]]; then
+            REGISTRY="${{ vars.ACR_REGISTRY }}"
+          fi
+          if [[ -z "${NAMESPACE}" ]]; then
+            NAMESPACE="${{ vars.ACR_NAMESPACE }}"
+          fi
+          REGISTRY="${REGISTRY:-registry.cn-shanghai.aliyuncs.com}"
+          NAMESPACE="${NAMESPACE:-fyinfor}"
+          echo "registry=${REGISTRY}" >> "$GITHUB_OUTPUT"
+          echo "namespace=${NAMESPACE}" >> "$GITHUB_OUTPUT"
+          echo "ACR target: ${REGISTRY}/${NAMESPACE}"
+      - name: Check ACR secrets
+        run: |
+          if [[ -z "${ACR_USERNAME}" || -z "${ACR_PASSWORD}" ]]; then
+            echo "请先在仓库 Settings → Secrets 配置 ACR_USERNAME 和 ACR_PASSWORD。"
+            echo "这是阿里云容器镜像服务（ACR）的账号，不是镜像加速器 https://*.mirror.aliyuncs.com。"
+            exit 1
+          fi
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v3
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ steps.acr.outputs.registry }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Copy images to ACR
+        env:
+          IMAGE: ${{ inputs.image }}
+          TAG: ${{ inputs.tag }}
+          ACR_REGISTRY: ${{ steps.acr.outputs.registry }}
+          ACR_NAMESPACE: ${{ steps.acr.outputs.namespace }}
+        run: |
+          set -euo pipefail
+          copy_one() {
+            local name="$1"
+            local src="ghcr.io/fyinfor/${name}:${TAG}"
+            local dest="${ACR_REGISTRY}/${ACR_NAMESPACE}/${name}:${TAG}"
+            echo "Copy ${src} -> ${dest}"
+            docker buildx imagetools create -t "${dest}" "${src}"
+            docker buildx imagetools inspect "${dest}"
+          }
+          if [[ "${IMAGE}" == "both" ]]; then
+            copy_one fymaas-web
+            copy_one fymaas
+          else
+            copy_one "${IMAGE}"
+          fi
