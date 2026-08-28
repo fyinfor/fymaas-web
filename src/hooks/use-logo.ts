@@ -1,10 +1,9 @@
-import TokeaseLogo from '@/assets/images/tokease-logo.svg';
-import TokeaseMark from '@/assets/images/tokease-mark.svg';
+import BrandLogo from '@/assets/images/brand-logo.png';
 import useUserSettings from '@/hooks/use-user-settings';
 import { getGPUStackPlugin } from '@/plugins';
 
-export const DEFAULT_SIDEBAR_LOGO = TokeaseLogo;
-export const DEFAULT_MINI_LOGO = TokeaseMark;
+export const DEFAULT_SIDEBAR_LOGO = BrandLogo;
+export const DEFAULT_MINI_LOGO = BrandLogo;
 
 const useLogo = () => {
   const { isDarkTheme, userSettings } = useUserSettings();

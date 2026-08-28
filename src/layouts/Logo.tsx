@@ -1,4 +1,4 @@
-import TokeaseMark from '@/assets/images/tokease-mark.svg';
+import BrandLogo from '@/assets/images/brand-logo.png';
 import {
   DEFAULT_MINI_LOGO,
   DEFAULT_SIDEBAR_LOGO,
@@ -11,7 +11,7 @@ const Brand = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 24px;
+  height: 28px;
   line-height: 1;
 `;
 
@@ -22,20 +22,33 @@ const Wordmark = styled.span`
   color: var(--ant-color-text);
 `;
 
-const TokeaseMarkIcon: React.FC<{ height?: number }> = ({ height = 24 }) => (
-  <img src={TokeaseMark} alt="" style={{ height, width: height }} />
+const BrandMark: React.FC<{ height?: number; alt?: string }> = ({
+  height = 28,
+  alt = ''
+}) => (
+  <img
+    src={BrandLogo}
+    alt={alt}
+    style={{
+      height,
+      width: height,
+      borderRadius: '50%',
+      objectFit: 'cover',
+      display: 'block'
+    }}
+  />
 );
 
 const LogoIcon: React.FC = () => {
   const { sidebarLogo } = useLogo();
 
   if (sidebarLogo !== DEFAULT_SIDEBAR_LOGO) {
-    return <img src={sidebarLogo} alt="Tokease" style={{ height: 24 }} />;
+    return <img src={sidebarLogo} alt="Tokease" style={{ height: 28 }} />;
   }
 
   return (
     <Brand>
-      <TokeaseMarkIcon />
+      <BrandMark />
       <Wordmark>Tokease</Wordmark>
     </Brand>
   );
@@ -45,10 +58,10 @@ const SLogoIcon: React.FC = () => {
   const { miniLogo } = useLogo();
 
   if (miniLogo !== DEFAULT_MINI_LOGO) {
-    return <img src={miniLogo} alt="Tokease" style={{ height: 24 }} />;
+    return <img src={miniLogo} alt="Tokease" style={{ height: 28 }} />;
   }
 
-  return <TokeaseMarkIcon />;
+  return <BrandMark />;
 };
 
 export { LogoIcon, SLogoIcon };

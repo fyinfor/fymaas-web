@@ -281,13 +281,33 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
       )}
       <PluginExtraField name="GlobalSettings" />
       <DropdownActions menu={{ ...userMenu }} popupRender={userPopupRender}>
-        <IconWrapper>
+        <IconWrapper
+          style={{
+            gap: 8,
+            padding: '2px 8px 2px 2px',
+            borderRadius: 999,
+            background: 'var(--ant-color-fill-quaternary)'
+          }}
+        >
           <Avatar
-            size={24}
+            size={28}
             style={{ ...avatarStyle }}
             src={initialState?.currentUser?.avatar_url}
             icon={<IconFont type="icon-user-filled" className="font-size-24" />}
           />
+          <span
+            style={{
+              maxWidth: 96,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontSize: 13,
+              fontWeight: 600,
+              color: 'var(--ant-color-text)'
+            }}
+          >
+            {initialState?.currentUser?.username}
+          </span>
         </IconWrapper>
       </DropdownActions>
     </Wrapper>

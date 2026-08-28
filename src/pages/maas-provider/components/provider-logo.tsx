@@ -1,4 +1,4 @@
-import TokeaseLogo from '@/assets/images/tokease-mark.svg';
+import TokeaseLogo from '@/assets/images/brand-logo.png';
 import ai360 from '@/assets/providers-logo/ai360.svg';
 import azure from '@/assets/providers-logo/azureai.svg';
 import baichuan from '@/assets/providers-logo/baichuan.svg';

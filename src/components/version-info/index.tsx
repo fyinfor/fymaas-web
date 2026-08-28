@@ -1,4 +1,4 @@
-import Logo from '@/assets/images/tokease-logo.svg';
+import Logo from '@/assets/images/brand-logo.png';
 import { GPUStackVersionAtom, UpdateCheckAtom, userAtom } from '@/atoms/user';
 import { useLogo } from '@/hooks/use-logo';
 import { useAtom } from 'jotai';

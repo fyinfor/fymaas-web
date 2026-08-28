@@ -22,7 +22,7 @@ export default {
       iconSizeSM: 20
     },
     Table: {
-      headerBorderRadius: 6,
+      headerBorderRadius: 8,
       cellPaddingInline: 16,
       cellPaddingBlock: 6,
       cellFontSize: 14,
@@ -57,15 +57,15 @@ export default {
     Menu: {
       iconSize: 16,
       iconMarginInlineEnd: 12,
-      itemBorderRadius: 4,
+      itemBorderRadius: 8,
       itemSelectedColor: COLOR_PRIMARY,
-      itemHeight: 32,
+      itemHeight: 36,
       groupTitleColor: 'rgba(0,0,0,1)',
       itemHoverColor: 'rgba(0,0,0,1)',
       itemColor: 'rgba(0,0,0,1)',
-      itemHoverBg: 'rgba(0,0,0,0.04)',
-      itemActiveBg: 'rgba(0,0,0,0.04)',
-      menuItemSelectedBg: '#e8eaed'
+      itemHoverBg: 'rgba(0, 82, 217, 0.06)',
+      itemActiveBg: 'rgba(0, 82, 217, 0.08)',
+      menuItemSelectedBg: '#E8F1FF'
     },
     Progress: {
       lineBorderRadius: 3
@@ -113,17 +113,17 @@ export default {
     // colorTextSecondary: '#484848',
     // colorTextTertiary: '#757576',
     // colorTextQuaternary: '#A6A6A7',
-    colorFillSecondary: '#eaebec',
-    colorFillTertiary: '#f1f2f3',
-    colorFillQuaternary: '#f7f8fa',
+    colorFillSecondary: '#e8eef6',
+    colorFillTertiary: '#f0f4f8',
+    colorFillQuaternary: '#f5f7fa',
     colorPrimary: COLOR_PRIMARY,
     colorSuccess: '#54cc98',
-    colorBorder: '#d3d8de',
-    borderRadiusOuter: 6,
-    borderRadiusLG: 6,
-    borderRadius: 4,
-    borderRadiusSM: 3,
-    colorBgContainer: '#fdfdfd',
+    colorBorder: '#d6dee8',
+    borderRadiusOuter: 12,
+    borderRadiusLG: 12,
+    borderRadius: 8,
+    borderRadiusSM: 6,
+    colorBgContainer: '#ffffff',
     fontSize: 14,
     motion: true
   }

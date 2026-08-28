@@ -1,4 +1,4 @@
-import LogoIcon from '@/assets/images/tokease-logo.svg';
+import LogoIcon from '@/assets/images/brand-logo.png';
 import { userAtom } from '@/atoms/user';
 import { history, useIntl, useModel } from '@umijs/max';
 import { Button, Divider, Form, Spin, message } from 'antd';
@@ -82,6 +82,28 @@ const useStyles = createStyles(({ token, css }) => ({
     align-items: center;
     .text {
       color: ${token.colorText};
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 10px;
+    }
+    .brand-mark {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex: none;
+    }
+    .brand-name {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: ${token.colorText};
+      line-height: 1;
     }
   `
 }));
@@ -100,16 +122,13 @@ const LoginForm = () => {
   const renderWelCome = () => {
     return (
       <div className={styles.welcome}>
-        <div className="flex-center">
-          <span className="text">
-            {intl?.formatMessage({ id: 'users.login.title' })}
-          </span>
-          <img
-            src={LogoIcon}
-            alt="Tokease"
-            style={{ height: '36px', marginLeft: 10 }}
-          />
-        </div>
+        <span className="text">
+          {intl?.formatMessage({ id: 'users.login.title' })}
+        </span>
+        <span className="brand-lockup">
+          <img src={LogoIcon} alt="" className="brand-mark" />
+          <span className="brand-name">Tokease</span>
+        </span>
       </div>
     );
   };

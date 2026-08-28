@@ -175,7 +175,12 @@ const LocalUserForm: React.FC<LocalUserFormProps> = (props) => {
         block
         loading={props.loading}
         icon={<IconFont type="icon-login" />}
-        style={{ height: '44px', fontSize: '14px', marginTop: 20 }}
+        style={{
+          height: '44px',
+          fontSize: '14px',
+          marginTop: 20,
+          borderRadius: 999
+        }}
       >
         {intl.formatMessage({ id: 'common.button.login' })}
       </Button>

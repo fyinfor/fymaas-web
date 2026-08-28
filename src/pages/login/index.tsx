@@ -1,4 +1,4 @@
-import LogoIcon from '@/assets/images/tokease-logo.svg';
+import LogoIcon from '@/assets/images/brand-logo.png';
 import { initialPasswordAtom, userAtom } from '@/atoms/user';
 import { resetStorageUserSettings } from '@/atoms/utils';
 import DarkMask from '@/components/dark-mask';
@@ -42,7 +42,7 @@ import { useLocalAuth } from './hooks/use-local-auth';
 import { useSSOAuth } from './hooks/use-sso-auth';
 import { checkDefaultPage } from './utils';
 
-const COLOR_LINK = '#1677ff';
+const COLOR_LINK = '#0052D9';
 
 const useStyles = createStyles(({ token, css }) => ({
   header: css`
@@ -92,12 +92,13 @@ const FormWrapper = styled.div`
   transform: translateY(-50%);
   position: relative;
   z-index: 999;
-  border-radius: var(--border-radius-modal);
+  border-radius: 16px;
   height: max-content;
   max-height: 660px;
   padding: 40px;
   background-color: var(--color-modal-content-bg);
-  box-shadow: var(--color-modal-box-shadow);
+  box-shadow: 0 12px 40px rgba(15, 40, 80, 8%);
+  border: 1px solid var(--color-border-container);
   .field-wrapper {
     background-color: transparent !important;
   }
