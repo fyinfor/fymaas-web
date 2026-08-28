@@ -34,7 +34,7 @@ interface ColumnsHookProps {
 
 // The operator owns the instance types it derived from a node only while the
 // row's OWN cluster derives types from nodes; the list is fleet-wide, so the
-// answer differs per row. An unset knob means GPUStack does not manage the
+// answer differs per row. An unset knob means fymaas does not manage the
 // setting and the operator keeps its own default, which is on — so only an
 // explicit `false` releases those types.
 const isDerivedFromNodeEnabled = (cluster?: ClusterOption) =>

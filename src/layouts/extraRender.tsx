@@ -160,7 +160,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
     {
       key: 'site',
       icon: <HomeOutlined />,
-      label: 'GPUStack',
+      label: 'fymaas',
       url: externalLinks.site
     },
     {

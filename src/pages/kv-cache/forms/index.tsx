@@ -438,7 +438,7 @@ const ServiceForm: React.FC<ServiceFormProps> = forwardRef((props, ref) => {
   );
 
   // completion hints for the extra-parameters editor, declared by the
-  // provider (flags GPUStack injects itself are excluded declaration-side)
+  // provider (flags fymaas injects itself are excluded declaration-side)
   const parameterHints = useMemo(() => {
     return (getProvider(providerName)?.common_parameters || []).map(
       (value) => ({

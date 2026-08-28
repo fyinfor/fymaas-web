@@ -74,7 +74,7 @@ export default defineConfig({
   antd: {
     style: 'less'
   },
-  title: 'GPUStack',
+  title: 'fymaas',
   hash: true,
   access: {},
   model: {},

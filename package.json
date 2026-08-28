@@ -1,6 +1,7 @@
 {
+  "name": "fymaas-web",
   "private": true,
-  "author": "gpustack",
+  "author": "fymaas",
   "scripts": {
     "build": "max build",
     "check:locales": "node --import tsx ./src/locales/check.ts",

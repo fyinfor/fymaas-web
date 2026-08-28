@@ -206,7 +206,7 @@ export const GPUStackFailedStatuses = [
 export const InstanceStatusLabelMap: Record<string, string> = {
   // === K8s Statuses ===
   ...Object.fromEntries(K8SStatuses.map((status) => [status, status])),
-  // === GPUStack Statuses no logs and events===
+  // === fymaas Statuses no logs and events===
   [InstanceStatusValueMap.Deleting]: 'Deleting',
   [InstanceStatusValueMap.Stopping]: 'Stopping',
   [InstanceStatusValueMap.Stopped]: 'Stopped',

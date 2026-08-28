@@ -79,7 +79,7 @@ export const isDockerHubRegistry = (registry: string) =>
   DOCKER_HUB_REGISTRY_HOSTS.includes(registryHost(registry));
 
 /**
- * Registries a Shuihua instance can actually pull GPUStack images from.
+ * Registries a Shuihua instance can actually pull fymaas images from.
  *
  * Suggestions, *not* a whitelist: the backend only denies Docker Hub hosts, so
  * a company's own Harbor / mirror has to stay typeable — which is why the
@@ -109,7 +109,7 @@ export const getProviderShortLabel = (
   '';
 
 /**
- * Providers whose clusters GPUStack provisions through a cloud API: they are
+ * Providers whose clusters fymaas provisions through a cloud API: they are
  * created against a cloud credential + region and get their workers from node
  * pools, instead of a worker registration command (Docker / Kubernetes).
  *
@@ -127,7 +127,7 @@ export const isCloudProvider = (provider?: ProviderType | string | null) =>
   !!provider && CloudProviderList.includes(provider as string);
 
 /**
- * Example shown in the "GPUStack Server URL" field's tip, per provider. A
+ * Example shown in the "fymaas Server URL" field's tip, per provider. A
  * Kubernetes worker reaches the server through an in-cluster Service, so its
  * example is a Service DNS name; every other provider's workers are plain
  * hosts on the network — a Docker daemon or a cloud instance — and dial an

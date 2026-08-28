@@ -80,8 +80,8 @@ export interface GpuInstanceOptions {
   // "GPU instances enabled" for the cluster — absence opts the cluster out,
   // so there's no separate boolean flag on the wire.
   //
-  // Every knob mirrors a GPUStack Operator setting of the same name and is
-  // tri-state: absent (or `null`) means GPUStack does not manage that setting
+  // Every knob mirrors a fymaas Operator setting of the same name and is
+  // tri-state: absent (or `null`) means fymaas does not manage that setting
   // and the cluster keeps its own value — a different instruction from an
   // explicit `false`. The backend drops nulls when persisting, so `null` is
   // how the form says "not managed".
@@ -126,7 +126,7 @@ export interface ClusterListItem {
   // a top-level column on the backend (image resolution / registration token
   // read it directly). Falls back to the server default when unset.
   system_default_container_registry?: string | null;
-  // Externally reachable GPUStack Server URL the workers register against.
+  // Externally reachable fymaas Server URL the workers register against.
   // Unset means the platform's `server_external_url` is used instead.
   server_url?: string | null;
   provider: ProviderType;

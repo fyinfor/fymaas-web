@@ -87,7 +87,7 @@ export default {
   'clusters.addworker.detectWorkerAddress.tips':
     'Defaults to Worker IP if not specified.',
   'clusters.addworker.externalIP.tips':
-    'If running in a VPC or private network, please specify the Worker external address reachable by the GPUStack Server.',
+    'If running in a VPC or private network, please specify the Worker external address reachable by the fymaas Server.',
   'clusters.addworker.enterWorkerIP': 'Enter worker IP',
   'clusters.addworker.enterWorkerIP.error': 'Please enter the worker IP.',
   'clusters.addworker.enterWorkerAddress': 'Enter worker external address',
@@ -115,20 +115,20 @@ export default {
     '{count} new worker has been added to the cluster.',
   'clusters.addworker.message.success_multiple':
     '{count} new workers have been added to the cluster.',
-  'clusters.create.serverUrl': 'GPUStack Server URL',
+  'clusters.create.serverUrl': 'fymaas Server URL',
   'clusters.create.workerConfig': 'Worker Configuration',
   'clusters.edit.registration.changed.tip':
     'You have changed settings that are applied when a worker registers. Re-run the registration command on the target cluster for the changes to take effect.',
   'clusters.addworker.containerName': 'Worker Container Name',
   'clusters.addworker.containerName.tips':
     'Specify a name for the worker container.',
-  'clusters.addworker.dataVolume': 'GPUStack Data Volume',
+  'clusters.addworker.dataVolume': 'fymaas Data Volume',
   'clusters.addworker.dataVolume.tips':
-    'Specify a data storage path for GPUStack.',
+    'Specify a data storage path for fymaas.',
   'clusters.table.ip.internal': 'Internal',
   'clusters.table.ip.external': 'External',
   'clusters.form.serverUrl.tips':
-    'Specify an externally accessible GPUStack service URL if the worker cannot access GPUStack Server directly. For example: {example}',
+    'Specify an externally accessible fymaas service URL if the worker cannot access fymaas Server directly. For example: {example}',
   'clusters.form.setDefault': 'Set as Default',
   'clusters.form.setDefault.tips': 'Default for deployment.',
   'clusters.addworker.noClusters': 'No available Docker clusters found',
@@ -146,7 +146,7 @@ export default {
   'clusters.addworker.theadNotes-02':
     'T-Head PPU uses the Container Device Interface (CDI) for device injection and requires the <span class="bold-text">/var/run/cdi</span> directory to be available for CDI generation.',
   'clusters.addworker.nvidiaNotes':
-    'The built-in inference backends in GPUStack require <span class="bold-text">CUDA 12.8+</span>. Please ensure your NVIDIA driver version is <span class="bold-text">570</span> or newer.',
+    'The built-in inference backends in fymaas require <span class="bold-text">CUDA 12.8+</span>. Please ensure your NVIDIA driver version is <span class="bold-text">570</span> or newer.',
   'clusters.volume.title': 'Volume Mounts',
   'clusters.volume.name': 'Volume Name',
   'clusters.volume.mountPath': 'Container Path',
@@ -173,7 +173,7 @@ export default {
   'clusters.volume.add': 'Add Volume Mount',
   'clusters.systemDefaultContainerRegistry.title': 'Default Container Registry',
   'clusters.systemDefaultContainerRegistry.tip':
-    'Default registry used to resolve GPUStack images for this cluster. Falls back to the server default when unset.',
+    'Default registry used to resolve fymaas images for this cluster. Falls back to the server default when unset.',
   'clusters.systemDefaultContainerRegistry.dockerHubUnreachable':
     '{provider} instances cannot reach Docker Hub. Use a mirror or a private registry.',
   'clusters.k8sOptions.title': 'Kubernetes Deployment Options',
@@ -187,7 +187,7 @@ export default {
     'Pod nodeSelector applied to every worker DaemonSet — only nodes whose labels match are eligible to run the worker.',
   'clusters.operatorImage.title': 'Operator Image',
   'clusters.operatorImage.tip':
-    'Override for the GPUStack Operator container image. Leave empty to use the server default.',
+    'Override for the fymaas Operator container image. Leave empty to use the server default.',
   'clusters.namespace.title': 'Namespace',
   'clusters.namespace.tip':
     'Kubernetes namespace the cluster’s manifests render into. Leave empty to use gpustack-system.',

@@ -87,7 +87,7 @@ export default {
   'clusters.addworker.detectWorkerAddress.tips':
     "Belirtilmezse İşçi Düğüm IP'si varsayılır.",
   'clusters.addworker.externalIP.tips':
-    'VPC veya özel ağda çalıştırılıyorsa, lütfen GPUStack Sunucusuna erişilebilir İşçi Düğüm harici adresini belirtin.',
+    'VPC veya özel ağda çalıştırılıyorsa, lütfen fymaas Sunucusuna erişilebilir İşçi Düğüm harici adresini belirtin.',
   'clusters.addworker.enterWorkerIP': "İşçi düğüm IP'sini girin",
   'clusters.addworker.enterWorkerIP.error': "Lütfen işçi düğüm IP'sini girin.",
   'clusters.addworker.enterWorkerAddress': 'İşçi düğüm harici adresini girin',
@@ -115,20 +115,20 @@ export default {
     '{count} yeni işçi düğüm kümeye eklendi.',
   'clusters.addworker.message.success_multiple':
     '{count} yeni işçi düğüm kümeye eklendi.',
-  'clusters.create.serverUrl': 'GPUStack Server URL',
+  'clusters.create.serverUrl': 'fymaas Server URL',
   'clusters.create.workerConfig': 'İşçi Düğüm Yapılandırması',
   'clusters.edit.registration.changed.tip':
     'Bir işçi düğüm kaydolurken uygulanan ayarları değiştirdiniz. Değişikliklerin etkili olması için kayıt komutunu hedef kümede yeniden çalıştırın.',
   'clusters.addworker.containerName': 'İşçi Düğüm Konteyner Adı',
   'clusters.addworker.containerName.tips':
     'İşçi düğüm konteyneri için bir ad belirtin.',
-  'clusters.addworker.dataVolume': 'GPUStack Veri Birimi',
+  'clusters.addworker.dataVolume': 'fymaas Veri Birimi',
   'clusters.addworker.dataVolume.tips':
-    'GPUStack için veri depolama yolu belirtin.',
+    'fymaas için veri depolama yolu belirtin.',
   'clusters.table.ip.internal': 'Dahili',
   'clusters.table.ip.external': 'Harici',
   'clusters.form.serverUrl.tips':
-    "İşçi düğüm GPUStack Sunucusuna doğrudan erişemiyorsa, harici olarak erişilebilir bir GPUStack hizmet URL'si belirtin. Örneğin: {example}",
+    "İşçi düğüm fymaas Sunucusuna doğrudan erişemiyorsa, harici olarak erişilebilir bir fymaas hizmet URL'si belirtin. Örneğin: {example}",
   'clusters.form.setDefault': 'Varsayılan Olarak Ayarla',
   'clusters.form.setDefault.tips': 'Dağıtım için varsayılan.',
   'clusters.addworker.noClusters': 'Kullanılabilir Docker kümesi bulunamadı',
@@ -147,7 +147,7 @@ export default {
   'clusters.addworker.theadNotes-02':
     'T-Head PPU, cihaz enjeksiyonu için Container Device Interface (CDI) kullanır ve CDI oluşturma için <span class="bold-text">/var/run/cdi</span> dizininin kullanılabilir olmasını gerektirir.',
   'clusters.addworker.nvidiaNotes':
-    'GPUStack\'teki yerleşik çıkarım altyapıları <span class="bold-text">CUDA 12.8+</span> gerektirir. Lütfen NVIDIA sürücü sürümünüzün <span class="bold-text">570</span> veya daha yeni olduğundan emin olun.',
+    'fymaas\'teki yerleşik çıkarım altyapıları <span class="bold-text">CUDA 12.8+</span> gerektirir. Lütfen NVIDIA sürücü sürümünüzün <span class="bold-text">570</span> veya daha yeni olduğundan emin olun.',
   'clusters.volume.title': 'Volume Mounts',
   'clusters.volume.name': 'Volume Name',
   'clusters.volume.mountPath': 'Container Path',
@@ -174,7 +174,7 @@ export default {
   'clusters.volume.add': 'Add Volume Mount',
   'clusters.systemDefaultContainerRegistry.title': 'Default Container Registry',
   'clusters.systemDefaultContainerRegistry.tip':
-    'Default registry used to resolve GPUStack images for this cluster. Falls back to the server default when unset.',
+    'Default registry used to resolve fymaas images for this cluster. Falls back to the server default when unset.',
   'clusters.systemDefaultContainerRegistry.dockerHubUnreachable':
     '{provider} örnekleri Docker Hub’a erişemez. Bir ayna veya özel kayıt defteri kullanın.',
   'clusters.k8sOptions.title': 'Kubernetes Deployment Options',
@@ -188,7 +188,7 @@ export default {
     'Pod nodeSelector applied to every worker DaemonSet — only nodes whose labels match are eligible to run the worker.',
   'clusters.operatorImage.title': 'Operator Image',
   'clusters.operatorImage.tip':
-    'Override for the GPUStack Operator container image. Leave empty to use the server default.',
+    'Override for the fymaas Operator container image. Leave empty to use the server default.',
   'clusters.namespace.title': 'Namespace',
   'clusters.namespace.tip':
     'Kubernetes namespace the cluster’s manifests render into. Leave empty to use gpustack-system.',

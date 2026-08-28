@@ -207,7 +207,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
   // bet that cannot be called off. Once `preloadRoute` fires the chunks go out
   // through webpack's script injection, which has no abort path, and a request
   // already in flight is never preempted by a later one of the same priority —
-  // route chunks are all Low. Over HTTP/1.1, which is how GPUStack is usually
+  // route chunks are all Low. Over HTTP/1.1, which is how fymaas is usually
   // reached, a route's several chunks then hold most of the six-connection
   // budget until they land, so guessing wrong delays whichever page the user
   // did pick by however long the wrong one takes. The upside is capped at the

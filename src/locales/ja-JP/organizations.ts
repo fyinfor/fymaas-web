@@ -1,7 +1,7 @@
 export default {
   'organizations.upsell.title': 'Organizations are an Enterprise feature',
   'organizations.upsell.subtitle':
-    'Multi-tenancy lets you isolate users, resources, and quotas across teams. Upgrade to GPUStack Enterprise to manage organizations.',
+    'Multi-tenancy lets you isolate users, resources, and quotas across teams. Upgrade to fymaas Enterprise to manage organizations.',
   'organizations.upsell.featuresTitle': 'What you get in Enterprise',
   'organizations.upsell.feature.orgs':
     'Create organizations to group users and isolate workloads',

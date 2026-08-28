@@ -5,7 +5,7 @@ description: Review a page, drawer, or form in the gpustack-ui (open source) cod
 
 # Design Review
 
-Review one screen (a page module, a drawer, a form, or a component) against GPUStack UI's design principles and report concrete, ranked findings. This is a **review**, not a refactor — do not edit unless the user asks. Point at `file:line`, say what's wrong, propose the fix.
+Review one screen (a page module, a drawer, a form, or a component) against fymaas UI's design principles and report concrete, ranked findings. This is a **review**, not a refactor — do not edit unless the user asks. Point at `file:line`, say what's wrong, propose the fix.
 
 The principle layer below is adapted from Apple's Human Interface Guidelines (semantic color, always-visible system state, focus, accessibility), narrowed to a **data-dense desktop admin web app**. Skip HIG's touch/gesture/whitespace-maximalism — it doesn't apply here. What applies is already encoded in the core-ui component conventions; most findings are "a core-ui primitive exists for this and wasn't used."
 

@@ -14,7 +14,7 @@ export default {
   'models.form.env': 'Ortam Değişkenleri',
   'models.form.configurations': 'Yapılandırmalar',
   'models.form.s3address': 'S3 Adresi',
-  'models.form.partialoffload.tips': `CPU aktarımı etkinleştirildiğinde, GPU kaynakları yetersiz olduğunda GPUStack CPU belleği ayırır. Hibrit CPU+GPU veya tam CPU çıkarımı kullanmak için çıkarım altyapısını doğru şekilde yapılandırmanız gerekir.`,
+  'models.form.partialoffload.tips': `CPU aktarımı etkinleştirildiğinde, GPU kaynakları yetersiz olduğunda fymaas CPU belleği ayırır. Hibrit CPU+GPU veya tam CPU çıkarımı kullanmak için çıkarım altyapısını doğru şekilde yapılandırmanız gerekir.`,
   'models.form.distribution.tips': `Bir işçi düğümün kaynakları yetersiz olduğunda, modelin katmanlarının bir kısmının tekli veya çoklu uzak işçi düğümlere aktarılmasına olanak tanır.`,
   'models.openinplayground': 'Deneme Alanında Aç',
   'models.instances': 'örnekler',
@@ -24,7 +24,7 @@ export default {
   'model.deploy.sort': 'Sırala',
   'model.deploy.search.placeholder': 'Modelleri aramak için <kbd>/</kbd> yazın',
   'model.form.ollamatips':
-    "İpucu: Aşağıdakiler GPUStack'te önceden yapılandırılmış Ollama modelleridir. İstediğiniz modeli seçin veya dağıtmak istediğiniz modeli doğrudan sağdaki 【{name}】 giriş kutusuna yazın.",
+    "İpucu: Aşağıdakiler fymaas'te önceden yapılandırılmış Ollama modelleridir. İstediğiniz modeli seçin veya dağıtmak istediğiniz modeli doğrudan sağdaki 【{name}】 giriş kutusuna yazın.",
   'models.sort.name': 'Ad',
   'models.sort.size': 'Boyut',
   'models.sort.likes': 'Beğeniler',
@@ -96,7 +96,7 @@ export default {
   'models.form.filePath': 'Model Yolu',
   'models.form.backendVersion': 'Altyapı Sürümü',
   'models.form.backendVersion.tips':
-    '{backend}{version} sürümünü kullanmak için sistem, ilgili sürümü yüklemek üzere çevrimiçi ortamda otomatik olarak sanal ortam oluşturur. GPUStack yükseltmesinden sonra altyapı sürümü sabit kalır. {link}',
+    '{backend}{version} sürümünü kullanmak için sistem, ilgili sürümü yüklemek üzere çevrimiçi ortamda otomatik olarak sanal ortam oluşturur. fymaas yükseltmesinden sonra altyapı sürümü sabit kalır. {link}',
   'models.form.gpuselector': 'GPU Seçici',
   'models.form.backend.llamabox':
     'GGUF format modeller için, Linux, macOS ve Windows destekler.',
@@ -357,7 +357,7 @@ export default {
   'models.form.backendVersions.tips': `Daha fazla sürüm kullanmak için {link} sayfasına gidin ve sürüm eklemek üzere altyapıyı düzenleyin.`,
   'models.catalog.nogpus.tips':
     'Seçili kümede bu model için uyumlu GPU bulunmuyor.',
-  'models.form.modelfile.notfound': `Belirttiğiniz model dosyası yolu GPUStack sunucusunda mevcut değil. Model dosyasını hem GPUStack sunucusunda hem de GPUStack işçi düğümlerinde aynı yola yerleştirmeniz önerilir. Bu, GPUStack'in daha iyi kararlar almasına yardımcı olur.`,
+  'models.form.modelfile.notfound': `Belirttiğiniz model dosyası yolu fymaas sunucusunda mevcut değil. Model dosyasını hem fymaas sunucusunda hem de fymaas işçi düğümlerinde aynı yola yerleştirmeniz önerilir. Bu, fymaas'in daha iyi kararlar almasına yardımcı olur.`,
   'models.form.readyWorkers': 'hazır işçi düğüm',
   'models.form.maxContextLength': 'Maksimum Bağlam Uzunluğu',
   'models.form.backend.helperText':
@@ -380,7 +380,7 @@ export default {
   // Model catalog source configuration
   'models.catalog.source.title': 'Katalog Kaynağı',
   'models.catalog.source.official':
-    'Follows the catalog GPUStack publishes, on top of the one packaged with this release.'
+    'Follows the catalog fymaas publishes, on top of the one packaged with this release.'
 };
 
 // ========== To-Do: Translate Keys (Remove After Translation) ==========

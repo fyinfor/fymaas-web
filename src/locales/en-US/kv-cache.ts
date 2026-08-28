@@ -4,7 +4,7 @@ export default {
   'kvCache.providerSelect.title': 'Select Provider',
   'kvCache.provider.source.builtin': 'Built-in',
   'kvCache.provider.source.community': 'Community',
-  'kvCache.provider.source.partner': 'GPUStack Certified Partner',
+  'kvCache.provider.source.partner': 'fymaas Certified Partner',
   'kvCache.button.testConnection': 'Test Connection',
   'kvCache.button.viewLogs': 'View Logs',
   'kvCache.edit.recreate.tips':

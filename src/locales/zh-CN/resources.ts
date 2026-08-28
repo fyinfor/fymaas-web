@@ -52,7 +52,7 @@ export default {
   'resources.worker.current.version': '当前版本为 {version}',
   'resources.worker.select.command': '选择一个标签生成命令并使用复制按钮复制',
   'resources.worker.driver.install':
-    '在安装 GPUStack 之前，请安装<a href="https://docs.gpustack.ai/latest/installation/installation-requirements/" target="_blank">所需的驱动程序和库</a>。',
+    '在安装 fymaas 之前，请安装<a href="https://docs.gpustack.ai/latest/installation/installation-requirements/" target="_blank">所需的驱动程序和库</a>。',
   'resources.worker.script.install': '脚本安装',
   'resources.worker.container.install': '容器安装(仅支持 Linux)',
   'resources.worker.cann.tips':
@@ -87,7 +87,7 @@ export default {
     '粘贴 <span class="bold-text">Token</span>。',
   'resources.register.worker.step7':
     '点击<span class="bold-text">重启</span>，应用设置。',
-  'resources.register.install.title': '在 {os} 上安装 GPUStack',
+  'resources.register.install.title': '在 {os} 上安装 fymaas',
   'resources.register.download':
     '下载并安装<a href={url} target="_blank">安装包</a>，仅支持 {versions}。',
   'resource.register.maos.support': 'M 芯片，macOS 14+',
@@ -115,7 +115,7 @@ export default {
     '进入维护模式后，节点将停止调度新的模型实例部署任务，正在运行的实例不会受到影响。',
   'resources.worker.noCluster.tips': '当前无可用集群，请先创建集群再添加节点。',
   'resources.metrics.details': '监控',
-  'resoureces.worker.upgrade.tips': '请升级到与 GPUStack Server 版本一致。',
+  'resoureces.worker.upgrade.tips': '请升级到与 fymaas Server 版本一致。',
   'resources.worker.version': '节点版本：{version}',
   'resources.server.version': 'Server 版本：{version}',
   'resources.worker.currentVersion': '当前版本：{version}',

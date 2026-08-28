@@ -168,7 +168,7 @@ export const ClusterTypeSelector: React.FC = () => {
 };
 
 // The two boolean operator settings are tri-state on the wire: absent/null
-// means GPUStack does not manage the setting and the cluster keeps its own
+// means fymaas does not manage the setting and the cluster keeps its own
 // value, which is a different instruction from an explicit off — the settings
 // reconciler only ever writes a knob that is set. The form offers Enabled and
 // Disabled only; it never produces the unmanaged state, because an operator
@@ -184,7 +184,7 @@ const SETTING_FALSE = 'false';
 // the Select falls back to its placeholder. Showing Enabled there would be a
 // claim the form cannot support: Enabled is the operator's default, but a
 // cluster whose own setting was turned off by kubectl is Disabled, and an
-// unmanaged knob is exactly the case where GPUStack does not know which. Picking
+// unmanaged knob is exactly the case where fymaas does not know which. Picking
 // a display value is also not free — it is the one an administrator would then
 // leave in place and save, turning "not managed" into an instruction.
 const toSettingOption = (value?: boolean | null) => {
@@ -207,7 +207,7 @@ const OperatorFlagForm: React.FC<{
   labelId: string;
   descriptionId: string;
   // Seed the store with `true` when the form is registering a new cluster, so
-  // "Enabled" is a value GPUStack actually persists rather than only a label.
+  // "Enabled" is a value fymaas actually persists rather than only a label.
   // Never on edit: the whole block mounts with the Advanced panel's
   // `forceRender`, so an initialValue there would land on any cluster whose
   // knob is unmanaged and turn an untouched save into an explicit `true` —
@@ -259,7 +259,7 @@ const OperatorFlagForm: React.FC<{
   );
 };
 
-// The three GPUStack Operator settings that define a GPU Service cluster. Only
+// The three fymaas Operator settings that define a GPU Service cluster. Only
 // shown when "GPU 服务" is the selected cluster type. Rendered in the advanced
 // section, between the operator image and the worker config (节点配置).
 export const GpuServiceSettingsForm: React.FC = () => {

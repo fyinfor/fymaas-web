@@ -52,7 +52,7 @@ export default {
   'resources.worker.container.supported': 'macOS veya Windows desteklenmez.',
   'resources.worker.current.version': 'Mevcut sürüm: {version}.',
   'resources.worker.driver.install':
-    'GPUStack kurulumundan önce <a href="https://docs.gpustack.ai/latest/installation/installation-requirements/" target="_blank">gerekli sürücüleri ve kütüphaneleri</a> yükleyin.',
+    'fymaas kurulumundan önce <a href="https://docs.gpustack.ai/latest/installation/installation-requirements/" target="_blank">gerekli sürücüleri ve kütüphaneleri</a> yükleyin.',
   'resources.worker.select.command':
     'Komutu oluşturmak için bir etiket seçin ve kopyala düğmesiyle kopyalayın.',
   'resources.worker.script.install': 'Betik Kurulumu',
@@ -89,7 +89,7 @@ export default {
     '<span class="bold-text">Token</span>\'ı yapıştırın.',
   'resources.register.worker.step7':
     'Ayarları uygulamak için <span class="bold-text">Yeniden Başlat</span>\'a tıklayın.',
-  'resources.register.install.title': '{os} üzerine GPUStack kur',
+  'resources.register.install.title': '{os} üzerine fymaas kur',
   'resources.register.download':
     '<a href={url} target="_blank">Yükleyiciyi</a> indirip kurun. Yalnızca desteklenen: {versions}.',
   'resource.register.maos.support': 'Apple Silicon (M serisi), macOS 14+',
@@ -119,7 +119,7 @@ export default {
     'Kullanılabilir küme yok. Lütfen düğüm eklemeden önce bir küme oluşturun.',
   'resources.metrics.details': 'İzleme',
   'resoureces.worker.upgrade.tips':
-    'Please upgrade to match the GPUStack Server version.',
+    'Please upgrade to match the fymaas Server version.',
   'resources.worker.version': 'Worker Version: {version}',
   'resources.server.version': 'Server Version: {version}',
   'resources.worker.currentVersion': 'Current Version: {version}',
@@ -128,5 +128,5 @@ export default {
 };
 
 // ========== To-Do: Translate Keys (Remove After Translation) ==========
-// 1. 'resoureces.worker.upgrade.tips': 'Please upgrade to match the GPUStack Server version.'
+// 1. 'resoureces.worker.upgrade.tips': 'Please upgrade to match the fymaas Server version.'
 // ========== End of To-Do List ==========

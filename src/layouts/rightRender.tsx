@@ -82,7 +82,7 @@ export const getRightRenderContent = (opts: {
     {
       key: 'site',
       icon: <HomeOutlined />,
-      label: 'GPUStack',
+      label: 'fymaas',
       url: externalLinks.site
     },
     {

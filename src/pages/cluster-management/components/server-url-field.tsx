@@ -8,7 +8,7 @@ import { getServerUrlExample, ProviderType } from '../config';
 import { ClusterFormData as FormData } from '../config/types';
 
 /**
- * The GPUStack Server URL a worker registers against. A top-level cluster
+ * The fymaas Server URL a worker registers against. A top-level cluster
  * field — the backend hands it back from the cluster-token endpoint and the
  * registration command bakes it into the `--server-url` it prints, so it is
  * consumed during registration and cannot be changed later from the node
