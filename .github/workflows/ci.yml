@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 env:
   NODE_VERSION: '22'
@@ -73,6 +74,19 @@ jobs:
             echo "Not a publish target"
             exit 1
           fi
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push UI image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ghcr.io/fyinfor/fymaas-web:${{ steps.version.outputs.version }}
       - name: Package
         run: scripts/package
         env:
