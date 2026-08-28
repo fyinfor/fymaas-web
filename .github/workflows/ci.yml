@@ -51,6 +51,8 @@ jobs:
       - deps
     timeout-minutes: 30
     runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -126,3 +128,12 @@ jobs:
           remote_path: releases/${{ steps.version.outputs.version }}.tar.gz
           accelerate: true
           clean: false
+
+  push-acr:
+    needs: build-publish
+    if: ${{ inputs.push_to_acr }}
+    uses: ./.github/workflows/push-acr.yaml
+    secrets: inherit
+    with:
+      image: fymaas-web
+      tag: ${{ needs.build-publish.outputs.version }}

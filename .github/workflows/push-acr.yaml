@@ -11,6 +11,26 @@
 name: Push ACR
 
 on:
+  workflow_call:
+    inputs:
+      image:
+        description: 要同步到 ACR 的镜像
+        type: string
+        default: fymaas-web
+      tag:
+        description: 源 / 目标 tag
+        type: string
+        default: latest
+      acr_registry:
+        description: ACR 地址
+        type: string
+        required: false
+        default: ''
+      acr_namespace:
+        description: ACR 命名空间
+        type: string
+        required: false
+        default: ''
   workflow_dispatch:
     inputs:
       image:
