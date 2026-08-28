@@ -103,6 +103,11 @@ git merge v2.2.3          # 或某个 commit SHA
 git push origin main
 ```
 
+### CI / 产物
+
+- `main` / `v*-dev` / tag 推送后，GitHub Actions 会构建 UI 并发布到本仓库 Release，tag 为 `ui-<version>`（`main` 对应 `ui-latest`）。
+- 后端 `fyinfor/fymaas` 打包镜像时从该 Release 拉取 UI；未配置 `DISPATCH_PAT` 时不会自动触发后端 Pack，需要在后端仓库手动跑 Pack workflow。
+
 ### 注意
 
 - 本仓库已把对外项目名改成 fymaas。合并官方更新时，`README.md`、`package.json`、页面标题和文案容易冲突：保留本仓库的 fymaas 命名，只合入功能与修复。

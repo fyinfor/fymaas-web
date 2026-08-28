@@ -13,6 +13,10 @@ on:
       - 'main'
       - 'v*-dev'
 
+permissions:
+  contents: write
+  actions: write
+
 env:
   NODE_VERSION: '22'
 
@@ -72,7 +76,7 @@ jobs:
   build-publish:
     needs:
       - deps
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     timeout-minutes: 30
     runs-on: ubuntu-22.04
     steps:
@@ -107,7 +111,26 @@ jobs:
         run: scripts/package
         env:
           VERSION: '${{ steps.version.outputs.version }}'
-      - name: Release
+      - name: Publish UI GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ui-${{ steps.version.outputs.version }}
+          name: fymaas-web ${{ steps.version.outputs.version }}
+          prerelease: ${{ steps.version.outputs.version == 'latest' || contains(steps.version.outputs.version, '-dev') }}
+          make_latest: false
+          files: dist/${{ steps.version.outputs.version }}.tar.gz
+      - name: Check Tencent COS secrets
+        id: cos
+        env:
+          SID: ${{ secrets.CI_TECENTCOS_SECRET_ID }}
+        run: |
+          if [[ -n "${SID}" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload to Tencent COS
+        if: steps.cos.outputs.enabled == 'true'
         uses: TencentCloud/cos-action@b0aa648235fb35a1bdd6a77f529eb0ac4c2f1c25
         with:
           secret_id: ${{ secrets.CI_TECENTCOS_SECRET_ID }}
@@ -123,15 +146,23 @@ jobs:
     needs: build-publish
     if: (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
+    env:
+      DISPATCH_PAT: ${{ secrets.DISPATCH_PAT }}
     steps:
-      - name: Dispatch backend build
+      - name: Dispatch backend pack
+        if: env.DISPATCH_PAT != ''
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.DISPATCH_PAT }}
-          repository: gpustack/gpustack
+          repository: fyinfor/fymaas
           event-type: ui-built
           client-payload: |
             {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}"
             }
+      - name: Skip backend dispatch
+        if: env.DISPATCH_PAT == ''
+        run: |
+          echo "DISPATCH_PAT is not configured; skip cross-repo dispatch to fyinfor/fymaas."
+          echo "Trigger the Pack workflow on fyinfor/fymaas manually if a backend image rebuild is needed."
