@@ -1,4 +1,4 @@
-import LogoIcon from '@/assets/images/gpustack-logo.png';
+import LogoIcon from '@/assets/images/tokease-logo.svg';
 import { initialPasswordAtom, userAtom } from '@/atoms/user';
 import { resetStorageUserSettings } from '@/atoms/utils';
 import DarkMask from '@/components/dark-mask';

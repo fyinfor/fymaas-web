@@ -3,8 +3,6 @@ import avatarImg from '@/assets/images/avatar.png';
 import externalLinks from '@/constants/external-links';
 import {
   DiscordOutlined,
-  GithubOutlined,
-  HomeOutlined,
   InfoCircleOutlined,
   LogoutOutlined,
   MoreOutlined,
@@ -79,18 +77,6 @@ export const getRightRenderContent = (opts: {
   }
 
   const helpList = [
-    {
-      key: 'site',
-      icon: <HomeOutlined />,
-      label: 'fymaas',
-      url: externalLinks.site
-    },
-    {
-      key: 'github',
-      icon: <GithubOutlined />,
-      label: intl.formatMessage({ id: 'common.issue.report' }),
-      url: externalLinks.reportIssue
-    },
     {
       key: 'faq',
       icon: <IconFont type="icon-fankuifaqs"></IconFont>,

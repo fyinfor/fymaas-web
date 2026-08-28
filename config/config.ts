@@ -74,7 +74,7 @@ export default defineConfig({
   antd: {
     style: 'less'
   },
-  title: 'fymaas',
+  title: 'tokease',
   hash: true,
   access: {},
   model: {},

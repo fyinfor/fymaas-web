@@ -1,8 +1,6 @@
-import Logo from '@/assets/images/gpustack-logo.png';
+import Logo from '@/assets/images/tokease-logo.svg';
 import { GPUStackVersionAtom, UpdateCheckAtom, userAtom } from '@/atoms/user';
-import externalLinks from '@/constants/external-links';
 import { useLogo } from '@/hooks/use-logo';
-import { Button } from 'antd';
 import { useAtom } from 'jotai';
 import React from 'react';
 import './index.less';
@@ -71,14 +69,6 @@ const VersionInfo: React.FC<{ intl: any }> = ({ intl }) => {
                   { version: currentVersion }
                 )}
           </span>
-          <Button
-            type="link"
-            href={externalLinks.release}
-            target="_blank"
-            style={{ paddingInline: 0 }}
-          >
-            {intl.formatMessage({ id: 'common.text.changelog' })}
-          </Button>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import LogoIcon from '@/assets/images/gpustack-logo.png';
+import LogoIcon from '@/assets/images/tokease-logo.svg';
 import { userAtom } from '@/atoms/user';
 import { history, useIntl, useModel } from '@umijs/max';
 import { Button, Divider, Form, Spin, message } from 'antd';
@@ -106,7 +106,7 @@ const LoginForm = () => {
           </span>
           <img
             src={LogoIcon}
-            alt="logo"
+            alt="tokease"
             style={{ height: '36px', marginLeft: 10 }}
           />
         </div>

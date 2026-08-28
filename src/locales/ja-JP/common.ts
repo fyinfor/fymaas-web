@@ -214,7 +214,7 @@ export default {
   'common.form.password': 'パスワード',
   'common.form.username': 'ユーザー名',
   'common.login.rember': 'ログイン状態を保持',
-  'settings.company': 'fymaas.ai',
+  'settings.company': 'tokease',
   'common.button.help': 'ヘルプ',
   'common.button.feedback': 'フィードバック',
   'common.button.docs': 'ドキュメント',

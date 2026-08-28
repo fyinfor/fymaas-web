@@ -215,7 +215,7 @@ export default {
   'common.form.password': 'Password',
   'common.form.username': 'Username',
   'common.login.rember': 'Remember me',
-  'settings.company': 'fymaas.ai',
+  'settings.company': 'tokease',
   'common.button.help': 'Help',
   'common.button.feedback': 'Feedback',
   'common.button.docs': 'Documentation',

@@ -217,7 +217,7 @@ export default {
   'common.form.password': 'Şifre',
   'common.form.username': 'Kullanıcı adı',
   'common.login.rember': 'Beni hatırla',
-  'settings.company': 'fymaas.ai',
+  'settings.company': 'tokease',
   'common.button.help': 'Yardım',
   'common.button.feedback': 'Geri Bildirim',
   'common.button.docs': 'Dokümantasyon',

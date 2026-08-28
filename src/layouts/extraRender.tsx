@@ -5,12 +5,7 @@ import externalLinks from '@/constants/external-links';
 import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
 import { useModel } from '@@/plugin-model';
-import {
-  DiscordOutlined,
-  GithubOutlined,
-  HomeOutlined,
-  ReadOutlined
-} from '@ant-design/icons';
+import { DiscordOutlined, ReadOutlined } from '@ant-design/icons';
 import { DropdownActions, IconFont, useBodyScroll } from '@gpustack/core-ui';
 import { history, useIntl, useNavigate } from '@umijs/max';
 import { Avatar, Button, Divider, Modal } from 'antd';
@@ -18,7 +13,6 @@ import { useAtom } from 'jotai';
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { DEFAULT_ENTER_PAGE } from '../config/settings';
-import GithubStar from './github-star';
 
 const NewLabel = styled.span`
   position: relative;
@@ -158,18 +152,6 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
 
   const helpList = [
     {
-      key: 'site',
-      icon: <HomeOutlined />,
-      label: 'fymaas',
-      url: externalLinks.site
-    },
-    {
-      key: 'github',
-      icon: <GithubOutlined />,
-      label: intl.formatMessage({ id: 'common.issue.report' }),
-      url: externalLinks.reportIssue
-    },
-    {
       key: 'faq',
       icon: <IconFont type="icon-fankuifaqs"></IconFont>,
       label: intl.formatMessage({ id: 'common.button.faq' }),
@@ -262,7 +244,6 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
     <Wrapper>
       {contextHolder}
       <PluginExtraField name="OrgSwitcher" isDarkTheme={isDarkTheme} />
-      {process.env.ENABLE_ENTERPRISE !== 'true' && <GithubStar />}
       <div
         style={{
           display: 'flex',
