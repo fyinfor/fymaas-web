@@ -217,7 +217,7 @@ export default {
   'common.form.password': 'Şifre',
   'common.form.username': 'Kullanıcı adı',
   'common.login.rember': 'Beni hatırla',
-  'settings.company': 'tokease',
+  'settings.company': 'Tokease',
   'common.button.help': 'Yardım',
   'common.button.feedback': 'Geri Bildirim',
   'common.button.docs': 'Dokümantasyon',

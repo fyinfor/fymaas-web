@@ -215,7 +215,7 @@ export default {
   'common.form.password': 'Password',
   'common.form.username': 'Username',
   'common.login.rember': 'Remember me',
-  'settings.company': 'tokease',
+  'settings.company': 'Tokease',
   'common.button.help': 'Help',
   'common.button.feedback': 'Feedback',
   'common.button.docs': 'Documentation',

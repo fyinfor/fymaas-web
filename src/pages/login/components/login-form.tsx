@@ -106,7 +106,7 @@ const LoginForm = () => {
           </span>
           <img
             src={LogoIcon}
-            alt="tokease"
+            alt="Tokease"
             style={{ height: '36px', marginLeft: 10 }}
           />
         </div>

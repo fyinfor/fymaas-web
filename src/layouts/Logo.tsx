@@ -30,13 +30,13 @@ const LogoIcon: React.FC = () => {
   const { sidebarLogo } = useLogo();
 
   if (sidebarLogo !== DEFAULT_SIDEBAR_LOGO) {
-    return <img src={sidebarLogo} alt="tokease" style={{ height: 24 }} />;
+    return <img src={sidebarLogo} alt="Tokease" style={{ height: 24 }} />;
   }
 
   return (
     <Brand>
       <TokeaseMarkIcon />
-      <Wordmark>tokease</Wordmark>
+      <Wordmark>Tokease</Wordmark>
     </Brand>
   );
 };
@@ -45,7 +45,7 @@ const SLogoIcon: React.FC = () => {
   const { miniLogo } = useLogo();
 
   if (miniLogo !== DEFAULT_MINI_LOGO) {
-    return <img src={miniLogo} alt="tokease" style={{ height: 24 }} />;
+    return <img src={miniLogo} alt="Tokease" style={{ height: 24 }} />;
   }
 
   return <TokeaseMarkIcon />;
