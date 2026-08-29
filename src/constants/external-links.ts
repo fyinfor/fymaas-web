@@ -1,13 +1,13 @@
 const externalLinks = {
-  documentation: 'https://docs.gpustack.ai/',
-  github: 'https://github.com/gpustack/gpustack',
+  documentation: 'https://fyinfor.github.io/fymaas/',
+  github: 'https://github.com/fyinfor/fymaas',
   discord: 'https://discord.gg/VXYJzuaqwD',
-  site: 'https://gpustack.ai/',
-  release: 'https://github.com/gpustack/gpustack/releases',
-  reportIssue: 'https://github.com/gpustack/gpustack/issues/new/choose',
-  faq: 'https://docs.gpustack.ai/latest/faq/',
+  site: 'https://fyinfor.github.io/fymaas/',
+  release: 'https://github.com/fyinfor/fymaas/releases',
+  reportIssue: 'https://github.com/fyinfor/fymaas/issues/new/choose',
+  faq: 'https://fyinfor.github.io/fymaas/latest/faq/',
   resetPassword:
-    'https://docs.gpustack.ai/latest/troubleshooting/?h=reset#reset-admin-password'
+    'https://fyinfor.github.io/fymaas/latest/troubleshooting/?h=reset#reset-admin-password'
 };
 
 export default externalLinks;
