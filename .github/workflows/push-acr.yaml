@@ -21,6 +21,11 @@ on:
         description: 源 / 目标 tag
         type: string
         default: latest
+      extra_tags:
+        description: 额外同步的 tag（空格分隔，例如 latest）
+        type: string
+        required: false
+        default: ''
       acr_registry:
         description: ACR 地址
         type: string
@@ -45,6 +50,11 @@ on:
         description: 源 / 目标 tag
         type: string
         default: latest
+      extra_tags:
+        description: 额外同步的 tag（空格分隔，例如 latest）
+        type: string
+        required: false
+        default: ''
       acr_registry:
         description: ACR 地址
         type: string
@@ -110,17 +120,27 @@ jobs:
         env:
           IMAGE: ${{ inputs.image }}
           TAG: ${{ inputs.tag }}
+          EXTRA_TAGS: ${{ inputs.extra_tags }}
           ACR_REGISTRY: ${{ steps.acr.outputs.registry }}
           ACR_NAMESPACE: ${{ steps.acr.outputs.namespace }}
         run: |
           set -euo pipefail
-          copy_one() {
+          copy_tag() {
             local name="$1"
+            local dest_tag="$2"
             local src="ghcr.io/fyinfor/${name}:${TAG}"
-            local dest="${ACR_REGISTRY}/${ACR_NAMESPACE}/${name}:${TAG}"
+            local dest="${ACR_REGISTRY}/${ACR_NAMESPACE}/${name}:${dest_tag}"
             echo "Copy ${src} -> ${dest}"
             docker buildx imagetools create -t "${dest}" "${src}"
             docker buildx imagetools inspect "${dest}"
+          }
+          copy_one() {
+            local name="$1"
+            copy_tag "${name}" "${TAG}"
+            for extra in ${EXTRA_TAGS}; do
+              [[ -z "${extra}" || "${extra}" == "${TAG}" ]] && continue
+              copy_tag "${name}" "${extra}"
+            done
           }
           if [[ "${IMAGE}" == "both" ]]; then
             copy_one fymaas-web
