@@ -165,6 +165,28 @@ export interface ClusterFormData {
   k8s_options?: K8sOptions;
 }
 
+export interface ServerUrlCandidate {
+  url: string;
+  kind: 'private' | 'public' | string;
+  source?: string;
+}
+
+export interface ProbeServerUrlResult {
+  ok: boolean;
+  kind:
+    | 'api'
+    | 'html'
+    | 'redirect'
+    | 'unreachable'
+    | 'unexpected'
+    | 'invalid'
+    | string;
+  status?: number | null;
+  version?: string | null;
+  location?: string | null;
+  message?: string | null;
+}
+
 export interface SystemConfig {
   disable_builtin_observability?: boolean;
   debug: boolean;

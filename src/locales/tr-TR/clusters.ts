@@ -80,6 +80,35 @@ export default {
   'clusters.addworker.specifyArgs': 'Argümanları Belirle',
   'clusters.addworker.dtkVersion': 'DTK Sürümü',
   'clusters.addworker.runCommand': 'Komutu Çalıştır',
+  'clusters.addworker.serverUrl': 'Server adresi',
+  'clusters.addworker.serverUrl.network':
+    'İşçi düğümün Server’a bağlanacağı adres',
+  'clusters.addworker.serverUrl.network.tips':
+    'İşçi düğüm ve Server aynı ağdaysa LAN API’sini kullanın (varsayılan bağlantı noktası 30080). Genel IP / etki alanı yalnızca düğümün internetten geri gelmesi gerektiğinde kullanılır ve bu giriş ön yüze değil API’ye vekil olmalıdır.',
+  'clusters.addworker.serverUrl.private': 'İç IP',
+  'clusters.addworker.serverUrl.private.tag': 'Önerilen',
+  'clusters.addworker.serverUrl.public': 'Genel IP / etki alanı',
+  'clusters.addworker.serverUrl.custom': 'Özel',
+  'clusters.addworker.serverUrl.placeholder': 'ör. http://192.168.1.100:30080',
+  'clusters.addworker.serverUrl.required':
+    'İşçi düğümün erişebileceği bir Server API URL’si girin',
+  'clusters.addworker.probe.checking': '{url}/version denetleniyor…',
+  'clusters.addworker.probe.ok':
+    'Bu adres Server API döndürüyor ({version}). Düğüm bu adresle kaydolabilir.',
+  'clusters.addworker.probe.redirect':
+    'HTTP {location} adresine yönlendiriliyor. İşçi düğüm yönlendirmeyi izlemez — HTTPS veya LAN API kullanın.',
+  'clusters.addworker.probe.html':
+    'Bu adres Server API değil, ön yüz sayfası döndürüyor. LAN’da http://<Server iç IP>:30080 kullanın.',
+  'clusters.addworker.probe.unreachable':
+    'Bu ortam {url}/version adresine ulaşamıyor. Düğüm ile Server’ın aynı ağda olduğunu ve URL’nin API bağlantı noktasını gösterdiğini doğrulayın.',
+  'clusters.addworker.probe.unexpected':
+    '{url}/version JSON olmayan bir gövde döndürdü. Kayıt ayrıştırması başarısız olur.',
+  'clusters.addworker.probe.invalid':
+    'http:// veya https:// ile başlayan bir URL girin.',
+  'clusters.addworker.register.waiting':
+    'Henüz yeni bir düğüm görünmedi. Başarısız kayıt listede belirmez ve bu konsol düğümdeki hatayı göremez.',
+  'clusters.addworker.register.waiting.tips':
+    'İşçi düğüm konteyner günlüklerine bakın. Sık nedenler: <span class="bold-text">--server-url</span> ön yüze gidiyor (<span class="bold-text">/version</span> HTML), HTTP 301 ile HTTPS’e yönleniyor (işçi düğüm izlemez) veya düğüm seçilen adrese ulaşamıyor.',
   'clusters.addworker.specifyWorkerIP': "İşçi Düğüm IP'si",
   'clusters.addworker.detectWorkerIP': "İşçi Düğüm IP'sini Otomatik Algıla",
   'clusters.addworker.specifyWorkerAddress': 'İşçi Düğüm Harici Adresi',

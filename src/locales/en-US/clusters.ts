@@ -80,6 +80,34 @@ export default {
   'clusters.addworker.specifyArgs': 'Specify Arguments',
   'clusters.addworker.dtkVersion': 'DTK Version',
   'clusters.addworker.runCommand': 'Run Command',
+  'clusters.addworker.serverUrl': 'Server URL',
+  'clusters.addworker.serverUrl.network': 'Address workers use to reach Server',
+  'clusters.addworker.serverUrl.network.tips':
+    'Use the LAN API (default port 30080) when workers and Server are on the same network. A public IP or domain is only for workers that must come back from the internet, and that entry must proxy to the API, not the frontend.',
+  'clusters.addworker.serverUrl.private': 'Private IP',
+  'clusters.addworker.serverUrl.private.tag': 'Recommended',
+  'clusters.addworker.serverUrl.public': 'Public IP / domain',
+  'clusters.addworker.serverUrl.custom': 'Custom',
+  'clusters.addworker.serverUrl.placeholder': 'e.g. http://192.168.1.100:30080',
+  'clusters.addworker.serverUrl.required':
+    'Enter a Server API URL the worker can reach',
+  'clusters.addworker.probe.checking': 'Checking {url}/version…',
+  'clusters.addworker.probe.ok':
+    'This address returns the Server API ({version}). Workers can register with it.',
+  'clusters.addworker.probe.redirect':
+    'HTTP is redirected to {location}. The worker does not follow redirects — use HTTPS or a LAN API URL.',
+  'clusters.addworker.probe.html':
+    'This address returns the frontend page, not the Server API. On a LAN use http://<Server private IP>:30080.',
+  'clusters.addworker.probe.unreachable':
+    'This environment cannot reach {url}/version. Confirm the worker and Server share a network, and that the URL points at the API port.',
+  'clusters.addworker.probe.unexpected':
+    '{url}/version returned a non-JSON body. Worker registration will fail to parse it.',
+  'clusters.addworker.probe.invalid':
+    'Enter a URL that starts with http:// or https://.',
+  'clusters.addworker.register.waiting':
+    'No new worker has appeared yet. A failed registration never shows up in the list, and this console cannot see the error on the node.',
+  'clusters.addworker.register.waiting.tips':
+    'Check the worker container logs. Common causes: <span class="bold-text">--server-url</span> points at the frontend (<span class="bold-text">/version</span> is HTML), HTTP is 301-redirected to HTTPS (the worker does not follow), or the node cannot reach the selected address.',
   'clusters.addworker.specifyWorkerIP': 'Worker IP',
   'clusters.addworker.detectWorkerIP': 'Auto-detect Worker IP',
   'clusters.addworker.specifyWorkerAddress': 'Worker External Address',

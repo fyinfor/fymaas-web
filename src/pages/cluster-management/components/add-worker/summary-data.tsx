@@ -103,6 +103,11 @@ const SummaryData: React.FC = () => {
     enable: false,
     ip: ''
   };
+  const serverUrlConfig = summary.get('serverUrlConfig') || {
+    network: 'private',
+    url: '',
+    custom: false
+  };
 
   return (
     <ConfigWrapper>
@@ -122,6 +127,22 @@ const SummaryData: React.FC = () => {
           label={intl.formatMessage({ id: 'clusters.addworker.gpuVendor' })}
           enable={true}
           value={workerCommand.label}
+        ></DataItem>
+
+        <DataItem
+          label={intl.formatMessage({
+            id: 'clusters.addworker.serverUrl'
+          })}
+          enable={!!serverUrlConfig.url}
+          value={serverUrlConfig.url}
+          required={true}
+          tips={
+            serverUrlConfig.url
+              ? ''
+              : intl.formatMessage({
+                  id: 'clusters.addworker.notSpecified'
+                })
+          }
         ></DataItem>
 
         <DataItem

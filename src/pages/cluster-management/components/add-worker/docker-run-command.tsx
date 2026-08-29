@@ -4,6 +4,8 @@ import AddWorkerCommand from '../add-worker-command';
 import { useAddWorkerContext } from './add-worker-context';
 import { AddWorkerStepProps, StepNamesMap } from './config';
 import { Title } from './constainers';
+import RegistrationHint from './registration-hint';
+import ServerUrlSelect from './server-url-select';
 import StepCollapse from './step-collapse';
 import SummaryData from './summary-data';
 import VendorNotes from './vendor-notes';
@@ -42,6 +44,7 @@ const DockerRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
   const currentGPU = summary.get('currentGPU') || '';
 
   const dtkVersion = summary.get('dtkVersion') || '25.04';
+  const serverUrlConfig = summary.get('serverUrlConfig') || { url: '' };
 
   const stepIndex = stepList.indexOf(StepNamesMap.RunCommand) + 1;
 
@@ -58,6 +61,7 @@ const DockerRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
     >
       <SummaryData></SummaryData>
       <VendorNotes></VendorNotes>
+      <ServerUrlSelect />
       <Typography.Paragraph
         style={{
           marginBottom: 8
@@ -69,6 +73,7 @@ const DockerRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
       </Typography.Paragraph>
       <AddWorkerCommand
         registrationInfo={registrationInfo}
+        serverUrl={serverUrlConfig.url}
         advertisAddress={
           externalWorkerIPConfig.enable ? externalWorkerIPConfig.ip : ''
         }
@@ -84,6 +89,7 @@ const DockerRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
         currentGPU={currentGPU}
         dtkVersion={dtkVersion}
       />
+      <RegistrationHint serverUrl={serverUrlConfig.url} />
     </StepCollapse>
   );
 };

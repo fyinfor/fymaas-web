@@ -80,6 +80,35 @@ export default {
   'clusters.addworker.specifyArgs': 'Specify Arguments',
   'clusters.addworker.dtkVersion': 'DTK バージョン',
   'clusters.addworker.runCommand': 'Run Command',
+  'clusters.addworker.serverUrl': 'Server URL',
+  'clusters.addworker.serverUrl.network':
+    'ワーカーが Server に接続するアドレス',
+  'clusters.addworker.serverUrl.network.tips':
+    'ワーカーと Server が同一ネットワークなら LAN API（既定ポート 30080）を使います。パブリック IP / ドメインは、ワーカーがインターネット経由で戻る必要がある場合のみ使い、その入口はフロントエンドではなく API にプロキシしてください。',
+  'clusters.addworker.serverUrl.private': 'プライベート IP',
+  'clusters.addworker.serverUrl.private.tag': '推奨',
+  'clusters.addworker.serverUrl.public': 'パブリック IP / ドメイン',
+  'clusters.addworker.serverUrl.custom': 'カスタム',
+  'clusters.addworker.serverUrl.placeholder': '例: http://192.168.1.100:30080',
+  'clusters.addworker.serverUrl.required':
+    'ワーカーが到達できる Server API の URL を入力してください',
+  'clusters.addworker.probe.checking': '{url}/version を確認しています…',
+  'clusters.addworker.probe.ok':
+    'このアドレスは Server API（{version}）を返します。ワーカーはこの URL で登録できます。',
+  'clusters.addworker.probe.redirect':
+    'HTTP は {location} にリダイレクトされます。ワーカーはリダイレクトに従わないため、HTTPS または LAN API を使用してください。',
+  'clusters.addworker.probe.html':
+    'このアドレスはフロントエンドのページを返しており、Server API ではありません。LAN では http://<Server のプライベート IP>:30080 を使用してください。',
+  'clusters.addworker.probe.unreachable':
+    'この環境から {url}/version に到達できません。ワーカーと Server が同一ネットワークか、URL が API ポートを指しているかを確認してください。',
+  'clusters.addworker.probe.unexpected':
+    '{url}/version が JSON 以外を返しました。ワーカー登録時に解析に失敗します。',
+  'clusters.addworker.probe.invalid':
+    'http:// または https:// で始まる URL を入力してください。',
+  'clusters.addworker.register.waiting':
+    '新しいワーカーはまだ検出されていません。登録に失敗すると一覧に現れず、このコンソールではノード上のエラーを確認できません。',
+  'clusters.addworker.register.waiting.tips':
+    'ワーカーコンテナのログを確認してください。よくある原因: <span class="bold-text">--server-url</span> がフロントエンドを指している（<span class="bold-text">/version</span> が HTML）、HTTP が HTTPS へ 301 される（ワーカーは追従しない）、または選択したアドレスにノードから到達できない。',
   'clusters.addworker.specifyWorkerIP': 'Worker IP',
   'clusters.addworker.detectWorkerIP': 'Worker IP を自動検出',
   'clusters.addworker.specifyWorkerAddress': 'Worker 外部アドレス',

@@ -6,6 +6,8 @@ import RegisterClusterInner from '../register-cluster-inner';
 import { useAddWorkerContext } from './add-worker-context';
 import { AddWorkerStepProps, StepNamesMap } from './config';
 import { Title } from './constainers';
+import RegistrationHint from './registration-hint';
+import ServerUrlSelect from './server-url-select';
 import StepCollapse from './step-collapse';
 
 const K8sRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
@@ -15,6 +17,7 @@ const K8sRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
   const stepIndex = stepList.indexOf(StepNamesMap.RunCommand) + 1;
   const currentGPU = summary.get('currentGPU') || '';
   const currentGPUs: string[] = summary.get('selectedGPUs') || [];
+  const serverUrlConfig = summary.get('serverUrlConfig') || { url: '' };
 
   return (
     <StepCollapse
@@ -36,6 +39,7 @@ const K8sRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
           id: 'clusters.create.addCommand.k8s.tips'
         })}
       </Typography.Paragraph>
+      <ServerUrlSelect />
       <AlertBlockInfo
         type="warning"
         style={{ marginBottom: 8 }}
@@ -46,9 +50,11 @@ const K8sRunCommand: React.FC<AddWorkerStepProps> = ({ disabled }) => {
       ></AlertBlockInfo>
       <RegisterClusterInner
         registrationInfo={registrationInfo}
+        serverUrl={serverUrlConfig.url}
         currentGPU={currentGPU}
         currentGPUs={currentGPUs}
       />
+      <RegistrationHint serverUrl={serverUrlConfig.url} />
     </StepCollapse>
   );
 };

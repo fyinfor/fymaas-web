@@ -17,7 +17,14 @@ interface AddWorkerContextProps {
     token: string;
     image: string;
     server_url: string;
+    server_lan_url?: string | null;
     cluster_id: number | null;
+    api_port?: number;
+    server_url_candidates?: {
+      url: string;
+      kind: string;
+      source?: string;
+    }[];
   };
   // GPU driver keys already in use by the selected cluster's workers, derived
   // from `status.gpu_devices[].vendor`. Empty when the cluster has no GPU

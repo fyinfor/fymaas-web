@@ -1,6 +1,7 @@
 import { addWorkerGuide } from '@/pages/resources/config';
 import { HighlightCode } from '@gpustack/core-ui';
 import React from 'react';
+import { resolveWorkerServerUrl } from '../utils/server-url';
 
 type ViewModalProps = {
   currentGPU?: string;
@@ -11,10 +12,12 @@ type ViewModalProps = {
   gpustackDataVolume?: string;
   advertisAddress?: string;
   dtkVersion?: string;
+  serverUrl?: string;
   registrationInfo: {
     token: string;
     image: string;
     server_url: string;
+    server_lan_url?: string | null;
     [key: string]: any;
   };
 };
@@ -28,7 +31,8 @@ const AddWorkerCommand: React.FC<ViewModalProps> = ({
   currentGPU,
   containerName,
   gpustackDataVolume,
-  dtkVersion
+  dtkVersion,
+  serverUrl
 }) => {
   const code = React.useMemo(() => {
     const commandCode = addWorkerGuide['all'];
@@ -36,7 +40,7 @@ const AddWorkerCommand: React.FC<ViewModalProps> = ({
       ?.registerWorker({
         registrationInfo,
         gpu: currentGPU || '',
-        server: registrationInfo.server_url || origin,
+        server: resolveWorkerServerUrl(registrationInfo, serverUrl),
         tag: '',
         advertisAddress: advertisAddress,
         workerIP: workerIP,
@@ -60,7 +64,8 @@ const AddWorkerCommand: React.FC<ViewModalProps> = ({
     containerName,
     gpustackDataVolume,
     advertisAddress,
-    dtkVersion
+    dtkVersion,
+    serverUrl
   ]);
 
   return (

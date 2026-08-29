@@ -78,6 +78,33 @@ export default {
   'clusters.addworker.specifyArgs': '指定参数',
   'clusters.addworker.dtkVersion': 'DTK 版本',
   'clusters.addworker.runCommand': '运行指令',
+  'clusters.addworker.serverUrl': 'Server 地址',
+  'clusters.addworker.serverUrl.network': '节点访问 Server 的地址',
+  'clusters.addworker.serverUrl.network.tips':
+    '同机房节点请走内网 API（默认端口 30080）。公网 IP / 域名仅在节点必须从外网连回时使用，且该入口必须反代到后端 API，而不是前端页面。',
+  'clusters.addworker.serverUrl.private': '内网 IP',
+  'clusters.addworker.serverUrl.private.tag': '推荐',
+  'clusters.addworker.serverUrl.public': '公网 IP / 域名',
+  'clusters.addworker.serverUrl.custom': '自定义',
+  'clusters.addworker.serverUrl.placeholder': '例如 http://192.168.1.100:30080',
+  'clusters.addworker.serverUrl.required': '请填写节点能访问的 Server API 地址',
+  'clusters.addworker.probe.checking': '正在检测 {url}/version …',
+  'clusters.addworker.probe.ok':
+    '该地址返回 Server API（{version}），节点可以按此登记。',
+  'clusters.addworker.probe.redirect':
+    'HTTP 被重定向到 {location}。Worker 不会跟随跳转，请改用 HTTPS 或内网 API 地址。',
+  'clusters.addworker.probe.html':
+    '该地址返回的是前端页面，不是 Server API。局域网请改用 http://<Server 内网 IP>:30080。',
+  'clusters.addworker.probe.unreachable':
+    '当前环境访问不到 {url}/version。请确认节点与 Server 在同一网段，且地址指向后端 API 端口。',
+  'clusters.addworker.probe.unexpected':
+    '{url}/version 返回了非 JSON 响应，节点登记时会解析失败。',
+  'clusters.addworker.probe.invalid':
+    '请填写以 http:// 或 https:// 开头的地址。',
+  'clusters.addworker.register.waiting':
+    '尚未检测到新节点。登记失败时列表不会出现节点，控制台也收不到节点上的错误。',
+  'clusters.addworker.register.waiting.tips':
+    '请在节点上查看容器日志。常见原因：<span class="bold-text">--server-url</span> 连到了前端域名（<span class="bold-text">/version</span> 是 HTML）、http 被 301 到 https（Worker 不跟随跳转）、或节点访问不到所选地址。',
   'clusters.addworker.specifyWorkerIP': '节点 IP',
   'clusters.addworker.detectWorkerIP': '自动检测节点 IP',
   'clusters.addworker.specifyWorkerAddress': '节点外部地址',

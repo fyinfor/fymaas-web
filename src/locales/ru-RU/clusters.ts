@@ -80,6 +80,36 @@ export default {
   'clusters.addworker.specifyArgs': 'Указать аргументы',
   'clusters.addworker.dtkVersion': 'Версия DTK',
   'clusters.addworker.runCommand': 'Выполнить команду',
+  'clusters.addworker.serverUrl': 'Адрес Server',
+  'clusters.addworker.serverUrl.network':
+    'Адрес, по которому воркер подключается к Server',
+  'clusters.addworker.serverUrl.network.tips':
+    'Если воркер и Server в одной сети, используйте LAN API (порт по умолчанию 30080). Публичный IP / домен нужен только если воркер возвращается через интернет, и этот вход должен проксировать API, а не фронтенд.',
+  'clusters.addworker.serverUrl.private': 'Внутренний IP',
+  'clusters.addworker.serverUrl.private.tag': 'Рекомендуется',
+  'clusters.addworker.serverUrl.public': 'Публичный IP / домен',
+  'clusters.addworker.serverUrl.custom': 'Свой',
+  'clusters.addworker.serverUrl.placeholder':
+    'например http://192.168.1.100:30080',
+  'clusters.addworker.serverUrl.required':
+    'Укажите URL Server API, доступный воркеру',
+  'clusters.addworker.probe.checking': 'Проверка {url}/version…',
+  'clusters.addworker.probe.ok':
+    'Этот адрес возвращает Server API ({version}). Воркер может зарегистрироваться по нему.',
+  'clusters.addworker.probe.redirect':
+    'HTTP перенаправляется на {location}. Воркер не следует за редиректами — используйте HTTPS или LAN API.',
+  'clusters.addworker.probe.html':
+    'Этот адрес возвращает страницу фронтенда, а не Server API. В локальной сети используйте http://<внутренний IP Server>:30080.',
+  'clusters.addworker.probe.unreachable':
+    'Из этой среды нельзя достучаться до {url}/version. Убедитесь, что воркер и Server в одной сети и URL указывает на порт API.',
+  'clusters.addworker.probe.unexpected':
+    '{url}/version вернул не JSON. Регистрация воркера не сможет разобрать ответ.',
+  'clusters.addworker.probe.invalid':
+    'Укажите URL, начинающийся с http:// или https://.',
+  'clusters.addworker.register.waiting':
+    'Новый воркер ещё не появился. При неудачной регистрации узел не попадёт в список, и эта консоль не увидит ошибку на ноде.',
+  'clusters.addworker.register.waiting.tips':
+    'Проверьте логи контейнера воркера. Частые причины: <span class="bold-text">--server-url</span> указывает на фронтенд (<span class="bold-text">/version</span> — HTML), HTTP делает 301 на HTTPS (воркер не следует), или нода не может достучаться до выбранного адреса.',
   'clusters.addworker.specifyWorkerIP': 'Указать IP воркера',
   'clusters.addworker.detectWorkerIP': 'Автоматически определить IP воркера',
   'clusters.addworker.specifyWorkerAddress': 'Указать внешний адрес воркера',

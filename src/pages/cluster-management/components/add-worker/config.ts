@@ -68,6 +68,11 @@ export interface SummaryDataKeys {
     ip: string;
     required: boolean;
   };
+  serverUrlConfig: {
+    network: 'private' | 'public';
+    url: string;
+    custom: boolean;
+  };
 }
 
 export type SummaryDataMap = {

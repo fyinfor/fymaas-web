@@ -9,6 +9,7 @@ import {
   CredentialListItem,
   NodePoolFormData,
   NodePoolListItem,
+  ProbeServerUrlResult,
   SystemConfig
 } from '../config/types';
 
@@ -167,6 +168,13 @@ export async function queryClusterToken(
   return request(`${CLUSTERS_API}/${params.id}/${CLUSTER_TOKEN}`, {
     method: 'GET',
     cancelToken: options?.token
+  });
+}
+
+export async function probeServerUrl(params: { url: string }) {
+  return request<ProbeServerUrlResult>(`${CLUSTERS_API}/probe-server-url`, {
+    method: 'POST',
+    data: { url: params.url }
   });
 }
 
