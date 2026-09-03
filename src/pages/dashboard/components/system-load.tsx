@@ -1,41 +1,42 @@
+import { SectionCard } from '@/components/console';
 import { queryClusterList } from '@/pages/cluster-management/apis';
-import { BaseSelect, CardWrapper, PageTools } from '@gpustack/core-ui';
-import { GaugeChart } from '@gpustack/core-ui/charts';
+import { BaseSelect } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Col, Row } from 'antd';
-import _ from 'lodash';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { Segmented } from 'antd';
+import { createStyles } from 'antd-style';
+import { useContext, useEffect, useState } from 'react';
 import { DashboardContext } from '../config/dashboard-context';
+import ResourceSummary from './resource-summary';
 import ResourceUtilization from './resource-utilization';
-const smallChartHeight = 190;
-const largeChartHeight = 400;
-const resourceChartHeight = 400;
+
+const useStyles = createStyles(({ css }) => ({
+  grid: css`
+    display: grid;
+    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+    gap: 16px;
+
+    @media (max-width: 1280px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  `
+}));
+
+const RANGE_OPTIONS = [
+  { label: '1h', hours: 1 },
+  { label: '6h', hours: 6 },
+  { label: '24h', hours: 24 },
+  { label: '7d', hours: 168 }
+];
 
 const SystemLoad = () => {
   const intl = useIntl();
+  const { styles } = useStyles();
   const { system_load, fetchData } = useContext(DashboardContext);
   const [systemLoadData, setSystemLoadData] = useState<any>(system_load || {});
   const [clusterList, setClusterList] = useState<Global.BaseOption<number>[]>(
     []
   );
-
-  const chartData = useMemo(() => {
-    const data = systemLoadData?.current || {};
-    return {
-      gpu: {
-        data: _.round(data.gpu || 0, 1)
-      },
-      vram: {
-        data: _.round(data.vram || 0, 1)
-      },
-      cpu: {
-        data: _.round(data.cpu || 0, 1)
-      },
-      ram: {
-        data: _.round(data.ram || 0, 1)
-      }
-    };
-  }, [systemLoadData?.current]);
+  const [hours, setHours] = useState(24);
 
   useEffect(() => {
     setSystemLoadData(system_load || {});
@@ -67,77 +68,36 @@ const SystemLoad = () => {
   }, []);
 
   return (
-    <div>
-      <div className="system-load">
-        <PageTools
-          style={{ margin: '26px 0px' }}
-          left={
-            <span className="font-700">
-              {intl.formatMessage({ id: 'dashboard.systemload' })}
-            </span>
-          }
-          right={
+    <div className={styles.grid}>
+      <SectionCard
+        title={intl.formatMessage({ id: 'dashboard.resourceUtilization' })}
+        extra={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Segmented
+              size="small"
+              value={hours}
+              options={RANGE_OPTIONS.map((item) => ({
+                label: item.label,
+                value: item.hours
+              }))}
+              onChange={(value) => setHours(Number(value))}
+            />
             <BaseSelect
               allowClear
               onChange={handleClusterChange}
-              style={{ width: 360 }}
+              style={{ width: 180 }}
+              size="middle"
               options={clusterList}
               placeholder={intl.formatMessage({
                 id: 'clusters.filterBy.cluster'
               })}
             />
-          }
-        />
-        <Row gutter={[20, 20]}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
-            <CardWrapper style={{ height: resourceChartHeight }}>
-              <ResourceUtilization data={systemLoadData?.history} />
-            </CardWrapper>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-            <CardWrapper style={{ height: largeChartHeight }}>
-              <Row style={{ height: largeChartHeight }}>
-                <Col span={12} style={{ height: smallChartHeight }}>
-                  <GaugeChart
-                    height={smallChartHeight}
-                    value={chartData.gpu.data}
-                    title={intl.formatMessage({
-                      id: 'dashboard.gpuutilization'
-                    })}
-                  ></GaugeChart>
-                </Col>
-                <Col span={12} style={{ height: smallChartHeight }}>
-                  <GaugeChart
-                    title={intl.formatMessage({
-                      id: 'dashboard.vramutilization'
-                    })}
-                    height={smallChartHeight}
-                    value={chartData.vram.data}
-                  ></GaugeChart>
-                </Col>
-                <Col span={12} style={{ height: smallChartHeight }}>
-                  <GaugeChart
-                    title={intl.formatMessage({
-                      id: 'dashboard.cpuutilization'
-                    })}
-                    height={smallChartHeight}
-                    value={chartData.cpu.data}
-                  ></GaugeChart>
-                </Col>
-                <Col span={12} style={{ height: smallChartHeight }}>
-                  <GaugeChart
-                    title={intl.formatMessage({
-                      id: 'dashboard.memoryutilization'
-                    })}
-                    height={smallChartHeight}
-                    value={chartData.ram.data}
-                  ></GaugeChart>
-                </Col>
-              </Row>
-            </CardWrapper>
-          </Col>
-        </Row>
-      </div>
+          </div>
+        }
+      >
+        <ResourceUtilization data={systemLoadData?.history} hours={hours} />
+      </SectionCard>
+      <ResourceSummary current={systemLoadData?.current} />
     </div>
   );
 };

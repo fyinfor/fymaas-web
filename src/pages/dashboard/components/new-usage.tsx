@@ -1,38 +1,28 @@
-import { PageTools } from '@gpustack/core-ui';
-import { useIntl } from '@umijs/max';
-import { Col, Row } from 'antd';
+import { Col, Row, Segmented } from 'antd';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
-import styled from 'styled-components';
-import {
-  DashboardUsageCommonParams,
-  getUsageRankHeight,
-  getUsageRankSlotCount
-} from '../config';
+import { useMemo, useState } from 'react';
+import { DashboardUsageCommonParams } from '../config';
 import useTopTokenUsageByUser from '../hooks/use-top-token-usage-by-user';
 import TopTokenUsageByUser from './usage-charts/top-token-usage-by-user';
 import UsageByModel from './usage-charts/usage-by-model';
 
-const Section = styled.div`
-  margin-top: 16px;
-`;
-
-// Rolling lookback window applied to every chart in the usage section.
-// Keep the constant and the date math wired together so the label and the
-// API request can't drift apart.
-const USAGE_LOOKBACK_DAYS = 30;
+const RANGE_DAYS = [
+  { label: '24H', days: 1 },
+  { label: '7D', days: 7 },
+  { label: '30D', days: 30 }
+];
 
 const NewUsage = () => {
-  const intl = useIntl();
+  const [days, setDays] = useState(1);
 
   const dateRange = useMemo(
     () => ({
       start_date: dayjs()
-        .subtract(USAGE_LOOKBACK_DAYS - 1, 'days')
+        .subtract(days - 1, 'days')
         .format('YYYY-MM-DD'),
       end_date: dayjs().format('YYYY-MM-DD')
     }),
-    []
+    [days]
   );
 
   const commonParams = useMemo<DashboardUsageCommonParams>(
@@ -42,44 +32,42 @@ const NewUsage = () => {
       granularity: 'day',
       filters: {}
     }),
-    [dateRange]
+    [dateRange, days]
   );
 
   const userUsage = useTopTokenUsageByUser(commonParams);
 
-  const userCount = userUsage.rankData.names.length;
-  const rankHeight = getUsageRankHeight(userCount);
-  const rankMaxItems = Math.max(getUsageRankSlotCount(rankHeight), userCount);
-
   return (
-    <>
-      <PageTools
-        style={{ margin: '24px 0 0' }}
-        left={
-          <span className="font-700">
-            {intl.formatMessage(
-              { id: 'dashboard.usage.title' },
-              { days: USAGE_LOOKBACK_DAYS }
-            )}
-          </span>
-        }
-      />
-      <Section>
-        <Row gutter={[20, 20]}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
-            <UsageByModel commonParams={commonParams} height={rankHeight} />
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-            <TopTokenUsageByUser
-              rankData={userUsage.rankData}
-              loading={userUsage.loading}
-              height={rankHeight}
-              maxItems={rankMaxItems}
-            />
-          </Col>
-        </Row>
-      </Section>
-    </>
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: 12
+        }}
+      >
+        <Segmented
+          size="small"
+          value={days}
+          options={RANGE_DAYS.map((item) => ({
+            label: item.label,
+            value: item.days
+          }))}
+          onChange={(value) => setDays(Number(value))}
+        />
+      </div>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={12}>
+          <UsageByModel commonParams={commonParams} />
+        </Col>
+        <Col xs={24} xl={12}>
+          <TopTokenUsageByUser
+            rankData={userUsage.rankData}
+            loading={userUsage.loading}
+          />
+        </Col>
+      </Row>
+    </div>
   );
 };
 

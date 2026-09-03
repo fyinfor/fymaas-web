@@ -1,16 +1,44 @@
+import { createStyles } from 'antd-style';
 import ActiveTable from './active-table';
-import Overview from './over-view';
+import ClusterHealth from './cluster-health';
+import GpuResources from './gpu-resources';
+import InferencePerformance from './inference-performance';
+import KpiOverview from './kpi-overview';
 import SystemLoad from './system-load';
 import Usage from './usage';
 
+const useStyles = createStyles(({ css }) => ({
+  page: css`
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  `,
+  split: css`
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+
+    @media (max-width: 1280px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  `
+}));
+
 const Dashboard: React.FC = () => {
+  const { styles } = useStyles();
+
   return (
-    <>
-      <Overview></Overview>
-      <SystemLoad></SystemLoad>
-      <Usage></Usage>
-      <ActiveTable></ActiveTable>
-    </>
+    <div className={styles.page}>
+      <ClusterHealth />
+      <KpiOverview />
+      <SystemLoad />
+      <div className={styles.split}>
+        <GpuResources />
+        <InferencePerformance />
+      </div>
+      <ActiveTable />
+      <Usage />
+    </div>
   );
 };
 

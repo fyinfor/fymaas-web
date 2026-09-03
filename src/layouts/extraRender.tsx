@@ -1,38 +1,44 @@
 import { GPUStackVersionAtom, UpdateCheckAtom } from '@/atoms/user';
+import ThemeToggle from '@/components/theme-toggle';
 import PluginExtraField from '@/components/plugin-extra-fields';
 import VersionInfo, { modalConfig } from '@/components/version-info';
+import HotKeys from '@/config/hotkeys';
 import externalLinks from '@/constants/external-links';
 import { getBranding } from '@/enterprise/branding/runtime';
 import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
 import { useModel } from '@@/plugin-model';
-import { DiscordOutlined, ReadOutlined } from '@ant-design/icons';
+import {
+  DiscordOutlined,
+  InfoCircleOutlined,
+  ReadOutlined,
+  SearchOutlined
+} from '@ant-design/icons';
 import { DropdownActions, IconFont, useBodyScroll } from '@gpustack/core-ui';
 import { history, useIntl, useNavigate } from '@umijs/max';
-import { Avatar, Button, Divider, Modal } from 'antd';
+import { Avatar, Divider, Modal } from 'antd';
 import { useAtom } from 'jotai';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
+import { platformCall } from '@/utils';
 import { DEFAULT_ENTER_PAGE } from '../config/settings';
+import CommandPalette from './command-palette';
 
 const NewLabel = styled.span`
   position: relative;
-  top: -4px;
-  right: 4px;
-  padding: 2px 4px;
-  display: flex;
+  top: -1px;
+  right: 0;
+  padding: 1px 5px;
+  display: inline-flex;
   color: #fff;
-  height: 15px;
+  height: 16px;
   justify-content: center;
   align-items: center;
   background-color: var(--ant-orange-5);
-  border-radius: 6px 6px 6px 0;
-  transform: scale(0.9);
-
-  .text {
-    transform: scale(0.8);
-    line-height: 1em;
-  }
+  border-radius: 6px;
+  font-size: 10px;
+  line-height: 1;
 `;
 
 const IconWrapper = styled.span`
@@ -40,17 +46,63 @@ const IconWrapper = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ant-color-text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--console-text-secondary);
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+
+  &:hover {
+    background: var(--console-bg-hover);
+    color: var(--console-text);
+  }
 `;
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
   height: 32px;
 `;
+
+const SearchTrigger = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  min-width: 260px;
+  padding: 0 10px 0 12px;
+  border: 1px solid var(--console-border);
+  border-radius: 6px;
+  background: var(--console-bg-page);
+  color: var(--console-text-tertiary);
+  cursor: pointer;
+  font-size: 13px;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--console-border) 60%, var(--console-brand));
+    color: var(--console-text-secondary);
+  }
+
+  kbd {
+    margin-left: auto;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--console-border);
+    background: var(--console-bg-elevated);
+    color: var(--console-text-tertiary);
+    font-family: inherit;
+  }
+`;
+
 const DropdownWrapper = styled.div`
-  min-width: 160px;
+  min-width: 180px;
   box-shadow: var(--ant-box-shadow-secondary);
   background-color: var(--ant-color-bg-elevated);
   border-radius: var(--ant-border-radius-lg);
@@ -72,9 +124,9 @@ const CustomItem = styled.div`
   gap: 8px;
   height: 32px;
   justify-content: flex-start;
-  height: 32px;
   padding: 0 var(--ant-padding-xs);
   cursor: pointer;
+  border-radius: 6px;
   &.user-info {
     cursor: default;
     justify-content: space-between;
@@ -98,6 +150,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
   const [modal, contextHolder] = Modal.useModal();
   const [version] = useAtom(GPUStackVersionAtom);
   const [updateCheck] = useAtom(UpdateCheckAtom);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const intl = useIntl();
   const initialInfo = useModel('@@initialState') || {
     initialState: undefined,
@@ -106,12 +159,18 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
   };
 
   const { initialState } = initialInfo;
-
   const navigate = useNavigate();
-
   const loginPath = DEFAULT_ENTER_PAGE.login;
 
-  // only admin can see upgrade info, and current version is a prod version(exclude dev/rc)
+  useHotkeys(
+    HotKeys.SEARCH,
+    (e) => {
+      e.preventDefault();
+      setPaletteOpen(true);
+    },
+    { enableOnFormTags: false }
+  );
+
   const showUpgrade = useMemo(() => {
     return (
       initialState?.currentUser?.is_admin &&
@@ -204,6 +263,24 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
         onClick: () => {
           history.push('/preferences');
         }
+      },
+      {
+        key: 'version',
+        label: (
+          <span className="flex flex-center">
+            <InfoCircleOutlined />
+            <span className="m-l-8" style={{ marginLeft: 8 }}>
+              {intl?.formatMessage?.({ id: 'common.button.version' })}
+              {version?.version ? ` ${version.version}` : ''}
+            </span>
+            {showUpgrade && (
+              <NewLabel style={{ marginLeft: 8 }}>
+                {intl.formatMessage({ id: 'common.text.new' })}
+              </NewLabel>
+            )}
+          </span>
+        ),
+        onClick: showVersion
       }
     ]
   };
@@ -244,67 +321,47 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
   return (
     <Wrapper>
       {contextHolder}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
       <PluginExtraField name="OrgSwitcher" isDarkTheme={isDarkTheme} />
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center'
-        }}
-      >
-        <Button
-          type="text"
-          size="small"
-          onClick={showVersion}
-          style={{
-            color: 'var(--ant-color-text-tertiary)'
-          }}
-        >
-          {version.version}
-        </Button>
-        {showUpgrade && (
-          <NewLabel>
-            <span className="text font-400">
-              {intl.formatMessage({ id: 'common.text.new' })}
-            </span>
-          </NewLabel>
-        )}
-      </div>
+      <SearchTrigger type="button" onClick={() => setPaletteOpen(true)}>
+        <SearchOutlined />
+        <span>{intl.formatMessage({ id: 'common.command.placeholder' })}</span>
+        <kbd>{platformCall().isMac ? '⌘ K' : 'Ctrl K'}</kbd>
+      </SearchTrigger>
       {!plugin && (
         <DropdownActions menu={{ ...helpMenu }} popupRender={helpPopupRender}>
           <IconWrapper>
-            <IconFont
-              type="icon-help"
-              className="font-size-20"
-              style={{ color: 'var(--ant-color-text-tertiary)' }}
-            />
+            <IconFont type="icon-help" className="font-size-18" />
           </IconWrapper>
         </DropdownActions>
       )}
+      <ThemeToggle />
       <PluginExtraField name="GlobalSettings" />
       <DropdownActions menu={{ ...userMenu }} popupRender={userPopupRender}>
         <IconWrapper
           style={{
+            width: 'auto',
             gap: 8,
             padding: '2px 8px 2px 2px',
             borderRadius: 999,
-            background: 'var(--ant-color-fill-quaternary)'
+            background: 'var(--console-bg-muted)'
           }}
         >
           <Avatar
-            size={28}
+            size={24}
             style={{ ...avatarStyle }}
             src={initialState?.currentUser?.avatar_url}
-            icon={<IconFont type="icon-user-filled" className="font-size-24" />}
+            icon={<IconFont type="icon-user-filled" className="font-size-20" />}
           />
           <span
             style={{
-              maxWidth: 96,
+              maxWidth: 88,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               fontSize: 13,
-              fontWeight: 600,
-              color: 'var(--ant-color-text)'
+              fontWeight: 500,
+              color: 'var(--console-text)'
             }}
           >
             {initialState?.currentUser?.username}

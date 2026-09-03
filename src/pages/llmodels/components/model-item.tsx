@@ -268,8 +268,8 @@ const ModelItem: React.FC<{
                         icon={categoryConfig[sItem]?.icon}
                         key={sItem}
                         className="tag-item"
-                        color={categoryConfig[sItem]?.color || 'blue'}
-                        opacity={0.7}
+                        color="default"
+                        opacity={1}
                       >
                         {_.find(modelCategories, { value: sItem })?.label ||
                           sItem}
@@ -280,7 +280,7 @@ const ModelItem: React.FC<{
                 {maxToken > 0 && (
                   <>
                     <Dot></Dot>
-                    <ThemeTag className="tag-item" color="purple">
+                    <ThemeTag className="tag-item" color="default">
                       {maxToken}K context
                     </ThemeTag>
                   </>

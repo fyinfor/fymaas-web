@@ -4,28 +4,29 @@ import useTableFetch from '@/hooks/use-table-fetch';
 import { IS_FIRST_LOGIN, writeState } from '@/utils/localstore/index';
 import { SearchOutlined } from '@ant-design/icons';
 import {
-  FilterBar,
   IconFont,
   InfiniteScrollerProvider,
   NoResult,
   useBodyScroll
 } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
-import { Button, Space, message } from 'antd';
+import { Button, Input, Space, message } from 'antd';
 import { useAtom } from 'jotai';
 import _ from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
-import PageBox from '../_components/page-box';
+import PageBox, { usePageSurface } from '../_components/page-box';
 import { useSourceConfigVisible } from '../_components/source-config';
 import { createModel, queryCatalogItemSpec, queryCatalogList } from './apis';
 import CatalogList from './components/catalog/catalog-list';
 import CatalogSourceEntry from './components/catalog/catalog-source-entry';
+import CategoryChips from './components/category-chips';
 import DelopyBuiltInModal from './components/deployment/deploy-builtin-modal';
-import { modelCategories, modelSourceMap } from './config';
+import { modelSourceMap } from './config';
 import { CatalogItem as CatalogItemType, FormData } from './config/types';
 
 const Catalog: React.FC = () => {
   const intl = useIntl();
+  usePageSurface('canvas');
   // Gated here rather than inside the entry: a `Space` item that renders
   // nothing still takes its gap.
   const showSourceEntry = useSourceConfigVisible();
@@ -56,10 +57,6 @@ const Catalog: React.FC = () => {
   const [, setModelsExpandKeys] = useAtom(modelsExpandKeysAtom);
   const [, setModelsSession] = useAtom(modelsSessionAtom);
   const sourceRef = React.useRef<string>('');
-
-  const categoryOptions = [
-    ...modelCategories.filter((item) => item.value)
-  ] as Global.BaseOption<string>[];
 
   const handleDeployModalCancel = () => {
     setOpenDeployModal({
@@ -100,9 +97,9 @@ const Catalog: React.FC = () => {
     [openDeployModal]
   );
 
-  const handleCategoryChange = (value: any) => {
+  const handleCategoryChange = (value: string) => {
     handleQueryChange({
-      categories: value,
+      categories: value || undefined,
       page: 1
     });
   };
@@ -140,21 +137,31 @@ const Catalog: React.FC = () => {
 
   return (
     <PageBox>
-      <FilterBar
-        showSelect={true}
-        selectHolder={intl.formatMessage({ id: 'models.filter.category' })}
-        marginBottom={22}
-        marginTop={0}
-        handleSearch={handleSearch}
-        handleSelectChange={handleCategoryChange}
-        handleInputChange={handleNameChange}
-        selectOptions={categoryOptions}
-        widths={{ input: 230, select: 200 }}
-        // Replaces the default right side wholesale, so the props that would
-        // have built it (`buttonText` / `buttonIcon` / `handleClickPrimary`)
-        // have no effect and are not passed.
-        right={
-          <Space size={16}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+          marginBottom: 20
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 16
+          }}
+        >
+          <Input
+            allowClear
+            prefix={<SearchOutlined />}
+            placeholder={intl.formatMessage({ id: 'common.filter.name' })}
+            style={{ width: 320 }}
+            onChange={handleNameChange}
+            onPressEnter={handleSearch}
+          />
+          <Space size={12}>
             {showSourceEntry && (
               <CatalogSourceEntry onSaved={handleSearch}></CatalogSourceEntry>
             )}
@@ -166,8 +173,12 @@ const Catalog: React.FC = () => {
               {intl.formatMessage({ id: 'models.catalog.button.explore' })}
             </Button>
           </Space>
-        }
-      ></FilterBar>
+        </div>
+        <CategoryChips
+          value={queryParams.categories}
+          onChange={handleCategoryChange}
+        />
+      </div>
       <InfiniteScrollerProvider
         value={{
           total: dataSource.totalPage,

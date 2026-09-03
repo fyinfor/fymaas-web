@@ -1,5 +1,3 @@
-import { COLOR_PRIMARY } from './constants';
-
 export default {
   'root-entry-name': 'variable',
   hashed: false,
@@ -12,19 +10,19 @@ export default {
       handleWidth: 32
     },
     Tag: {
-      defaultBg: '#272727'
+      defaultBg: '#222327'
     },
     Steps: {
       descriptionMaxWidth: 200,
       iconSizeSM: 20
     },
     Table: {
-      headerBorderRadius: 8,
+      headerBorderRadius: 10,
       cellPaddingInline: 16,
-      cellPaddingBlock: 6,
-      cellFontSize: 14,
-      rowSelectedHoverBg: '#272727',
-      rowHoverBg: '#272727',
+      cellPaddingBlock: 10,
+      cellFontSize: 13,
+      rowSelectedHoverBg: '#222327',
+      rowHoverBg: '#222327',
       rowSelectedBg: 'transparent',
       headerSortActiveBg: 'transparent',
       headerSortHoverBg: 'transparent',
@@ -49,36 +47,34 @@ export default {
     },
     Menu: {
       iconSize: 16,
-      iconMarginInlineEnd: 12,
-      itemBorderRadius: 8,
+      iconMarginInlineEnd: 10,
+      itemBorderRadius: 6,
       itemHeight: 36,
-      itemSelectedColor: COLOR_PRIMARY,
-      darkItemSelectedBg: '#141414',
-      darkItemHoverBg: 'rgba(255, 255, 255, 0.03)',
-      groupTitleColor: 'rgba(0,0,0,1)',
-      itemHoverColor: 'rgba(0,0,0,1)',
-      itemColor: 'rgba(0,0,0,1)',
-      itemHoverBg: 'rgb(24 25 27)',
-      itemActiveBg: 'rgb(24 25 27)',
-      menuItemSelectedBg: '#292929'
+      itemSelectedColor: '#4EC4BE',
+      darkItemSelectedBg: 'rgba(42, 168, 162, 0.16)',
+      darkItemHoverBg: 'rgba(255, 255, 255, 0.04)',
+      groupTitleColor: '#E6EEED',
+      itemHoverColor: '#E6EEED',
+      itemColor: '#E6EEED',
+      itemHoverBg: 'rgba(255, 255, 255, 0.04)',
+      itemActiveBg: 'rgba(42, 168, 162, 0.16)',
+      menuItemSelectedBg: 'rgba(42, 168, 162, 0.16)'
     },
     Progress: {
       lineBorderRadius: 4
     },
     Dropdown: {
-      controlItemBgActive: '#333',
-      controlItemBgActiveHover: '#333'
+      controlItemBgActive: '#2a2b30',
+      controlItemBgActiveHover: '#2a2b30'
     },
     Select: {
-      optionSelectedBg: '#333',
+      optionSelectedBg: '#2a2b30',
       fontSizeLG: 14
     },
     Message: {
       contentPadding: '12px 16px'
     },
-    Tooltip: {
-      // colorBgSpotlight: '#333'
-    },
+    Tooltip: {},
     Cascader: {
       dropdownHeight: 240,
       optionSelectedFontWeight: 400
@@ -87,9 +83,9 @@ export default {
       handleSize: 8,
       handleSizeHover: 8,
       railSize: 4,
-      handleActiveOutlineColor: '#646464', // disable default outline
-      handleActiveColor: '#656565', // same as the rail color
-      handleColor: '#474747', // same as the rail color
+      handleActiveOutlineColor: '#646464',
+      handleActiveColor: '#656565',
+      handleColor: '#474747',
       trackBg: 'rgba(255,255,255,.15)',
       trackHoverBg: '#646464',
       dotActiveBorderColor: 'rgba(255,255,255,0.25)',
@@ -102,19 +98,29 @@ export default {
   token: {
     darkMode: true,
     fontFamily:
-      "Helvetica Neue, -apple-system, BlinkMacSystemFont, Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
-    colorText: '#ccc',
-    colorPrimary: COLOR_PRIMARY,
-    colorSuccess: '#48A77E',
-    colorBorder: '#3a3a3a',
-    borderRadiusOuter: 12,
-    borderRadiusLG: 12,
-    borderRadius: 8,
-    borderRadiusSM: 6,
-    fontSize: 14,
+      "Inter, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif",
+    colorText: '#E6EEED',
+    colorTextSecondary: '#9AADAA',
+    colorTextTertiary: '#6E7F7C',
+    colorPrimary: '#2AA8A2',
+    colorInfo: '#60A5FA',
+    colorSuccess: '#18A875',
+    colorWarning: '#EA8A16',
+    colorError: '#DC3E42',
+    colorBorder: '#2A3232',
+    colorSplit: '#232929',
+    borderRadiusOuter: 10,
+    borderRadiusLG: 10,
+    borderRadius: 6,
+    borderRadiusSM: 4,
+    fontSize: 13,
+    controlHeight: 36,
+    controlHeightLG: 36,
     motion: true,
-    colorFill: '#0A0A0A',
-    colorBgBase: '#0A0A0A',
-    menuItemSelectedBg: '#292929'
+    colorFill: '#121616',
+    colorBgBase: '#121616',
+    colorBgLayout: '#121616',
+    colorBgContainer: '#1B2020',
+    menuItemSelectedBg: 'rgba(42, 168, 162, 0.16)'
   }
 };

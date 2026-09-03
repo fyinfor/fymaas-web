@@ -1,22 +1,18 @@
 import { createContext } from 'react';
+import type { DashboardInfra } from '../hooks/use-dashboard-infra';
 import { DashboardProps } from './types';
 
-export const DashboardContext = createContext<
-  DashboardProps & {
+export type DashboardContextValue = DashboardProps &
+  DashboardInfra & {
     fetchData: (params?: { [key: string]: any }) => Promise<void>;
     clusterList?: Global.BaseOption<
       number,
       { provider: string; state: string | number }
     >[];
-  }
->(
-  {} as DashboardProps & {
-    fetchData: (params?: { [key: string]: any }) => Promise<void>;
-    clusterList: Global.BaseOption<
-      number,
-      { provider: string; state: string | number }
-    >[];
-  }
+  };
+
+export const DashboardContext = createContext<DashboardContextValue>(
+  {} as DashboardContextValue
 );
 
 export default DashboardContext;

@@ -3,6 +3,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  background: var(--console-bg-page);
 
   :global {
     .ant-affix {
@@ -42,12 +43,25 @@
       height: auto;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--color-border-container);
-      border-radius: 12px;
+      border: 1px solid var(--console-border);
+      border-radius: var(--console-radius-lg);
       overflow: hidden;
-      background-color: var(--ant-color-bg-container);
-      box-shadow: 0 8px 24px rgba(15, 40, 80, 4%);
+      background-color: var(--console-bg-elevated);
+      box-shadow: none;
       padding: 0;
+      margin: 0 16px 16px;
+    }
+  }
+
+  &.canvas {
+    :global {
+      .ant-pro-page-container-children-container {
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        margin: 0;
+      }
     }
   }
 
@@ -65,16 +79,14 @@
     width: 100%;
     padding-inline: var(--layout-content-inlinepadding);
     font-size: 16px;
-    color: var(--ant-color-text);
+    color: var(--console-text);
     font-weight: 600;
-    padding-block: 9px 8px;
-    height: 56px;
-    border-bottom: 1px solid var(--ant-color-split);
+    padding-block: 0;
+    height: var(--console-topbar-height);
+    background: var(--console-bg-elevated);
+    border-bottom: 1px solid var(--console-divider);
+    flex-shrink: 0;
 
-    // `.left` claims all the space between the title's left edge and `.right`.
-    // Because the container width is fixed regardless of inner content, the
-    // right side never shifts during route transitions and the content inside
-    // .left is anchored to the left edge — no horizontal jitter.
     .left {
       display: flex;
       align-items: center;
@@ -96,13 +108,11 @@
     .defaultTitle {
       display: inline-flex;
       align-items: center;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
     }
 
-    // Portal-driven visibility: when a page's HeaderLeft / HeaderRight
-    // portal target has children, hide the default title / show the divider.
-    // Using `:empty` (rather than React state) keeps visibility synchronous
-    // with the DOM mutation, so there is no inter-frame flicker on route
-    // transitions.
     .leftSlot:not(:empty) ~ .defaultTitle {
       display: none;
     }

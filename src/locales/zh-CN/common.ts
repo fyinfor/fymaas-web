@@ -339,5 +339,8 @@ export default {
   'common.source.sync.hint.dirty':
     '请先保存——保存会写入新 URL 并拉取它。立即更新只会重新拉取已保存的 URL。',
   'common.source.load.failed':
-    '无法读取已保存的配置，因此这里没有可保存的内容。请关闭后重新打开重试。'
+    '无法读取已保存的配置，因此这里没有可保存的内容。请关闭后重新打开重试。',
+  'common.command.placeholder': '搜索模型、部署、GPU、文档...',
+  'common.command.empty': '无匹配结果',
+  'common.command.hint': '搜索'
 };

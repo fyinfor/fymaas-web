@@ -1,3 +1,4 @@
+@import url('src/styles/tokens.less');
 @import url('src/assets/styles/common.less');
 @import url('src/assets/styles/menu.less');
 @import url('src/assets/styles/driver.less');
@@ -18,8 +19,8 @@ html {
   --color-editor-light: #fafafa;
   --color-editor-header-bg: #383838;
   --color-scrollbar-track: #f4f5f4; // according to: --ant-color-fill-tertiary
-  --color-fill-sider: #f5f7fa;
-  --color-bg-1: #f5f7fa;
+  --color-fill-sider: var(--bg-sidebar);
+  --color-bg-1: var(--bg-page);
   --color-scroll-bg: #d9d9d9;
   --color-logs-bg: #1e1e1e;
   --color-logs-text: #d4d4d4;
@@ -28,7 +29,7 @@ html {
   --layout-content-header-inlinepadding: 40px;
   --border-radius-modal: 16px;
   --menu-border-radius-base: 8px;
-  --border-radius-lg: 12px;
+  --border-radius-lg: 10px;
   --border-radius-base: 8px;
   --border-radius-small: 6px;
   --border-radius-mini: 2px;
@@ -59,10 +60,10 @@ html {
   --font-size-middle: 14px;
   --table-td-radius: 6px;
   --checkbox-border-radius: 4px;
-  --ant-color-success-bg: #f0fff6;
-  --ant-color-success: #54cc98;
+  --ant-color-success-bg: #eaf9f3;
+  --ant-color-success: #18a875;
   --ant-color-error-bg: #fff2f0;
-  --ant-color-error: #ff4d4f;
+  --ant-color-error: #dc3e42;
   --ant-box-shadow-secondary:
     0 6px 16px 0 rgba(0, 0, 0, 8%), 0 3px 6px -4px rgba(0, 0, 0, 12%),
     0 9px 28px 8px rgba(0, 0, 0, 5%);
@@ -86,9 +87,9 @@ html {
   --ant-line-width: 1px;
   --color-esc-hint-bg: rgba(0, 0, 0, 75%);
   // ======== container ============
-  --color-border-container: #e6edf5;
-  --color-text-table-header: #71717a;
-  --seal-table-row-min-height: 68px;
+  --color-border-container: var(--border-default);
+  --color-text-table-header: var(--text-muted);
+  --seal-table-row-min-height: 44px;
 }
 
 html[data-theme='realDark'] {
@@ -115,10 +116,11 @@ html[data-theme='realDark'] {
 }
 
 html[data-theme='light'] {
-  background-color: #f5f7fa;
+  background-color: var(--console-bg-page);
 }
 
 body {
+  font-family: var(--console-font);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 
@@ -183,7 +185,7 @@ body {
         > th {
           border: none;
           padding-block: 0;
-          height: 50px;
+          height: 44px;
           background-color: transparent;
           color: var(--color-text-table-header);
           font-weight: 500;
@@ -240,7 +242,7 @@ body {
 
     .ant-pro-sider-logo {
       position: relative;
-      padding-block: 14px 12px;
+      padding-block: 16px 12px;
       border-block-end: none;
     }
 
@@ -302,7 +304,7 @@ body {
 
   .ant-layout {
     min-height: 100vh;
-    background: var(--ant-color-bg-container);
+    background: var(--console-bg-page);
   }
 
   .ant-pro-layout-bg-list {
@@ -315,7 +317,8 @@ body {
   }
 
   .ant-pro-sider {
-    background: var(--color-fill-sider) !important;
+    background: var(--console-bg-sidebar) !important;
+    border-inline-end: 1px solid var(--border-default) !important;
 
     .ant-pro-base-menu-inline-item-title {
       gap: 12px;

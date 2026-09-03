@@ -72,7 +72,10 @@ const Rollouts: React.FC = () => {
         model_route_id: values.model_route_id,
         from_target_id: values.from_target_id,
         to_target_id: values.to_target_id,
-        stages: [{ percent: values.percent, hold_seconds: values.hold_seconds }]
+        stages: (values.stages || []).map((stage: any) => ({
+          percent: stage.percent,
+          hold_seconds: stage.hold_seconds
+        }))
       }
     });
     message.success(intl.formatMessage({ id: 'common.message.success' }));
@@ -118,7 +121,8 @@ const Rollouts: React.FC = () => {
           },
           {
             title: intl.formatMessage({ id: 'rollouts.stage' }),
-            dataIndex: 'current_stage'
+            render: (_: any, row: any) =>
+              `${row.current_stage + 1}/${(row.stages || []).length || 1}`
           },
           {
             title: intl.formatMessage({ id: 'common.table.operation' }),
@@ -160,7 +164,9 @@ const Rollouts: React.FC = () => {
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ percent: 10, hold_seconds: 300 }}
+          initialValues={{
+            stages: [{ percent: 10, hold_seconds: 300 }]
+          }}
         >
           <Form.Item
             name="model_route_id"
@@ -204,18 +210,54 @@ const Rollouts: React.FC = () => {
               }))}
             />
           </Form.Item>
-          <Form.Item
-            name="percent"
-            label={intl.formatMessage({ id: 'rollouts.percent' })}
-          >
-            <InputNumber min={0} max={100} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            name="hold_seconds"
-            label={intl.formatMessage({ id: 'rollouts.hold' })}
-          >
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
+          <Form.List name="stages">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map((field, index) => (
+                  <Space
+                    key={field.key}
+                    align="baseline"
+                    style={{ display: 'flex', marginBottom: 8 }}
+                  >
+                    <Form.Item
+                      name={[field.name, 'percent']}
+                      label={
+                        index === 0
+                          ? intl.formatMessage({ id: 'rollouts.percent' })
+                          : undefined
+                      }
+                      rules={[{ required: true }]}
+                    >
+                      <InputNumber min={0} max={100} />
+                    </Form.Item>
+                    <Form.Item
+                      name={[field.name, 'hold_seconds']}
+                      label={
+                        index === 0
+                          ? intl.formatMessage({ id: 'rollouts.hold' })
+                          : undefined
+                      }
+                      rules={[{ required: true }]}
+                    >
+                      <InputNumber min={0} />
+                    </Form.Item>
+                    {fields.length > 1 ? (
+                      <a onClick={() => remove(field.name)}>
+                        {intl.formatMessage({ id: 'common.button.delete' })}
+                      </a>
+                    ) : null}
+                  </Space>
+                ))}
+                <Button
+                  type="dashed"
+                  onClick={() => add({ percent: 50, hold_seconds: 300 })}
+                  block
+                >
+                  {intl.formatMessage({ id: 'rollouts.stageAdd' })}
+                </Button>
+              </>
+            )}
+          </Form.List>
         </Form>
       </Drawer>
     </PageBox>

@@ -1,5 +1,6 @@
 export interface DashboardProps {
   resource_counts: {
+    cluster_count?: number;
     worker_count: number;
     gpu_count: number;
     model_count: number;

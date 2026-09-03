@@ -3,19 +3,25 @@ import { MoonOutlined, SunOutlined } from '@ant-design/icons';
 import { createStyles } from 'antd-style';
 import React from 'react';
 
-const useStyles = createStyles(({ token, css }) => ({
+const useStyles = createStyles(({ css }) => ({
   wrapper: css`
     display: inline-flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: ${token.colorText};
-    font-size: var(--font-size-base);
-    padding: 0 8px;
-    gap: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    color: var(--console-text-secondary);
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
+
     &:hover {
-      color: ${token.colorTextTertiary};
+      background: var(--console-bg-hover);
+      color: var(--console-text);
     }
+
     .anticon {
       font-size: 16px;
     }

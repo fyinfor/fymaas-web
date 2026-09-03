@@ -47,12 +47,12 @@ export const overviewConfigs = [
 ];
 
 export const baseColorMap = {
-  baseL2: 'rgba(13,171,219,0.8)',
-  baseL1: 'rgba(0,34,255,0.8)',
-  base: 'rgba(0,85,255,0.8)',
-  baseR1: 'rgb(102, 214, 224)',
-  baseR2: 'rgba(48,0,255,0.8)',
-  baseR3: 'rgba(85,167,255,0.8)'
+  baseL2: 'rgba(15, 143, 138, 0.45)',
+  baseL1: 'rgba(15, 143, 138, 0.65)',
+  base: 'rgba(15, 143, 138, 0.85)',
+  baseR1: 'rgba(36, 158, 194, 0.75)',
+  baseR2: 'rgba(117, 103, 184, 0.7)',
+  baseR3: 'rgba(24, 168, 117, 0.55)'
 };
 
 export type UsageGroupBy = 'model' | 'route' | 'user' | 'api_key';

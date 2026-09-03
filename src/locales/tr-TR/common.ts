@@ -358,5 +358,8 @@ export default {
   'common.source.sync.hint.dirty':
     'Save first — Save writes the new URL and fetches it. Update Now only re-pulls the URL already saved.',
   'common.source.load.failed':
-    'Could not read the stored configuration, so there is nothing here to save. Close and reopen to try again.'
+    'Could not read the stored configuration, so there is nothing here to save. Close and reopen to try again.',
+  'common.command.placeholder': 'Model, dağıtım, GPU, belge ara...',
+  'common.command.empty': 'Eşleşen sonuç yok',
+  'common.command.hint': 'Ara'
 };

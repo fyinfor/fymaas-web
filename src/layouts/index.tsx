@@ -413,7 +413,8 @@ export default (props: any) => {
             }}
             openKeys={false}
             disableMobile={true}
-            siderWidth={220}
+            siderWidth={224}
+            collapsedWidth={64}
             menuFooterRender={() => (
               <Button
                 style={{

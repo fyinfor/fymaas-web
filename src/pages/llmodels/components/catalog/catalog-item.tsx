@@ -1,20 +1,38 @@
 import fallbackImg from '@/assets/images/img.png';
-import { categoryConfig } from '@/pages/_components/model-tag';
 import { isCustomSourceType } from '@/pages/_components/source-config/config';
-import { AutoTooltip, IconFont, ThemeTag } from '@gpustack/core-ui';
+import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Typography } from 'antd';
+import { Button, Typography } from 'antd';
 import classNames from 'classnames';
 import _ from 'lodash';
 import React, { useCallback, useMemo } from 'react';
 import { modelCategories } from '../../config';
 import { CatalogItem as CatalogItemType } from '../../config/types';
 import '../../style/catalog-item.less';
+
 interface CatalogItemProps {
   activeId: number;
   data: CatalogItemType;
   onClick: (data: CatalogItemType) => void;
 }
+
+const getHomeLabel = (home?: string) => {
+  if (!home) return '';
+  try {
+    const url = new URL(home);
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (url.hostname.includes('huggingface.co') && parts[0]) {
+      return parts[0];
+    }
+    if (url.hostname.includes('modelscope') && parts[0]) {
+      return parts[0];
+    }
+    return url.hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+};
+
 const CatalogItem: React.FC<CatalogItemProps> = (props) => {
   const intl = useIntl();
   const { onClick, activeId, data } = props;
@@ -23,11 +41,27 @@ const CatalogItem: React.FC<CatalogItemProps> = (props) => {
     onClick(data);
   }, [data, onClick]);
 
+  const handleDeploy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClick(data);
+  };
+
   const handleOnError = (e: any) => {
     e.target.src = fallbackImg;
   };
 
+  const homeLabel = getHomeLabel(data.home);
+  const categoryLabel =
+    _.find(modelCategories, { value: data.categories?.[0] })?.label ||
+    data.categories?.[0];
+  const sizeLabel = data.size
+    ? data.activated_size
+      ? `${data.size}${data.size_unit || 'B'}-A${data.activated_size}B`
+      : `${data.size}${data.size_unit || 'B'}`
+    : '';
+
   const description = useMemo(() => {
+    if (!data.description) return null;
     return (
       <Typography.Paragraph
         className="desc"
@@ -61,103 +95,41 @@ const CatalogItem: React.FC<CatalogItemProps> = (props) => {
     >
       <div className="content">
         <div className="title">
-          <div className="img">
-            <img
-              src={data.icon || fallbackImg}
-              alt=""
-              onError={handleOnError}
-            />
+          <div className="title-main">
+            <div className="img">
+              <img
+                src={data.icon || fallbackImg}
+                alt=""
+                onError={handleOnError}
+              />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <div className="name">
+                <AutoTooltip ghost>{data.name}</AutoTooltip>
+              </div>
+              {(homeLabel || categoryLabel) && (
+                <div className="meta">
+                  {[homeLabel, categoryLabel].filter(Boolean).join(' · ')}
+                </div>
+              )}
+            </div>
           </div>
-          <AutoTooltip ghost>{data.name}</AutoTooltip>
-          {/* platform-owned entries (builtin / official) carry no badge */}
-          {isCustomSourceType(data.source_type) && (
-            <ThemeTag
-              color="purple"
-              opacity={0.7}
-              style={{ flex: 'none', marginInline: 'auto 0' }}
-            >
-              {intl.formatMessage({ id: 'common.source.tag.custom' })}
-            </ThemeTag>
-          )}
+          <Button type="primary" size="small" onClick={handleDeploy}>
+            {intl.formatMessage({ id: 'common.button.deploy' })}
+          </Button>
         </div>
+        {description}
       </div>
       <div className="item-footer">
-        <div className="update-time">
-          <span
-            className="flex-center"
-            title={intl.formatMessage({ id: 'models.catalog.release.date' })}
-          >
-            <IconFont
-              type="icon-new_release_outlined"
-              style={{
-                color: 'var(--ant-color-text-tertiary)',
-                marginRight: 5
-              }}
-            ></IconFont>
-            {data.release_date}
-          </span>
-          <span className="flex-center">
-            {_.map(data.licenses, (license: string, index: number) => {
-              return (
-                <span key={license} className="flex-center m-r-8">
-                  <IconFont
-                    type="icon-license"
-                    style={{
-                      color: 'var(--ant-color-text-tertiary)',
-                      marginRight: 5
-                    }}
-                  ></IconFont>
-                  <span>{license}</span>
-                </span>
-              );
-            })}
-          </span>
-        </div>
-        <div className="tags gap-6">
-          {data.categories.map((sItem, i) => {
-            return (
-              <ThemeTag
-                icon={categoryConfig[sItem]?.icon}
-                key={sItem}
-                className="tag-item"
-                color={categoryConfig[sItem]?.color || 'blue'}
-                opacity={0.7}
-              >
-                {_.find(modelCategories, { value: sItem })?.label || sItem}
-              </ThemeTag>
-            );
-          })}
-          {data.capabilities?.length > 0 &&
-            data.capabilities.map((sItem, i) => {
-              return (
-                <ThemeTag
-                  key={sItem}
-                  className="tag-item"
-                  color="purple"
-                  opacity={0.7}
-                >
-                  {_.map(_.split(sItem, '/'), (s: string) => {
-                    return _.split(s, '_').join(' ');
-                  })
-                    .reverse()
-                    .join(' ')}
-                </ThemeTag>
-              );
-            })}
-
-          {data.size > 0 && (
-            <>
-              <span className="dot"></span>
-              <AutoTooltip
-                style={{
-                  borderRadius: 4
-                }}
-              >
-                {data.activated_size
-                  ? `${data.size}${data.size_unit || 'B'}-A${data.activated_size}B`
-                  : `${data.size}${data.size_unit || 'B'}`}
-              </AutoTooltip>
-            </>
+        <div className="specs">
+          {isCustomSourceType(data.source_type) && (
+            <span className="spec">
+              {intl.formatMessage({ id: 'common.source.tag.custom' })}
+            </span>
+          )}
+          {sizeLabel && <span className="spec">{sizeLabel}</span>}
+          {data.release_date && (
+            <span className="update-time">{data.release_date}</span>
           )}
         </div>
       </div>

@@ -11,11 +11,12 @@ import { useAccess, useIntl, useNavigate } from '@umijs/max';
 import useMemoizedFn from 'ahooks/lib/useMemoizedFn';
 import { Button, Input, Space } from 'antd';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import PageBox from '../_components/page-box';
+import PageBox, { usePageSurface } from '../_components/page-box';
 import { MY_MODELS_API, queryMyModels } from './apis';
 import APIAccessInfoModal from './components/api-access-info';
+import CategoryChips from './components/category-chips';
 import ModelItem from './components/model-item';
-import { categoryOptions, MyModelsStatusValueMap } from './config';
+import { MyModelsStatusValueMap } from './config';
 import useFormInitialValues from './hooks/use-form-initial-values';
 import useNoResourceResult from './hooks/use-no-resource-result';
 import useViewApIInfo from './hooks/use-view-api-info';
@@ -61,6 +62,7 @@ const UserModels: React.FC = () => {
     }
   });
   const intl = useIntl();
+  usePageSurface('canvas');
   const access = useAccess();
   const navigate = useNavigate();
   const { apiAccessInfo, openViewAPIInfo, closeViewAPIInfo } = useViewApIInfo();
@@ -116,7 +118,7 @@ const UserModels: React.FC = () => {
 
   const handleCategoryChange = (value: string) => {
     handleQueryChange({
-      categories: value
+      categories: value || undefined
     });
   };
 
@@ -217,14 +219,13 @@ const UserModels: React.FC = () => {
     <>
       <PageBox>
         <PageTools
-          marginBottom={22}
+          marginBottom={16}
           marginTop={0}
           left={
             <Space>
               <Input
                 placeholder={intl.formatMessage({ id: 'common.filter.name' })}
-                style={{ width: 230 }}
-                size="large"
+                style={{ width: 280 }}
                 allowClear
                 onClear={() =>
                   handleNameChange({
@@ -238,21 +239,8 @@ const UserModels: React.FC = () => {
               <BaseSelect
                 allowClear
                 showSearch={false}
-                placeholder={intl.formatMessage({
-                  id: 'models.filter.category'
-                })}
-                style={{ width: 180 }}
-                size="large"
-                maxTagCount={1}
-                options={categoryOptions}
-                onChange={handleCategoryChange}
-              ></BaseSelect>
-              <BaseSelect
-                allowClear
-                showSearch={false}
                 placeholder={intl.formatMessage({ id: 'common.filter.status' })}
-                style={{ width: 180 }}
-                size="large"
+                style={{ width: 160 }}
                 maxTagCount={1}
                 optionRender={optionRender}
                 labelRender={labelRender}
@@ -262,13 +250,19 @@ const UserModels: React.FC = () => {
               ></BaseSelect>
               <Button
                 type="text"
-                style={{ color: 'var(--ant-color-text-tertiary)' }}
+                style={{ color: 'var(--text-muted)' }}
                 icon={<SyncOutlined></SyncOutlined>}
                 onClick={handleRefresh}
               ></Button>
             </Space>
           }
         ></PageTools>
+        <div style={{ marginBottom: 16 }}>
+          <CategoryChips
+            value={queryParams.categories}
+            onChange={handleCategoryChange}
+          />
+        </div>
         <PluginExtraFields
           name="ModelBillingProvider"
           context={{ models: dataList }}

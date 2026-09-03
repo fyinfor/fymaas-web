@@ -3,35 +3,37 @@ import { useIntl } from '@umijs/max';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { useMemo } from 'react';
+import { filterHistoryByHours } from '../utils/format';
 
 const TypeKeyMap = {
   cpu: {
     label: 'CPU',
     type: 'CPU',
     intl: false,
-    color: 'rgba(250, 173, 20,.8)'
+    color: '#F59E0B'
   },
   ram: {
     label: 'dashboard.memory',
     type: 'Memory',
     intl: true,
-    color: 'rgba(114, 46, 209,.8)'
+    color: '#249EC2'
   },
   gpu: {
     label: 'GPU',
     type: 'GPU',
     intl: false,
-    color: 'rgba(84, 204, 152,.8)'
+    color: '#18A875'
   },
   vram: {
     label: 'dashboard.vram',
     type: 'VRAM',
     intl: true,
-    color: 'rgba(255, 107, 179, 80%)'
+    color: '#7567B8'
   }
 };
 
 const UtilizationOvertime: React.FC<{
+  hours?: number;
   data: {
     cpu: {
       timestamp: number;
@@ -50,31 +52,31 @@ const UtilizationOvertime: React.FC<{
       value: number;
     }[];
   };
-}> = ({ data }) => {
+}> = ({ data, hours = 24 }) => {
   const intl = useIntl();
-
-  const typeList = ['gpu', 'cpu', 'ram', 'vram'];
+  const typeList = ['gpu', 'vram', 'cpu', 'ram'];
 
   const tooltipValueFormatter = (value: any) => {
-    return !value ? value : `${value}%`;
+    return !value && value !== 0 ? value : `${value}%`;
   };
 
   const generateData = useMemo(() => {
     const legendData: string[] = [];
     const xAxisData: string[] = [];
-    let seriesData: { value: number; time: string; type: string }[] = [];
-    seriesData = _.map(typeList, (label: string) => {
-      const itemConfig = _.get(TypeKeyMap, label, {});
+    const seriesData = _.map(typeList, (label: string) => {
+      const itemConfig = _.get(TypeKeyMap, label, {} as any);
       const name = itemConfig.intl
         ? intl.formatMessage({ id: itemConfig.label })
         : itemConfig.label;
       legendData.push(name);
-      const itemDataList = _.get(data, label, []);
+      const itemDataList = filterHistoryByHours(_.get(data, label, []), hours);
       return {
-        name: name,
+        name,
         color: itemConfig.color,
         data: _.map(itemDataList, (item: any) => {
-          const time = dayjs(item.timestamp * 1000).format('HH:mm:ss');
+          const time = dayjs(item.timestamp * 1000).format(
+            hours >= 24 ? 'MM-DD HH:mm' : 'HH:mm:ss'
+          );
           xAxisData.push(time);
           return {
             time: item,
@@ -88,21 +90,19 @@ const UtilizationOvertime: React.FC<{
       legendData,
       xAxisData: _.uniq(xAxisData)
     };
-  }, [data, intl]);
+  }, [data, hours, intl]);
 
   return (
-    <>
-      <LineChart
-        height={390}
-        seriesData={generateData.seriesData}
-        legendData={generateData.legendData}
-        xAxisData={generateData.xAxisData}
-        tooltipValueFormatter={tooltipValueFormatter}
-        smooth={true}
-        width="100%"
-        yAxisName="(%)"
-      ></LineChart>
-    </>
+    <LineChart
+      height={280}
+      seriesData={generateData.seriesData}
+      legendData={generateData.legendData}
+      xAxisData={generateData.xAxisData}
+      tooltipValueFormatter={tooltipValueFormatter}
+      smooth={true}
+      width="100%"
+      yAxisName="(%)"
+    />
   );
 };
 

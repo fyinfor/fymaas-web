@@ -5,17 +5,17 @@ export default {
   hashed: false,
   components: {
     Layout: {
-      headerHeight: 48
+      headerHeight: 56
     },
     Input: {
-      inputFontSize: 14,
-      inputFontSizeLG: 14
+      inputFontSize: 13,
+      inputFontSizeLG: 13
     },
     InputNumber: {
       handleWidth: 32
     },
     Tag: {
-      defaultBg: '#fafafa'
+      defaultBg: '#f6f8f8'
     },
     Steps: {
       descriptionMaxWidth: 200,
@@ -24,59 +24,64 @@ export default {
     Table: {
       headerBorderRadius: 8,
       cellPaddingInline: 16,
-      cellPaddingBlock: 6,
-      cellFontSize: 14,
-      rowSelectedHoverBg: 'rgb(247 247 247)',
-      rowHoverBg: 'rgb(247 247 247)',
+      cellPaddingBlock: 8,
+      cellFontSize: 13,
+      rowSelectedHoverBg: '#f7faf9',
+      rowHoverBg: '#f7faf9',
       rowSelectedBg: 'transparent',
       headerSortActiveBg: 'transparent',
       headerSortHoverBg: 'transparent',
       bodySortBg: 'transparent',
-      headerSplitColor: '#e8e8e8',
-      headerBg: 'none'
+      headerSplitColor: '#edf0f0',
+      headerBg: '#f8fafa'
     },
     Button: {
-      contentFontSizeLG: 14,
+      contentFontSizeLG: 13,
+      contentFontSize: 13,
       primaryShadow: 'none',
       defaultShadow: 'none',
-      dangerShadow: 'none'
+      dangerShadow: 'none',
+      borderRadius: 6,
+      borderRadiusLG: 6,
+      controlHeight: 32,
+      controlHeightLG: 36
     },
     Tabs: {
       titleFontSizeLG: 14
     },
     DatePicker: {
-      fontSizeLG: 14
+      fontSizeLG: 13
     },
     Alert: {
       withDescriptionPadding: '12px 16px',
       withDescriptionIconSize: 18
     },
     Card: {
-      headerHeight: 50
+      headerHeight: 48
     },
     Menu: {
       iconSize: 16,
-      iconMarginInlineEnd: 12,
-      itemBorderRadius: 8,
-      itemSelectedColor: COLOR_PRIMARY,
+      iconMarginInlineEnd: 10,
+      itemBorderRadius: 6,
+      itemSelectedColor: '#0B7773',
       itemHeight: 36,
-      groupTitleColor: 'rgba(0,0,0,1)',
-      itemHoverColor: 'rgba(0,0,0,1)',
-      itemColor: 'rgba(0,0,0,1)',
-      itemHoverBg: 'rgba(0, 82, 217, 0.06)',
-      itemActiveBg: 'rgba(0, 82, 217, 0.08)',
-      menuItemSelectedBg: '#E8F1FF'
+      groupTitleColor: '#182022',
+      itemHoverColor: '#182022',
+      itemColor: '#182022',
+      itemHoverBg: '#F0F5F4',
+      itemActiveBg: '#E8F7F6',
+      menuItemSelectedBg: '#E8F7F6'
     },
     Progress: {
       lineBorderRadius: 3
     },
     Dropdown: {
-      controlItemBgActive: 'rgba(230, 230, 230, 88%)',
-      controlItemBgActiveHover: 'rgba(230, 230, 230, 88%)'
+      controlItemBgActive: '#E8F7F6',
+      controlItemBgActiveHover: '#E8F7F6'
     },
     Select: {
-      optionSelectedBg: 'rgba(230, 230, 230, 88%)',
-      fontSizeLG: 14
+      optionSelectedBg: '#E8F7F6',
+      fontSizeLG: 13
     },
     Message: {
       contentPadding: '12px 16px'
@@ -92,10 +97,10 @@ export default {
       handleSize: 8,
       handleSizeHover: 8,
       railSize: 4,
-      handleActiveOutlineColor: '#B4B4B4', // disable default outline
-      handleActiveColor: '#D0D0D0', // same as the rail color
-      handleColor: '#D0D0D0', // same as the rail color
-      handleHoverColor: '#B4B4B4', // same as the rail hover color
+      handleActiveOutlineColor: '#B4B4B4',
+      handleActiveColor: '#D0D0D0',
+      handleColor: '#D0D0D0',
+      handleHoverColor: '#B4B4B4',
       trackBg: 'rgba(0,0,0,0.15)',
       trackHoverBg: '#B4B4B4',
       dotActiveBorderColor: 'rgba(0,0,0,0.25)',
@@ -108,23 +113,30 @@ export default {
   token: {
     darkMode: false,
     fontFamily:
-      "Helvetica Neue, -apple-system, BlinkMacSystemFont, Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
-    colorText: '#1F1F1F',
-    // colorTextSecondary: '#484848',
-    // colorTextTertiary: '#757576',
-    // colorTextQuaternary: '#A6A6A7',
-    colorFillSecondary: '#e8eef6',
-    colorFillTertiary: '#f0f4f8',
-    colorFillQuaternary: '#f5f7fa',
+      "Inter, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif",
+    colorText: '#182022',
+    colorTextSecondary: '#58666A',
+    colorTextTertiary: '#8B989C',
+    colorFillSecondary: '#edf0f0',
+    colorFillTertiary: '#f1f5f5',
+    colorFillQuaternary: '#f6f8f8',
     colorPrimary: COLOR_PRIMARY,
-    colorSuccess: '#54cc98',
-    colorBorder: '#d6dee8',
-    borderRadiusOuter: 12,
-    borderRadiusLG: 12,
-    borderRadius: 8,
-    borderRadiusSM: 6,
+    colorInfo: '#2563EB',
+    colorSuccess: '#18A875',
+    colorWarning: '#EA8A16',
+    colorError: '#DC3E42',
+    colorBorder: '#E3E8E8',
+    colorSplit: '#EDF0F0',
+    borderRadiusOuter: 10,
+    borderRadiusLG: 10,
+    borderRadius: 6,
+    borderRadiusSM: 4,
     colorBgContainer: '#ffffff',
-    fontSize: 14,
+    colorBgLayout: '#F6F8F8',
+    fontSize: 13,
+    controlHeight: 36,
+    controlHeightLG: 36,
+    controlHeightSM: 28,
     motion: true
   }
 };

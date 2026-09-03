@@ -1,7 +1,4 @@
-import {
-  HeaderLeft,
-  usePageContentStyle
-} from '@/pages/_components/page-box';
+import { HeaderLeft, usePageContentStyle } from '@/pages/_components/page-box';
 import { IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
@@ -56,9 +53,8 @@ const LLModels: React.FC = () => {
           {intl.formatMessage({ id: 'menu.models.deployment' })}
         </span>
         <Segmented
-          shape="round"
           style={{
-            backgroundColor: 'var(--ant-color-fill-secondary)',
+            backgroundColor: 'var(--bg-hover)',
             fontSize: 13
           }}
           size="middle"

@@ -1,5 +1,6 @@
 // columns.ts
 import { systemConfigAtom } from '@/atoms/system';
+import { StatusBadge } from '@/components/console';
 import { OPENAI_COMPATIBLE, tableSorter } from '@/config/settings';
 import { TargetStatusValueMap } from '@/pages/model-routes/config';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
@@ -29,20 +30,6 @@ interface ActionItem {
     danger?: boolean;
   };
 }
-
-const Dot = ({ color }: { color: string }) => {
-  return (
-    <span
-      style={{
-        backgroundColor: color,
-        borderRadius: '50%',
-        height: 8,
-        width: 8,
-        display: 'flex'
-      }}
-    ></span>
-  );
-};
 
 const ActionList: ActionItem[] = [
   {
@@ -136,19 +123,29 @@ const useModelsColumns = ({
     });
   });
 
-  const getColor = (record: ListItem) => {
+  const getDeployStatus = (record: ListItem) => {
     if (!record.replicas && !record.ready_replicas) {
-      return 'var(--ant-color-fill-secondary)';
+      return {
+        tone: 'neutral' as const,
+        text: intl.formatMessage({ id: 'models.status.stopped' })
+      };
     }
-
     if (record.replicas > 0 && !record.ready_replicas) {
-      return 'var(--ant-color-warning)';
+      return {
+        tone: 'info' as const,
+        text: intl.formatMessage({ id: 'models.status.deploying' })
+      };
     }
-
     if (record.ready_replicas > 0 && record.replicas > 0) {
-      return 'var(--ant-color-success)';
+      return {
+        tone: 'success' as const,
+        text: intl.formatMessage({ id: 'models.status.running' })
+      };
     }
-    return 'var(--ant-color-warning)';
+    return {
+      tone: 'warning' as const,
+      text: intl.formatMessage({ id: 'models.status.deploying' })
+    };
   };
 
   return useMemo(() => {
@@ -248,20 +245,26 @@ const useModelsColumns = ({
           valueType: 'number',
           title: intl.formatMessage({ id: 'models.table.replicas.edit' })
         },
-        render: (text: number, record: ListItem) => (
-          <span
-            style={{
-              minWidth: '23px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              color: 'var(--ant-color-text)'
-            }}
-          >
-            <Dot color={getColor(record)}></Dot>
-            {record.ready_replicas} / {record.replicas}
-          </span>
-        )
+        render: (text: number, record: ListItem) => {
+          const status = getDeployStatus(record);
+          return (
+            <span
+              style={{
+                minWidth: '23px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 10,
+                color: 'var(--text-primary)',
+                fontVariantNumeric: 'tabular-nums'
+              }}
+            >
+              <StatusBadge tone={status.tone} plain>
+                {status.text}
+              </StatusBadge>
+              {record.ready_replicas} / {record.replicas}
+            </span>
+          );
+        }
       },
       {
         title: intl.formatMessage({ id: 'common.table.createTime' }),

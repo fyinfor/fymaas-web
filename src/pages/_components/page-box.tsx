@@ -12,6 +12,7 @@ import {
 import { Divider } from 'antd';
 import classNames from 'classnames';
 import {
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -20,6 +21,23 @@ import {
   useState
 } from 'react';
 import pageBoxCss from './styles/page-box.less';
+
+type PageSurface = 'card' | 'canvas';
+
+const PageSurfaceContext = createContext<{
+  setSurface: (surface: PageSurface) => void;
+}>({
+  setSurface: () => undefined
+});
+
+export const usePageSurface = (surface: PageSurface) => {
+  const { setSurface } = useContext(PageSurfaceContext);
+
+  useEffect(() => {
+    setSurface(surface);
+    return () => setSurface('card');
+  }, [setSurface, surface]);
+};
 
 // The header-slot bridge (HeaderSlotContext, HeaderLeft, HeaderRight,
 // usePageContentStyle) lives in @gpustack/core-ui so the host and the
@@ -51,6 +69,7 @@ export const PageContainerInner: React.FC<
   const [contentStyleOverride, setContentStyleOverride] = useState<
     React.CSSProperties | undefined
   >(undefined);
+  const [surface, setSurface] = useState<PageSurface>('card');
 
   useEffect(() => {
     if (contentWrapperRef.current) {
@@ -97,19 +116,12 @@ export const PageContainerInner: React.FC<
   );
 
   return (
-    <HeaderSlotContext.Provider value={slotValue}>
-      <div className={pageBoxCss.containerWrapper}>
-        <PageContainer
-          {...rest}
-          fixedHeader={false}
-          title={false}
-          pageHeaderRender={false}
-          style={{
-            flex: 1
-          }}
-          token={{
-            paddingInlinePageContainerContent: paddingInlinePageContainerContent
-          }}
+    <PageSurfaceContext.Provider value={{ setSurface }}>
+      <HeaderSlotContext.Provider value={slotValue}>
+        <div
+          className={classNames(pageBoxCss.containerWrapper, {
+            [pageBoxCss.canvas]: surface === 'canvas'
+          })}
         >
           <div className={pageBoxCss.title}>
             <div className={pageBoxCss.left}>
@@ -123,21 +135,35 @@ export const PageContainerInner: React.FC<
               <Divider
                 className={pageBoxCss.divider}
                 orientation="vertical"
-                style={{ margin: '0 16px' }}
+                style={{ margin: '0 16px', height: 20 }}
               />
               <ExtraContent />
             </div>
           </div>
-          <div
-            className={classNames(pageBoxCss.contentWrapper)}
-            style={{ ...styles?.containerWrapper, ...contentStyleOverride }}
-            ref={contentWrapperRef}
+          <PageContainer
+            {...rest}
+            fixedHeader={false}
+            title={false}
+            pageHeaderRender={false}
+            style={{
+              flex: 1
+            }}
+            token={{
+              paddingInlinePageContainerContent:
+                paddingInlinePageContainerContent
+            }}
           >
-            {children}
-          </div>
-        </PageContainer>
-      </div>
-    </HeaderSlotContext.Provider>
+            <div
+              className={classNames(pageBoxCss.contentWrapper)}
+              style={{ ...styles?.containerWrapper, ...contentStyleOverride }}
+              ref={contentWrapperRef}
+            >
+              {children}
+            </div>
+          </PageContainer>
+        </div>
+      </HeaderSlotContext.Provider>
+    </PageSurfaceContext.Provider>
   );
 };
 

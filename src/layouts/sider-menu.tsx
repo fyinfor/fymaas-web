@@ -64,32 +64,28 @@ const useStyles = createStyles(
         gap: 8px;
         cursor: pointer;
         white-space: nowrap;
-        padding: var(--ant-padding-xs) var(--ant-padding);
-        font-size: 12px;
-        padding-bottom: 4px;
+        padding: 12px 10px 8px;
         overflow: hidden;
-        height: 30px;
+        height: 36px;
         /* Deliberately NOT transitioned. Each group title grows ~41px on
            expand, which pushes every row below it down — rows near the bottom
            travel much further than rows near the top, so animating it shears
            the whole list into a parallelogram and fights the horizontal
            reveal. Snapping the vertical layout in one frame leaves the rail's
            width as the only thing in motion. */
-        &:hover {
-          .group-title-text {
-            color: var(--ant-color-text);
-          }
-        }
         .anticon {
-          transform: scale(0.8);
+          transform: scale(0.75);
+          color: var(--text-primary);
         }
         .group-title-text {
           display: flex;
           align-items: center;
           gap: 4px;
-          font-size: 12px;
-          color: var(--ant-color-text);
-          font-weight: 400;
+          font-size: 13px;
+          line-height: 20px;
+          letter-spacing: 0;
+          color: var(--text-primary);
+          font-weight: 600;
         }
 
         &.menu-item-group-title-collapsed {
@@ -108,8 +104,8 @@ const useStyles = createStyles(
         }
       `,
       menuItemContent: css`
-        margin: 2px 0;
-        border-radius: 4px;
+        margin: 1px 0;
+        border-radius: 6px;
         overflow: hidden;
       `,
       menuItemWrapper: css`
@@ -124,33 +120,47 @@ const useStyles = createStyles(
            this padding. Never re-center it for the collapsed state: the class
            lands before the sider has finished animating its width, so
            centering would fling the icon right and slide it back. */
-        padding-inline: 16px var(--ant-padding);
+        padding-inline: 10px;
         overflow: hidden;
         white-space: nowrap;
         height: ${Menu.itemHeight}px;
         line-height: ${Menu.itemHeight}px;
-        color: var(--ant-color-text-tertiary);
+        color: var(--text-primary);
+        font-weight: 400;
         transition:
           color ${motion},
           background-color ${motion};
         &:hover {
-          background-color: ${Menu.itemHoverBg};
-          color: ${Menu.itemHoverColor};
+          background-color: var(--bg-hover);
+          color: var(--text-primary);
         }
         &.menu-item-selected {
-          background-color: ${Menu.menuItemSelectedBg};
-          color: ${Menu.itemSelectedColor};
+          background-color: var(--primary-soft);
+          color: var(--primary-hover);
+          font-weight: 500;
+
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            border-radius: 1px;
+            background: var(--primary);
+          }
 
           .anticon {
-            color: ${Menu.itemSelectedColor};
+            color: var(--primary-hover);
           }
         }
         &:active {
-          background-color: ${Menu.itemActiveBg};
-          color: ${Menu.itemActiveColor};
+          background-color: var(--primary-soft);
+          color: var(--primary-hover);
         }
         .anticon {
           font-size: 16px;
+          color: inherit;
           /* The collapsed rail clips this row down to the icon's own width;
              without this flexbox squeezes the icon and it drifts as the
              width animates. */
@@ -164,6 +174,8 @@ const useStyles = createStyles(
              rule states its own fade in full, so the two directions can be
              retimed independently. */
           opacity: 1;
+          color: inherit;
+          font-weight: inherit;
         }
       `,
       menuItemGroup: css`
