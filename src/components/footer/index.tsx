@@ -1,6 +1,7 @@
 import { GPUStackVersionAtom } from '@/atoms/user';
 import VersionInfo, { modalConfig } from '@/components/version-info';
 import externalLinks from '@/constants/external-links';
+import { getBranding, getProductName } from '@/enterprise/branding/runtime';
 import { useIntl } from '@umijs/max';
 import { Button, Divider, Modal } from 'antd';
 import { createStyles } from 'antd-style';
@@ -55,13 +56,13 @@ const Footer: React.FC = () => {
               <CompanyWrapper>
                 <span>&copy;</span>
                 <span> {new Date().getFullYear()}</span>
-                <span>{intl.formatMessage({ id: 'settings.company' })}</span>
+                <span>{getProductName()}</span>
               </CompanyWrapper>
               <Divider orientation="vertical" />
               <Button
                 type="link"
                 size="small"
-                href={externalLinks.documentation}
+                href={getBranding().doc_url || externalLinks.documentation}
                 target="_blank"
               >
                 {intl.formatMessage({ id: 'common.button.help' })}

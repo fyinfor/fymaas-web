@@ -1,4 +1,5 @@
 import BrandLogo from '@/assets/images/brand-logo.png';
+import { getProductName } from '@/enterprise/branding/runtime';
 import {
   DEFAULT_MINI_LOGO,
   DEFAULT_SIDEBAR_LOGO,
@@ -41,15 +42,16 @@ const BrandMark: React.FC<{ height?: number; alt?: string }> = ({
 
 const LogoIcon: React.FC = () => {
   const { sidebarLogo } = useLogo();
+  const productName = getProductName();
 
   if (sidebarLogo !== DEFAULT_SIDEBAR_LOGO) {
-    return <img src={sidebarLogo} alt="Tokease" style={{ height: 28 }} />;
+    return <img src={sidebarLogo} alt={productName} style={{ height: 28 }} />;
   }
 
   return (
     <Brand>
       <BrandMark />
-      <Wordmark>Tokease</Wordmark>
+      <Wordmark>{productName}</Wordmark>
     </Brand>
   );
 };
@@ -58,7 +60,7 @@ const SLogoIcon: React.FC = () => {
   const { miniLogo } = useLogo();
 
   if (miniLogo !== DEFAULT_MINI_LOGO) {
-    return <img src={miniLogo} alt="Tokease" style={{ height: 28 }} />;
+    return <img src={miniLogo} alt={getProductName()} style={{ height: 28 }} />;
   }
 
   return <BrandMark />;

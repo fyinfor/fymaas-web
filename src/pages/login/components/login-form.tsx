@@ -1,5 +1,6 @@
 import LogoIcon from '@/assets/images/brand-logo.png';
 import { userAtom } from '@/atoms/user';
+import { getBranding, getProductName } from '@/enterprise/branding/runtime';
 import { history, useIntl, useModel } from '@umijs/max';
 import { Button, Divider, Form, Spin, message } from 'antd';
 import { createStyles } from 'antd-style';
@@ -76,10 +77,19 @@ const useStyles = createStyles(({ token, css }) => ({
   `,
   welcome: css`
     display: flex;
+    flex-wrap: wrap;
     margin-bottom: 32px;
     font-size: 20px;
     justify-content: center;
     align-items: center;
+    .brand-subtitle {
+      flex-basis: 100%;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: ${token.colorTextSecondary};
+    }
     .text {
       color: ${token.colorText};
       font-weight: 600;
@@ -120,15 +130,28 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
 
   const renderWelCome = () => {
+    const branding = getBranding();
+    const brandMark =
+      branding.mini_logo_url || branding.logo_light_url || LogoIcon;
+
     return (
       <div className={styles.welcome}>
-        <span className="text">
-          {intl?.formatMessage({ id: 'users.login.title' })}
-        </span>
+        {/* A configured login title replaces the whole "Log in to
+        <product>" lockup, so that it reads as the customer wrote it. */}
+        {!branding.login_title && (
+          <span className="text">
+            {intl?.formatMessage({ id: 'users.login.title' })}
+          </span>
+        )}
         <span className="brand-lockup">
-          <img src={LogoIcon} alt="" className="brand-mark" />
-          <span className="brand-name">Tokease</span>
+          <img src={brandMark} alt="" className="brand-mark" />
+          <span className="brand-name">
+            {branding.login_title || getProductName()}
+          </span>
         </span>
+        {branding.login_subtitle && (
+          <div className="brand-subtitle">{branding.login_subtitle}</div>
+        )}
       </div>
     );
   };

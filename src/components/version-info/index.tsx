@@ -1,5 +1,6 @@
 import Logo from '@/assets/images/brand-logo.png';
 import { GPUStackVersionAtom, UpdateCheckAtom, userAtom } from '@/atoms/user';
+import { getProductName } from '@/enterprise/branding/runtime';
 import { useLogo } from '@/hooks/use-logo';
 import { useAtom } from 'jotai';
 import React from 'react';
@@ -62,11 +63,11 @@ const VersionInfo: React.FC<{ intl: any }> = ({ intl }) => {
             {latestVersion && latestVersion !== currentVersion && !isDev
               ? intl.formatMessage(
                   { id: 'users.version.update' },
-                  { version: latestVersion }
+                  { product: getProductName(), version: latestVersion }
                 )
               : intl.formatMessage(
                   { id: 'users.version.islatest' },
-                  { version: currentVersion }
+                  { product: getProductName(), version: currentVersion }
                 )}
           </span>
         </div>

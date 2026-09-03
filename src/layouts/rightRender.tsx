@@ -1,6 +1,7 @@
 // @ts-nocheck
 import avatarImg from '@/assets/images/avatar.png';
 import externalLinks from '@/constants/external-links';
+import { getBranding } from '@/enterprise/branding/runtime';
 import {
   DiscordOutlined,
   InfoCircleOutlined,
@@ -93,7 +94,7 @@ export const getRightRenderContent = (opts: {
       key: 'docs',
       icon: <ReadOutlined />,
       label: intl.formatMessage({ id: 'common.button.docs' }),
-      url: externalLinks.documentation
+      url: getBranding().doc_url || externalLinks.documentation
     },
     {
       key: 'version',

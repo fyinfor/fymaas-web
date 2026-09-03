@@ -2,6 +2,7 @@ import { GPUStackVersionAtom, UpdateCheckAtom } from '@/atoms/user';
 import PluginExtraField from '@/components/plugin-extra-fields';
 import VersionInfo, { modalConfig } from '@/components/version-info';
 import externalLinks from '@/constants/external-links';
+import { getBranding } from '@/enterprise/branding/runtime';
 import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
 import { useModel } from '@@/plugin-model';
@@ -167,7 +168,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
       key: 'docs',
       icon: <ReadOutlined />,
       label: intl.formatMessage({ id: 'common.button.docs' }),
-      url: externalLinks.documentation
+      url: getBranding().doc_url || externalLinks.documentation
     }
   ];
 
