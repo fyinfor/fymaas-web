@@ -1,4 +1,5 @@
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
+import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
 import useTableFetch from '@/hooks/use-table-fetch';
 import {
   DeleteModal,
@@ -57,10 +58,12 @@ const EnterpriseOrganizations: React.FC = () => {
   });
 
   const [open, setOpen] = React.useState(false);
+  const [editing, setEditing] = React.useState<OrgItem | null>(null);
   const [membersOpen, setMembersOpen] = React.useState(false);
   const [activeOrg, setActiveOrg] = React.useState<OrgItem | null>(null);
   const [members, setMembers] = React.useState<any[]>([]);
   const [memberForm] = Form.useForm();
+  const [people, setPeople] = React.useState<PersonOption[]>([]);
 
   const loadMembers = async (orgId: number) => {
     const rows = await request(`/organizations/${orgId}/members`);
@@ -72,6 +75,12 @@ const EnterpriseOrganizations: React.FC = () => {
     setMembersOpen(true);
     await loadMembers(row.id);
   };
+
+  React.useEffect(() => {
+    loadEnterprisePeople()
+      .then(setPeople)
+      .catch(() => undefined);
+  }, []);
 
   const addMember = async () => {
     if (!activeOrg) return;
@@ -98,14 +107,20 @@ const EnterpriseOrganizations: React.FC = () => {
 
   const handleAdd = () => {
     form.resetFields();
+    setEditing(null);
     setOpen(true);
   };
 
   const handleOk = async () => {
     const values = await form.validateFields();
-    await request(API, { method: 'POST', data: values });
+    if (editing) {
+      await request(`${API}/${editing.id}`, { method: 'PUT', data: values });
+    } else {
+      await request(API, { method: 'POST', data: values });
+    }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     setOpen(false);
+    setEditing(null);
     fetchData();
   };
 
@@ -165,6 +180,15 @@ const EnterpriseOrganizations: React.FC = () => {
                 title: intl.formatMessage({ id: 'common.table.operation' }),
                 render: (_: any, row: OrgItem) => (
                   <Space>
+                    <a
+                      onClick={() => {
+                        setEditing(row);
+                        form.setFieldsValue(row);
+                        setOpen(true);
+                      }}
+                    >
+                      {intl.formatMessage({ id: 'common.button.edit' })}
+                    </a>
                     <a onClick={() => openMembers(row)}>
                       {intl.formatMessage({ id: 'orgs.members' })}
                     </a>
@@ -195,9 +219,14 @@ const EnterpriseOrganizations: React.FC = () => {
         </ConfigProvider>
       </PageBox>
       <FormDrawer
-        title={intl.formatMessage({ id: 'orgs.add' })}
+        title={intl.formatMessage({
+          id: editing ? 'orgs.edit' : 'orgs.add'
+        })}
         open={open}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          setEditing(null);
+        }}
         onSubmit={handleOk}
         width={480}
       >
@@ -240,10 +269,17 @@ const EnterpriseOrganizations: React.FC = () => {
           initialValues={{ role: 'member' }}
         >
           <Form.Item name="principal_id" rules={[{ required: true }]}>
-            <Input
+            <Select
+              showSearch
+              optionFilterProp="label"
+              style={{ minWidth: 220 }}
               placeholder={intl.formatMessage({
-                id: 'orgs.members.principalId'
+                id: 'orgs.members.user'
               })}
+              options={people.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
             />
           </Form.Item>
           <Form.Item name="role">

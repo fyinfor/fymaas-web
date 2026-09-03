@@ -42,6 +42,20 @@ const cacheMemberships = async () => {
   }
 };
 
+const cachePermissions = async () => {
+  try {
+    const perms = await request('/roles/me/permissions', {
+      skipErrorHandler: true
+    });
+    if (Array.isArray(perms)) {
+      nsLocal.set('enterprisePermissions', JSON.stringify(perms));
+    }
+  } catch {
+    // Unauthenticated boot or a member without role:read. Menus fall
+    // back to the owner/admin flags already cached.
+  }
+};
+
 const enterprisePlugin: AppPlugin = {
   async onAppInit(context) {
     let branding;
@@ -52,6 +66,7 @@ const enterprisePlugin: AppPlugin = {
       // from booting -- the bundled defaults are a complete fallback.
       console.error('Failed to load branding:', error);
       await cacheMemberships();
+      await cachePermissions();
       return {};
     }
 
@@ -66,6 +81,7 @@ const enterprisePlugin: AppPlugin = {
     });
     applyDocumentBranding(branding);
     await cacheMemberships();
+    await cachePermissions();
 
     return { branding };
   },
@@ -75,6 +91,20 @@ const enterprisePlugin: AppPlugin = {
   getPrimaryColor: (userSettings: any) => ({
     colorPrimary: getBranding().color_primary || userSettings?.colorPrimary
   }),
+
+  usage: {
+    modelsExtraColumns: [
+      {
+        key: 'estimated_cost',
+        titleId: 'usage.table.estimatedCost',
+        placement: 'before-last-active',
+        render: (record: any) =>
+          record.estimated_cost != null
+            ? `${record.estimated_cost} ${record.currency || ''}`.trim()
+            : '—'
+      }
+    ]
+  },
 
   branding: {
     resolveLogos: (_userSettings, isDarkTheme) => {

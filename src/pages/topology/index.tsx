@@ -119,7 +119,7 @@ const Topology: React.FC = () => {
           onChange={(v) => setClusterId(v)}
           options={clusters.map((c) => ({
             label: c.label,
-            value: c.extra?.id
+            value: c.extra?.id ?? Number(String(c.id).split(':').pop())
           }))}
         />
       </Space>

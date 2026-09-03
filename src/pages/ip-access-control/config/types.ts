@@ -1,3 +1,10 @@
+export type IpScopeKind = 'platform' | 'org' | 'model_route' | 'api_key';
+
+export interface IpScope {
+  kind: IpScopeKind;
+  scopeId?: number;
+}
+
 export interface ListItem {
   id: number;
   name: string;

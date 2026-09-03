@@ -8,7 +8,11 @@ import type { Dayjs } from 'dayjs';
 import _ from 'lodash';
 import React from 'react';
 import PageBox from '../_components/page-box';
-import { queryAuditActions, queryAuditLogs } from './apis';
+import {
+  queryAuditActions,
+  queryAuditLogs,
+  queryAuditResourceTypes
+} from './apis';
 import DetailDrawer from './components/detail-drawer';
 import { AuditLogFilters, ListItem } from './config/types';
 import useAuditLogColumns from './hooks/use-audit-log-columns';
@@ -38,6 +42,9 @@ const AuditLogs: React.FC = () => {
   // from request paths server-side, so a hardcoded list would drift as
   // routes are added.
   const { data: actions } = useRequest(queryAuditActions, {
+    onError: () => undefined
+  });
+  const { data: resourceTypes } = useRequest(queryAuditResourceTypes, {
     onError: () => undefined
   });
 
@@ -83,6 +90,10 @@ const AuditLogs: React.FC = () => {
   const actionOptions = React.useMemo(
     () => (actions || []).map((action) => ({ label: action, value: action })),
     [actions]
+  );
+  const resourceTypeOptions = React.useMemo(
+    () => (resourceTypes || []).map((type) => ({ label: type, value: type })),
+    [resourceTypes]
   );
 
   const resultOptions = React.useMemo(
@@ -139,6 +150,21 @@ const AuditLogs: React.FC = () => {
             options={actionOptions}
             onChange={(value: string) =>
               handleQueryChange({ page: 1, action: value || undefined })
+            }
+          />
+          <SimpleSelect
+            allowClear
+            showSearch
+            style={{ width: 200 }}
+            placeholder={intl.formatMessage({
+              id: 'auditLogs.filter.resourceType'
+            })}
+            options={resourceTypeOptions}
+            onChange={(value: string) =>
+              handleQueryChange({
+                page: 1,
+                resource_type: value || undefined
+              })
             }
           />
           <SimpleSelect

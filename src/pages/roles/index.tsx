@@ -1,3 +1,8 @@
+import {
+  loadEnterprisePeople,
+  readCurrentOrgId,
+  type PersonOption
+} from '@/enterprise/people';
 import { request, useIntl } from '@umijs/max';
 import {
   Button,
@@ -9,6 +14,7 @@ import {
   Space,
   Table,
   Tabs,
+  Typography,
   message
 } from 'antd';
 import React from 'react';
@@ -20,9 +26,22 @@ const Roles: React.FC = () => {
   const [catalog, setCatalog] = React.useState<any[]>([]);
   const [bindings, setBindings] = React.useState<any[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [editing, setEditing] = React.useState<any>(null);
   const [bindOpen, setBindOpen] = React.useState(false);
   const [form] = Form.useForm();
   const [bindForm] = Form.useForm();
+  const [people, setPeople] = React.useState<PersonOption[]>([]);
+
+  const groupedCatalog = React.useMemo(() => {
+    const groups = new Map<string, any[]>();
+    for (const item of catalog) {
+      const key = item.group || 'other';
+      const list = groups.get(key) || [];
+      list.push(item);
+      groups.set(key, list);
+    }
+    return [...groups.entries()];
+  }, [catalog]);
 
   const load = async () => {
     const [r, p, b] = await Promise.all([
@@ -37,13 +56,21 @@ const Roles: React.FC = () => {
 
   React.useEffect(() => {
     load().catch(() => undefined);
+    loadEnterprisePeople()
+      .then(setPeople)
+      .catch(() => undefined);
   }, []);
 
   const save = async () => {
     const values = await form.validateFields();
-    await request('/roles', { method: 'POST', data: values });
+    if (editing) {
+      await request(`/roles/${editing.id}`, { method: 'PUT', data: values });
+    } else {
+      await request('/roles', { method: 'POST', data: values });
+    }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     setOpen(false);
+    setEditing(null);
     form.resetFields();
     load();
   };
@@ -84,7 +111,14 @@ const Roles: React.FC = () => {
             children: (
               <>
                 <Space style={{ margin: '8px 0 16px' }}>
-                  <Button type="primary" onClick={() => setOpen(true)}>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setEditing(null);
+                      form.resetFields();
+                      setOpen(true);
+                    }}
+                  >
                     {intl.formatMessage({ id: 'roles.add' })}
                   </Button>
                 </Space>
@@ -111,9 +145,24 @@ const Roles: React.FC = () => {
                       }),
                       render: (_: any, row: any) =>
                         row.builtin ? null : (
-                          <a onClick={() => remove(row.id)}>
-                            {intl.formatMessage({ id: 'common.button.delete' })}
-                          </a>
+                          <Space>
+                            <a
+                              onClick={() => {
+                                setEditing(row);
+                                form.setFieldsValue(row);
+                                setOpen(true);
+                              }}
+                            >
+                              {intl.formatMessage({
+                                id: 'common.button.edit'
+                              })}
+                            </a>
+                            <a onClick={() => remove(row.id)}>
+                              {intl.formatMessage({
+                                id: 'common.button.delete'
+                              })}
+                            </a>
+                          </Space>
                         )
                     }
                   ]}
@@ -169,8 +218,13 @@ const Roles: React.FC = () => {
       <Drawer
         open={open}
         width={520}
-        onClose={() => setOpen(false)}
-        title={intl.formatMessage({ id: 'roles.add' })}
+        onClose={() => {
+          setOpen(false);
+          setEditing(null);
+        }}
+        title={intl.formatMessage({
+          id: editing ? 'roles.edit' : 'roles.add'
+        })}
         extra={
           <Button type="primary" onClick={save}>
             {intl.formatMessage({ id: 'common.button.save' })}
@@ -196,16 +250,40 @@ const Roles: React.FC = () => {
             <Input.TextArea rows={2} />
           </Form.Item>
           <Form.Item
+            name="scope"
+            label={intl.formatMessage({ id: 'roles.form.scope' })}
+          >
+            <Select
+              options={[
+                { label: 'org', value: 'org' },
+                { label: 'platform', value: 'platform' }
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
             name="permissions"
             label={intl.formatMessage({ id: 'roles.permissions' })}
           >
-            <Checkbox.Group
-              style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-              options={catalog.map((p) => ({
-                label: `${p.key} — ${p.description}`,
-                value: p.key
-              }))}
-            />
+            <Checkbox.Group style={{ width: '100%' }}>
+              <Space direction="vertical" size={16} style={{ width: '100%' }}>
+                {groupedCatalog.map(([group, items]) => (
+                  <div key={group}>
+                    <Typography.Text type="secondary">{group}</Typography.Text>
+                    <Space
+                      direction="vertical"
+                      size={4}
+                      style={{ display: 'flex', marginTop: 8 }}
+                    >
+                      {items.map((item) => (
+                        <Checkbox key={item.key} value={item.key}>
+                          {item.key} — {item.description}
+                        </Checkbox>
+                      ))}
+                    </Space>
+                  </div>
+                ))}
+              </Space>
+            </Checkbox.Group>
           </Form.Item>
         </Form>
       </Drawer>
@@ -223,7 +301,10 @@ const Roles: React.FC = () => {
         <Form
           form={bindForm}
           layout="vertical"
-          initialValues={{ scope_type: 'org' }}
+          initialValues={{
+            scope_type: 'org',
+            scope_id: readCurrentOrgId() || 0
+          }}
         >
           <Form.Item
             name="role_id"
@@ -236,10 +317,17 @@ const Roles: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="principal_id"
-            label={intl.formatMessage({ id: 'roles.binding.principalId' })}
+            label={intl.formatMessage({ id: 'roles.binding.principal' })}
             rules={[{ required: true }]}
           >
-            <Input type="number" />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={people.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
+            />
           </Form.Item>
           <Form.Item
             name="scope_type"

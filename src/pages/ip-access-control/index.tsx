@@ -2,10 +2,12 @@ import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
+import { queryApisKeysList } from '@/pages/api-keys/apis';
+import { queryModelRoutes } from '@/pages/model-routes/apis';
 import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
-import { useIntl } from '@umijs/max';
+import { useAccess, useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
-import { ConfigProvider, Table, message } from 'antd';
+import { ConfigProvider, Radio, Select, Space, Table, message } from 'antd';
 import _ from 'lodash';
 import React from 'react';
 import PageBox from '../_components/page-box';
@@ -17,11 +19,34 @@ import {
 } from './apis';
 import AddRuleModal from './components/add-rule-modal';
 import PolicyPanel from './components/policy-panel';
-import { FormData, ListItem } from './config/types';
+import { FormData, IpScope, IpScopeKind, ListItem } from './config/types';
 import useRuleColumns from './hooks/use-rule-columns';
 
 const IpAccessControl: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
+  const [kind, setKind] = React.useState<IpScopeKind>(
+    access.canSeeAdmin ? 'platform' : 'org'
+  );
+  const [targetId, setTargetId] = React.useState<number | undefined>();
+  const [routes, setRoutes] = React.useState<{ id: number; name: string }[]>(
+    []
+  );
+  const [apiKeys, setApiKeys] = React.useState<{ id: number; name: string }[]>(
+    []
+  );
+
+  const scope: IpScope = React.useMemo(
+    () => ({
+      kind,
+      scopeId:
+        kind === 'model_route' || kind === 'api_key' ? targetId : undefined
+    }),
+    [kind, targetId]
+  );
+
+  const needsTarget = kind === 'model_route' || kind === 'api_key';
+  const ready = !needsTarget || !!targetId;
 
   const {
     dataSource,
@@ -37,8 +62,8 @@ const IpAccessControl: React.FC = () => {
     handleSearch,
     handleNameChange
   } = useTableFetch<ListItem>({
-    fetchAPI: queryIpAccessRules,
-    deleteAPI: deleteIpAccessRule,
+    fetchAPI: (params) => queryIpAccessRules(params, scope),
+    deleteAPI: (id) => deleteIpAccessRule(id, scope),
     watch: false,
     polling: false,
     contentForDelete: intl.formatMessage({ id: 'ipAccess.rule' })
@@ -53,8 +78,34 @@ const IpAccessControl: React.FC = () => {
     data?: ListItem | null;
   }>({ open: false, action: PageAction.CREATE, title: '' });
 
+  React.useEffect(() => {
+    if (access.canSeeAdmin) {
+      queryModelRoutes({ page: 1, perPage: 100 })
+        .then((page) => setRoutes(page.items || []))
+        .catch(() => undefined);
+      queryApisKeysList({ page: 1, perPage: 100 })
+        .then((page) =>
+          setApiKeys(
+            (page.items || []).map((item: any) => ({
+              id: item.id,
+              name: item.name || item.description || String(item.id)
+            }))
+          )
+        )
+        .catch(() => undefined);
+    }
+  }, [access.canSeeAdmin]);
+
+  React.useEffect(() => {
+    if (ready) {
+      fetchData();
+    }
+  }, [kind, targetId]);
+
   const refresh = () => {
-    fetchData();
+    if (ready) {
+      fetchData();
+    }
     setRulesVersion((version) => version + 1);
   };
 
@@ -83,9 +134,9 @@ const IpAccessControl: React.FC = () => {
   const handleModalOk = async (data: FormData) => {
     try {
       if (modalStatus.action === PageAction.EDIT && modalStatus.data) {
-        await updateIpAccessRule(modalStatus.data.id, data);
+        await updateIpAccessRule(modalStatus.data.id, data, scope);
       } else {
-        await createIpAccessRule(data);
+        await createIpAccessRule(data, scope);
       }
       refresh();
       closeModal();
@@ -98,7 +149,7 @@ const IpAccessControl: React.FC = () => {
   const handleToggleEnabled = useMemoizedFn(
     async (row: ListItem, enabled: boolean) => {
       try {
-        await updateIpAccessRule(row.id, { enabled });
+        await updateIpAccessRule(row.id, { enabled }, scope);
         refresh();
       } catch (error) {
         // handled by the interceptor
@@ -139,45 +190,142 @@ const IpAccessControl: React.FC = () => {
     );
   };
 
+  const scopeOptions = [
+    ...(access.canSeeAdmin
+      ? [
+          {
+            label: intl.formatMessage({ id: 'ipAccess.scope.platform' }),
+            value: 'platform'
+          }
+        ]
+      : []),
+    {
+      label: intl.formatMessage({ id: 'ipAccess.scope.org' }),
+      value: 'org'
+    },
+    ...(access.canSeeAdmin
+      ? [
+          {
+            label: intl.formatMessage({ id: 'ipAccess.scope.route' }),
+            value: 'model_route'
+          },
+          {
+            label: intl.formatMessage({ id: 'ipAccess.scope.apiKey' }),
+            value: 'api_key'
+          }
+        ]
+      : [])
+  ];
+
   return (
     <>
       <PageBox>
-        <PolicyPanel rulesVersion={rulesVersion} />
-        <FilterBar
-          marginBottom={22}
-          showSelect={false}
-          inputHolder={intl.formatMessage({ id: 'ipAccess.filter.name' })}
-          buttonText={intl.formatMessage({ id: 'ipAccess.rule.add' })}
-          handleSearch={handleSearch}
-          handleDeleteByBatch={() =>
-            handleDeleteBatch({ afterDelete: refresh })
-          }
-          handleClickPrimary={handleAdd}
-          handleInputChange={handleNameChange}
-          rowSelection={rowSelection}
-          widths={{ input: 300 }}
-        />
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            columns={columns}
-            dataSource={dataSource.dataList}
-            rowSelection={rowSelection}
-            loading={{ spinning: dataSource.loading, size: 'middle' }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey={(record) => record.id}
-            onChange={handleTableChange}
-            pagination={{
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
+        <Space wrap style={{ marginTop: 24 }} size={16}>
+          {scopeOptions.length > 1 ? (
+            <Radio.Group
+              value={kind}
+              onChange={(e) => {
+                setKind(e.target.value);
+                setTargetId(undefined);
+              }}
+              optionType="button"
+              options={scopeOptions}
+            />
+          ) : null}
+          {kind === 'model_route' ? (
+            <Select
+              showSearch
+              optionFilterProp="label"
+              style={{ minWidth: 260 }}
+              placeholder={intl.formatMessage({
+                id: 'ipAccess.select.route'
+              })}
+              value={targetId}
+              onChange={setTargetId}
+              options={routes.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
+            />
+          ) : null}
+          {kind === 'api_key' ? (
+            <Select
+              showSearch
+              optionFilterProp="label"
+              style={{ minWidth: 260 }}
+              placeholder={intl.formatMessage({
+                id: 'ipAccess.select.apiKey'
+              })}
+              value={targetId}
+              onChange={setTargetId}
+              options={apiKeys.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
+            />
+          ) : null}
+        </Space>
+        {ready ? (
+          <>
+            <PolicyPanel
+              key={`${scope.kind}-${scope.scopeId || 0}`}
+              rulesVersion={rulesVersion}
+              scope={scope}
+            />
+            <FilterBar
+              marginBottom={22}
+              showSelect={false}
+              inputHolder={intl.formatMessage({ id: 'ipAccess.filter.name' })}
+              buttonText={intl.formatMessage({ id: 'ipAccess.rule.add' })}
+              handleSearch={handleSearch}
+              handleDeleteByBatch={() =>
+                handleDeleteBatch({ afterDelete: refresh })
+              }
+              handleClickPrimary={handleAdd}
+              handleInputChange={handleNameChange}
+              rowSelection={rowSelection}
+              widths={{ input: 300 }}
+            />
+            <ConfigProvider renderEmpty={renderEmpty}>
+              <Table
+                className={'scroll-table'}
+                columns={columns}
+                dataSource={dataSource.dataList}
+                rowSelection={rowSelection}
+                loading={{ spinning: dataSource.loading, size: 'middle' }}
+                sortDirections={TABLE_SORT_DIRECTIONS}
+                showSorterTooltip={false}
+                rowKey={(record) => record.id}
+                onChange={handleTableChange}
+                pagination={{
+                  showSizeChanger: true,
+                  pageSize: queryParams.perPage,
+                  current: queryParams.page,
+                  total: dataSource.total,
+                  hideOnSinglePage: queryParams.perPage === 10,
+                  onChange: handlePageChange
+                }}
+              />
+            </ConfigProvider>
+          </>
+        ) : (
+          <NoResult
+            minHeight="calc(100vh - 360px)"
+            loading={false}
+            loadend
+            dataSource={[]}
+            image={<IconFont type="icon-network" />}
+            title={intl.formatMessage({
+              id:
+                kind === 'api_key'
+                  ? 'ipAccess.select.apiKey'
+                  : 'ipAccess.select.route'
+            })}
+            subTitle={intl.formatMessage({
+              id: 'ipAccess.page.description'
+            })}
           />
-        </ConfigProvider>
+        )}
       </PageBox>
       <AddRuleModal
         open={modalStatus.open}

@@ -41,6 +41,7 @@ const groupReplacements: Record<string, Record<string, Partial<RouteLike>>> = {
   '/usage': {
     billing: {
       hideInMenu: false,
+      access: 'canSeeBilling',
       component: './enterprise-billing'
     }
   },
@@ -60,7 +61,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-usage-outlined',
       selectedIcon: 'icon-usage-filled',
       defaultIcon: 'icon-usage-outlined',
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeQuotas',
       component: './quotas'
     }
   ],
@@ -72,7 +73,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-cluster2-outline',
       selectedIcon: 'icon-cluster2-filled',
       defaultIcon: 'icon-cluster2-outline',
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeTopology',
       component: './topology'
     },
     {
@@ -82,7 +83,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-cluster2-outline',
       selectedIcon: 'icon-cluster2-filled',
       defaultIcon: 'icon-cluster2-outline',
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeRollouts',
       component: './rollouts'
     }
   ],
@@ -94,7 +95,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-users',
       selectedIcon: 'icon-users-filled',
       defaultIcon: 'icon-users',
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeRoles',
       component: './roles'
     },
     {
@@ -104,7 +105,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-network',
       selectedIcon: 'icon-network',
       defaultIcon: 'icon-network',
-      access: 'canSeeAdmin',
+      access: 'canSeeIpAccess',
       component: './ip-access-control'
     },
     {
@@ -118,7 +119,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       // scopes rows to the caller's organization, so a wider predicate
       // here would not leak anything -- but `canSeeOrgAdmin` is the one
       // that widens to Org owners once the access extension does.
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeAudit',
       component: './audit-logs'
     }
   ]
@@ -145,7 +146,9 @@ export const applyRouteExtensions = <T>(base: T): T => {
     if (additions) {
       nextRoutes = [...nextRoutes, ...additions];
     }
-    return nextRoutes === route.routes ? route : { ...route, routes: nextRoutes };
+    return nextRoutes === route.routes
+      ? route
+      : { ...route, routes: nextRoutes };
   });
   // The catch-all 404 must stay last, so enterprise entries are spliced
   // in ahead of it rather than appended.

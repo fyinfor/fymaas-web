@@ -7,16 +7,43 @@
 // `(url, options)` and returns `{ url, options }` — typed loosely
 // here so this file has no dependency on the framework's exact
 // option types.
+import { nsLocal } from '@gpustack/core-ui/utils';
+
 export type RequestInterceptor = (
   url: string,
   options: Record<string, any>
 ) => { url: string; options: Record<string, any> };
 
-export const extraRequestInterceptors: RequestInterceptor[] = [];
+const readCurrentOrgId = (): number | null => {
+  try {
+    const raw = nsLocal.get('currentOrganizationId');
+    if (!raw) return null;
+    const value = JSON.parse(raw);
+    return typeof value === 'number' && value > 0 ? value : null;
+  } catch {
+    return null;
+  }
+};
 
-export const getTenantHeaders = (
-  _method?: string
-): Record<string, string> => ({});
+export const getTenantHeaders = (_method?: string): Record<string, string> => {
+  const orgId = readCurrentOrgId();
+  if (orgId == null) return {};
+  return { 'X-Organization-Id': String(orgId) };
+};
+
+export const extraRequestInterceptors: RequestInterceptor[] = [
+  (url, options) => {
+    const headers = getTenantHeaders();
+    if (!Object.keys(headers).length) return { url, options };
+    return {
+      url,
+      options: {
+        ...options,
+        headers: { ...(options.headers || {}), ...headers }
+      }
+    };
+  }
+];
 
 export type ResponseInterceptor = (response: any) => any;
 

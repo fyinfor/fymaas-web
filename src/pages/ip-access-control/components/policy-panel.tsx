@@ -14,15 +14,16 @@ import {
 } from 'antd';
 import React from 'react';
 import { evaluateIp, queryIpAccessPolicy, updateIpAccessPolicy } from '../apis';
-import { EvaluateResult, IpAccessPolicy } from '../config/types';
+import { EvaluateResult, IpAccessPolicy, IpScope } from '../config/types';
 
 interface PolicyPanelProps {
   /** Bumped by the parent after a rule changes, so the test result
    *  cannot keep showing a verdict from a stale rule set. */
   rulesVersion: number;
+  scope: IpScope;
 }
 
-const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion }) => {
+const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion, scope }) => {
   const intl = useIntl();
   const [policy, setPolicy] = React.useState<IpAccessPolicy | null>(null);
   const [saving, setSaving] = React.useState(false);
@@ -34,11 +35,11 @@ const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion }) => {
 
   const load = React.useCallback(async () => {
     try {
-      setPolicy(await queryIpAccessPolicy());
+      setPolicy(await queryIpAccessPolicy(scope));
     } catch (error) {
       // handled by the interceptor
     }
-  }, []);
+  }, [scope.kind, scope.scopeId]);
 
   React.useEffect(() => {
     load();
@@ -51,7 +52,7 @@ const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion }) => {
   const save = async (next: IpAccessPolicy) => {
     setSaving(true);
     try {
-      const saved = await updateIpAccessPolicy(next);
+      const saved = await updateIpAccessPolicy(next, scope);
       setPolicy(saved);
       setTestResult(null);
       message.success(intl.formatMessage({ id: 'common.message.success' }));
@@ -92,7 +93,7 @@ const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion }) => {
     }
     setTesting(true);
     try {
-      setTestResult(await evaluateIp(testIp.trim()));
+      setTestResult(await evaluateIp(testIp.trim(), scope));
     } catch (error) {
       // handled by the interceptor
     } finally {

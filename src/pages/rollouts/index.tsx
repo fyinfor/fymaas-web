@@ -1,24 +1,68 @@
+import { queryModelRoutes, queryRouteTargets } from '@/pages/model-routes/apis';
 import { request, useIntl } from '@umijs/max';
-import { Button, Drawer, Form, InputNumber, Space, Table, message } from 'antd';
+import {
+  Button,
+  Drawer,
+  Form,
+  InputNumber,
+  Select,
+  Space,
+  Table,
+  message
+} from 'antd';
 import React from 'react';
 import PageBox from '../_components/page-box';
 
 const Rollouts: React.FC = () => {
   const intl = useIntl();
   const [rows, setRows] = React.useState<any[]>([]);
+  const [routes, setRoutes] = React.useState<any[]>([]);
+  const [targets, setTargets] = React.useState<any[]>([]);
+  const [formTargets, setFormTargets] = React.useState<any[]>([]);
   const [open, setOpen] = React.useState(false);
   const [form] = Form.useForm();
+  const routeId = Form.useWatch('model_route_id', form);
 
   const load = async () => {
-    const data = await request('/canary-rollouts', {
-      params: { page: 1, perPage: 50 }
-    });
-    setRows(data.items || []);
+    const [data, routePage] = await Promise.all([
+      request('/canary-rollouts', { params: { page: 1, perPage: 50 } }),
+      queryModelRoutes({ page: 1, perPage: 100 })
+    ]);
+    const items = data.items || [];
+    setRows(items);
+    setRoutes(routePage.items || []);
+    const routeIds = [
+      ...new Set(items.map((row: any) => row.model_route_id).filter(Boolean))
+    ];
+    const pages = await Promise.all(
+      routeIds.map((id) => queryRouteTargets({ id: Number(id) }))
+    );
+    setTargets(pages.flatMap((page) => page.items || []));
   };
 
   React.useEffect(() => {
     load().catch(() => undefined);
   }, []);
+
+  React.useEffect(() => {
+    if (!routeId) {
+      setFormTargets([]);
+      return;
+    }
+    queryRouteTargets({ id: routeId })
+      .then((page) => setFormTargets(page.items || []))
+      .catch(() => setFormTargets([]));
+  }, [routeId]);
+
+  const routeName = (id: number) =>
+    routes.find((item) => item.id === id)?.name || id;
+  const targetName = (id: number) => {
+    const target = [...targets, ...formTargets].find((item) => item.id === id);
+    if (target) {
+      return target.overridden_model_name || target.name || id;
+    }
+    return id;
+  };
 
   const create = async () => {
     const values = await form.validateFields();
@@ -55,15 +99,18 @@ const Rollouts: React.FC = () => {
         columns={[
           {
             title: intl.formatMessage({ id: 'rollouts.route' }),
-            dataIndex: 'model_route_id'
+            dataIndex: 'model_route_id',
+            render: (id: number) => routeName(id)
           },
           {
             title: intl.formatMessage({ id: 'rollouts.from' }),
-            dataIndex: 'from_target_id'
+            dataIndex: 'from_target_id',
+            render: (id: number) => targetName(id)
           },
           {
             title: intl.formatMessage({ id: 'rollouts.to' }),
-            dataIndex: 'to_target_id'
+            dataIndex: 'to_target_id',
+            render: (id: number) => targetName(id)
           },
           {
             title: intl.formatMessage({ id: 'rollouts.status' }),
@@ -120,21 +167,42 @@ const Rollouts: React.FC = () => {
             label={intl.formatMessage({ id: 'rollouts.route' })}
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={routes.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
+            />
           </Form.Item>
           <Form.Item
             name="from_target_id"
             label={intl.formatMessage({ id: 'rollouts.from' })}
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={formTargets.map((item) => ({
+                label: item.overridden_model_name || item.name,
+                value: item.id
+              }))}
+            />
           </Form.Item>
           <Form.Item
             name="to_target_id"
             label={intl.formatMessage({ id: 'rollouts.to' })}
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} />
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={formTargets.map((item) => ({
+                label: item.overridden_model_name || item.name,
+                value: item.id
+              }))}
+            />
           </Form.Item>
           <Form.Item
             name="percent"

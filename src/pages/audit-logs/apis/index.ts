@@ -23,6 +23,12 @@ export async function queryAuditActions() {
   });
 }
 
+export async function queryAuditResourceTypes() {
+  return request<string[]>(`${AUDIT_LOGS_API}/resource-types`, {
+    method: 'GET'
+  });
+}
+
 export async function downloadAuditLogs(params: AuditLogFilters) {
   return request(`${AUDIT_LOGS_API}/export`, {
     method: 'GET',
