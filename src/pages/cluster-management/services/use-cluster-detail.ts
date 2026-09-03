@@ -11,18 +11,18 @@ export const useClusterSystemLoad = () => {
   const axiosTokenRef = useRef<CancelTokenSource | null>(null);
   const [systemLoad, setSystemLoad] = useState<{
     current: {
-      cpu: number;
-      ram: number;
-      gpu: number;
-      vram: number;
+      cpu: number | null;
+      ram: number | null;
+      gpu: number | null;
+      vram: number | null;
     };
     history: Record<string, { timestamp: number; value: number }[]>;
   }>({
     current: {
-      cpu: 0,
-      ram: 0,
-      gpu: 0,
-      vram: 0
+      cpu: null,
+      ram: null,
+      gpu: null,
+      vram: null
     },
     history: {}
   });
@@ -43,18 +43,24 @@ export const useClusterSystemLoad = () => {
       manual: true,
       cacheKey: 'cluster-system-load',
       onSuccess: (response) => {
+        const current = response.system_load?.current;
         setSystemLoad({
-          current: response.system_load?.current,
-          history: response.system_load?.history
+          current: {
+            cpu: current?.cpu ?? null,
+            ram: current?.ram ?? null,
+            gpu: current?.gpu ?? null,
+            vram: current?.vram ?? null
+          },
+          history: response.system_load?.history || {}
         });
       },
       onError: () => {
         setSystemLoad({
           current: {
-            cpu: 0,
-            ram: 0,
-            gpu: 0,
-            vram: 0
+            cpu: null,
+            ram: null,
+            gpu: null,
+            vram: null
           },
           history: {}
         });

@@ -42,8 +42,6 @@ import { useLocalAuth } from './hooks/use-local-auth';
 import { useSSOAuth } from './hooks/use-sso-auth';
 import { checkDefaultPage } from './utils';
 
-const COLOR_LINK = '#0052D9';
-
 const useStyles = createStyles(({ token, css }) => ({
   header: css`
     display: flex;
