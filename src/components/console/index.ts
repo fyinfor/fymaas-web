@@ -6,3 +6,5 @@ export { default as ResourceBar } from './resource-bar';
 export { default as SectionCard } from './section-card';
 export { default as Sparkline } from './sparkline';
 export { default as StatusBadge } from './status-badge';
+export { statusTone } from './status-tone';
+export type { StatusTone } from './status-tone';

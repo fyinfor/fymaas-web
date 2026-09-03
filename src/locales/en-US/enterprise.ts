@@ -1,7 +1,44 @@
 export default {
   // `menu.settings` already exists in menu.ts, which loads after this
   // file and would win anyway -- only the new leaf belongs here.
+  'menu.settings.system': 'System',
   'menu.settings.branding': 'Branding',
+  'menu.settings.ldap': 'Directory',
+
+  'systemSettings.page.description':
+    'Platform defaults. Invoices are denominated in the base currency. Issued invoices are left unchanged.',
+  'systemSettings.section.billing': 'Billing',
+  'systemSettings.section.billing.description':
+    'New invoices and usage cost estimates use this currency. Unit prices are read as this currency; there is no FX conversion.',
+  'systemSettings.form.baseCurrency': 'Base currency',
+  'systemSettings.currency.CNY': 'Chinese yuan (CNY)',
+  'systemSettings.currency.USD': 'US dollar (USD)',
+  'systemSettings.message.saved': 'System settings saved',
+  'systemSettings.tab.general': 'General',
+
+  'ldap.page.description':
+    'Configure LDAP / Active Directory. A failed local password then tries a directory bind, without restarting the server.',
+  'ldap.section.server': 'Directory server',
+  'ldap.section.server.description':
+    'Set the server URI and search base to enable directory login.',
+  'ldap.form.serverUri': 'Server URI',
+  'ldap.form.searchBase': 'Search base',
+  'ldap.form.bindDn': 'Bind DN',
+  'ldap.form.bindPassword': 'Bind password',
+  'ldap.form.bindPassword.holder': 'Leave empty to keep the saved password',
+  'ldap.section.mapping': 'Attribute mapping',
+  'ldap.section.mapping.description':
+    'How a directory entry maps onto a local user.',
+  'ldap.form.userFilter': 'User filter',
+  'ldap.form.usernameAttr': 'Username attribute',
+  'ldap.form.displayNameAttr': 'Display name attribute',
+  'ldap.form.emailAttr': 'Email attribute',
+  'ldap.form.groupAttr': 'Group attribute',
+  'ldap.status.enabled': 'Enabled',
+  'ldap.status.disabled': 'Not configured',
+  'ldap.test': 'Test connection',
+  'ldap.test.ok': 'Bound to the directory',
+  'ldap.message.saved': 'Directory settings saved',
 
   'branding.page.description':
     'Make the platform your own product: name, logos, colours and links. Changes apply to every user.',
@@ -229,6 +266,9 @@ export default {
   'roles.edit': 'Edit Role',
   'roles.form.scope': 'Scope',
   'roles.scope': 'Scope',
+  'roles.scope.org': 'Organization',
+  'roles.scope.platform': 'Platform',
+  'roles.scope.cluster': 'Cluster',
   'roles.permissions': 'Permissions',
   'roles.tab.roles': 'Roles',
   'roles.builtin': 'Built-in',
@@ -254,6 +294,14 @@ export default {
   'rollouts.pause': 'Pause',
   'rollouts.resume': 'Resume',
   'rollouts.abort': 'Abort',
+  'rollouts.abortConfirm':
+    'Aborting returns traffic to the source target. Abort this rollout?',
+  'rollouts.status.pending': 'Pending',
+  'rollouts.status.running': 'Running',
+  'rollouts.status.paused': 'Paused',
+  'rollouts.status.completed': 'Completed',
+  'rollouts.status.aborted': 'Aborted',
+  'rollouts.status.failed': 'Failed',
   'rollouts.percent': 'New traffic (%)',
   'rollouts.hold': 'Hold seconds',
   'rollouts.stageAdd': 'Add stage',

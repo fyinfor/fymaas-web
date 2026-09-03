@@ -1,5 +1,42 @@
 export default {
+  'menu.settings.system': 'システム設定',
   'menu.settings.branding': 'ブランディング',
+  'menu.settings.ldap': 'ディレクトリ認証',
+
+  'systemSettings.page.description':
+    'プラットフォーム全体の既定値です。請求書はこの基準通貨で記帳されます。発行済みの請求書は変更しません。',
+  'systemSettings.section.billing': '請求',
+  'systemSettings.section.billing.description':
+    '新規の請求書と使用量の見積コストはこの通貨を使います。単価はこの通貨として扱い、為替換算は行いません。',
+  'systemSettings.form.baseCurrency': '基準通貨',
+  'systemSettings.currency.CNY': '人民元 (CNY)',
+  'systemSettings.currency.USD': '米ドル (USD)',
+  'systemSettings.message.saved': 'システム設定を保存しました',
+  'systemSettings.tab.general': '一般',
+
+  'ldap.page.description':
+    'LDAP / Active Directory を設定します。ローカルパスワードが失敗すると、再起動なしでディレクトリバインドを試します。',
+  'ldap.section.server': 'ディレクトリサーバー',
+  'ldap.section.server.description':
+    'サーバー URI と検索ベースを設定すると有効になります。',
+  'ldap.form.serverUri': 'サーバー URI',
+  'ldap.form.searchBase': '検索ベース',
+  'ldap.form.bindDn': 'バインド DN',
+  'ldap.form.bindPassword': 'バインドパスワード',
+  'ldap.form.bindPassword.holder': '空欄の場合は保存済みのパスワードを維持します',
+  'ldap.section.mapping': '属性マッピング',
+  'ldap.section.mapping.description':
+    'ディレクトリエントリをローカルユーザーに対応付ける方法です。',
+  'ldap.form.userFilter': 'ユーザーフィルター',
+  'ldap.form.usernameAttr': 'ユーザー名属性',
+  'ldap.form.displayNameAttr': '表示名属性',
+  'ldap.form.emailAttr': 'メール属性',
+  'ldap.form.groupAttr': 'グループ属性',
+  'ldap.status.enabled': '有効',
+  'ldap.status.disabled': '未設定',
+  'ldap.test': '接続テスト',
+  'ldap.test.ok': 'ディレクトリへのバインドに成功しました',
+  'ldap.message.saved': 'ディレクトリ設定を保存しました',
 
   'branding.page.description':
     'プラットフォームを自社製品としてカスタマイズします。名称、ロゴ、配色、リンクを設定でき、変更は全ユーザーに適用されます。',
@@ -232,6 +269,9 @@ export default {
   'roles.edit': 'ロールを編集',
   'roles.form.scope': 'スコープ',
   'roles.scope': 'スコープ',
+  'roles.scope.org': '組織',
+  'roles.scope.platform': 'プラットフォーム',
+  'roles.scope.cluster': 'クラスタ',
   'roles.permissions': '権限',
   'roles.tab.roles': 'ロール',
   'roles.builtin': '組み込み',
@@ -257,6 +297,14 @@ export default {
   'rollouts.pause': '一時停止',
   'rollouts.resume': '再開',
   'rollouts.abort': '中止',
+  'rollouts.abortConfirm':
+    '中止するとトラフィックは元のターゲットに戻ります。このロールアウトを中止しますか？',
+  'rollouts.status.pending': '待機',
+  'rollouts.status.running': '実行中',
+  'rollouts.status.paused': '一時停止',
+  'rollouts.status.completed': '完了',
+  'rollouts.status.aborted': '中止済み',
+  'rollouts.status.failed': '失敗',
   'rollouts.percent': '新バージョン流量 (%)',
   'rollouts.hold': '待機秒数',
   'rollouts.stageAdd': 'ステージを追加',

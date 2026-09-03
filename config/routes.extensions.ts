@@ -21,14 +21,34 @@ const enterpriseRoutes: RouteLike[] = [
     routes: [
       {
         path: '/settings',
-        redirect: '/settings/branding'
+        redirect: '/settings/system'
       },
       {
-        name: 'branding',
+        name: 'system',
+        path: '/settings/system',
+        key: 'system',
+        icon: 'icon-settings',
+        selectedIcon: 'icon-settings',
+        defaultIcon: 'icon-settings',
+        access: 'canSeeAdmin',
+        component: './settings',
+        subMenu: ['/settings/branding', '/settings/ldap']
+      },
+      {
+        name: 'system',
         path: '/settings/branding',
         key: 'branding',
+        hideInMenu: true,
         access: 'canSeeAdmin',
-        component: './settings/branding'
+        component: './settings'
+      },
+      {
+        name: 'system',
+        path: '/settings/ldap',
+        key: 'ldap',
+        hideInMenu: true,
+        access: 'canSeeAdmin',
+        component: './settings'
       }
     ]
   }

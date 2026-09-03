@@ -1,7 +1,42 @@
 export default {
   // `menu.settings` already exists in menu.ts, which loads after this
   // file and would win anyway -- only the new leaf belongs here.
+  'menu.settings.system': '系统设置',
   'menu.settings.branding': '品牌定制',
+  'menu.settings.ldap': '目录认证',
+
+  'systemSettings.page.description':
+    '平台级默认值。计费账单以这里的基础货币记账，已出具的账单不会改写。',
+  'systemSettings.section.billing': '计费',
+  'systemSettings.section.billing.description':
+    '新生成的账单和用量预估成本都使用此货币。单价按基础货币理解，不做汇率换算。',
+  'systemSettings.form.baseCurrency': '基础货币',
+  'systemSettings.currency.CNY': '人民币 (CNY)',
+  'systemSettings.currency.USD': '美元 (USD)',
+  'systemSettings.message.saved': '系统设置已保存',
+  'systemSettings.tab.general': '通用',
+
+  'ldap.page.description':
+    '配置 LDAP / Active Directory。本地密码失败后会尝试目录绑定，无需重启服务。',
+  'ldap.section.server': '目录服务',
+  'ldap.section.server.description': '填写服务器地址和搜索起点后即可启用。',
+  'ldap.form.serverUri': '服务器地址',
+  'ldap.form.searchBase': '搜索起点',
+  'ldap.form.bindDn': '绑定 DN',
+  'ldap.form.bindPassword': '绑定密码',
+  'ldap.form.bindPassword.holder': '留空则不改已保存的密码',
+  'ldap.section.mapping': '属性映射',
+  'ldap.section.mapping.description': '目录条目如何对应到本平台用户。',
+  'ldap.form.userFilter': '用户过滤器',
+  'ldap.form.usernameAttr': '用户名属性',
+  'ldap.form.displayNameAttr': '显示名属性',
+  'ldap.form.emailAttr': '邮箱属性',
+  'ldap.form.groupAttr': '组属性',
+  'ldap.status.enabled': '已启用',
+  'ldap.status.disabled': '未配置',
+  'ldap.test': '测试连接',
+  'ldap.test.ok': '已成功绑定目录',
+  'ldap.message.saved': '目录配置已保存',
 
   'branding.page.description':
     '将平台定制成你自己的产品：名称、标识、配色与相关链接。设置对所有用户生效。',
@@ -220,6 +255,9 @@ export default {
   'roles.edit': '编辑角色',
   'roles.form.scope': '范围',
   'roles.scope': '范围',
+  'roles.scope.org': '组织',
+  'roles.scope.platform': '平台',
+  'roles.scope.cluster': '集群',
   'roles.permissions': '权限',
   'roles.tab.roles': '角色',
   'roles.builtin': '内置',
@@ -245,6 +283,13 @@ export default {
   'rollouts.pause': '暂停',
   'rollouts.resume': '继续',
   'rollouts.abort': '中止',
+  'rollouts.abortConfirm': '中止后流量会回到源版本，确定中止？',
+  'rollouts.status.pending': '等待',
+  'rollouts.status.running': '进行中',
+  'rollouts.status.paused': '已暂停',
+  'rollouts.status.completed': '已完成',
+  'rollouts.status.aborted': '已中止',
+  'rollouts.status.failed': '失败',
   'rollouts.percent': '新版本流量 (%)',
   'rollouts.hold': '停留秒数',
   'rollouts.stageAdd': '添加阶段',

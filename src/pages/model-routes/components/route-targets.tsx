@@ -1,28 +1,17 @@
+import { ResourceBar, StatusBadge, statusTone } from '@/components/console';
 import ProviderLogo from '@/pages/maas-provider/components/provider-logo';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   AutoTooltip,
   ChildGridOptions,
   DropdownButtons,
-  ExpandedRowGrid,
-  StatusTag
+  ExpandedRowGrid
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
-import styled from 'styled-components';
 import { TargetStatus, TargetStatusLabelMap } from '../config';
 import { RouteTarget } from '../config/types';
-
-const FilesTag = styled(Tag)`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-inline: 4px 0;
-  transform: scale(0.9);
-  border-radius: 12px;
-`;
 
 type SharedGrid = Pick<
   ChildGridOptions,
@@ -41,6 +30,7 @@ interface TargetItemProps extends SharedGrid {
   data: any;
   sourceModels: any[];
   modelList?: Global.BaseOption<number>[];
+  totalWeight: number;
 }
 
 // Sub-column inside the merged `targets` cell.
@@ -69,7 +59,8 @@ const RouteItem: React.FC<TargetItemProps> = ({
   modelList,
   gridTemplate,
   prefixWidth = 0,
-  columns
+  columns,
+  totalWeight
 }) => {
   const intl = useIntl();
 
@@ -107,26 +98,24 @@ const RouteItem: React.FC<TargetItemProps> = ({
   };
 
   const sourceNode = renderProviderSource();
-  const weightNode =
-    data.fallback_status_codes && data.fallback_status_codes?.length > 0 ? (
-      <>
-        {data.weight > 0 && <span style={{ marginInline: 8 }}>/</span>}
-        <span>{intl.formatMessage({ id: 'routes.table.label.fallback' })}</span>
-      </>
-    ) : (
-      <AutoTooltip ghost>
-        {intl.formatMessage({ id: 'routes.form.target.weight' })}:{' '}
-        {data.weight || 0}
-      </AutoTooltip>
-    );
+  const isFallback =
+    data.fallback_status_codes && data.fallback_status_codes?.length > 0;
+  const weightShare =
+    totalWeight > 0 ? Math.round(((data.weight || 0) / totalWeight) * 100) : 0;
+  const weightNode = isFallback ? (
+    <>
+      {data.weight > 0 && <span style={{ marginInline: 8 }}>/</span>}
+      <span>{intl.formatMessage({ id: 'routes.table.label.fallback' })}</span>
+    </>
+  ) : (
+    <div style={{ width: 120 }}>
+      <ResourceBar percent={weightShare} color="var(--primary)" />
+    </div>
+  );
   const statusNode = (
-    <StatusTag
-      statusValue={{
-        status: TargetStatus[data.state],
-        text: TargetStatusLabelMap[data.state],
-        message: ''
-      }}
-    />
+    <StatusBadge tone={statusTone(TargetStatus[data.state])} plain>
+      {TargetStatusLabelMap[data.state] || data.state || '—'}
+    </StatusBadge>
   );
 
   return (
@@ -138,9 +127,15 @@ const RouteItem: React.FC<TargetItemProps> = ({
       <ExpandedRowGrid.Cell span={1} style={{ height: '100%', gap: 4 }}>
         <AutoTooltip ghost>{data.name}</AutoTooltip>
         {!!data.overridden_model_name && !!data.model_id && (
-          <FilesTag color="purple" variant="outlined">
-            <span style={{ opacity: 1 }}>LoRA</span>
-          </FilesTag>
+          <span
+            style={{
+              marginLeft: 6,
+              fontSize: 12,
+              color: 'var(--text-muted)'
+            }}
+          >
+            LoRA
+          </span>
         )}
       </ExpandedRowGrid.Cell>
       {splitMiddle ? (
@@ -193,6 +188,13 @@ const RouteTargets: React.FC<ProviderModelProps> = ({
   prefixWidth,
   columns
 }) => {
+  const totalWeight = dataList.reduce((sum, item) => {
+    if (item.fallback_status_codes?.length) {
+      return sum;
+    }
+    return sum + (Number(item.weight) || 0);
+  }, 0);
+
   return (
     <div>
       {dataList.map((item, index) => (
@@ -205,6 +207,7 @@ const RouteTargets: React.FC<ProviderModelProps> = ({
           gridTemplate={gridTemplate}
           prefixWidth={prefixWidth}
           columns={columns}
+          totalWeight={totalWeight}
         ></RouteItem>
       ))}
     </div>

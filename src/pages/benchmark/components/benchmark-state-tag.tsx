@@ -1,5 +1,6 @@
-import { StatusTag } from '@gpustack/core-ui';
+import { StatusBadge, statusTone } from '@/components/console';
 import { useIntl } from '@umijs/max';
+import { Tooltip } from 'antd';
 import React from 'react';
 import {
   BenchmarkStatus,
@@ -7,13 +8,13 @@ import {
   BenchmarkStatusValueMap
 } from '../config';
 
-// The run's state as a StatusTag — shared by the list's Status column and the
+// The run's state as a StatusBadge — shared by the list's Status column and the
 // detail page header so both read identically.
 //
-// Only a RUNNING run gets the progress bar. A stopped run is terminal — it can't
+// Only a RUNNING run gets a percent suffix. A stopped run is terminal — it can't
 // be resumed — so a frozen bar (which reads as "still going / can continue") is
-// misleading. Render it as a plain "Stopped" pill like Completed/Error, and move
-// how-far-it-got into the hover tooltip so the label stays clean.
+// misleading. Render it as a plain "Stopped" badge like Completed/Error, and
+// move how-far-it-got into the hover tooltip so the label stays clean.
 const BenchmarkStateTag: React.FC<{
   data?: {
     state?: string;
@@ -40,18 +41,19 @@ const BenchmarkStateTag: React.FC<{
       : reached;
   }
 
-  return (
-    <StatusTag
-      download={isRunning ? { percent: data.progress || 0 } : undefined}
-      statusValue={{
-        status: runningDone
-          ? BenchmarkStatus[BenchmarkStatusValueMap.Completed]
-          : BenchmarkStatus[data.state],
-        text: BenchmarkStatusLabelMap[data.state],
-        message
-      }}
-    />
+  const tone = statusTone(
+    runningDone
+      ? BenchmarkStatus[BenchmarkStatusValueMap.Completed]
+      : BenchmarkStatus[data.state]
   );
+  const badge = (
+    <StatusBadge tone={tone} plain>
+      {BenchmarkStatusLabelMap[data.state]}
+      {isRunning && !runningDone ? ` ${Math.round(data.progress || 0)}%` : ''}
+    </StatusBadge>
+  );
+
+  return message ? <Tooltip title={message}>{badge}</Tooltip> : badge;
 };
 
 export default BenchmarkStateTag;

@@ -32,6 +32,11 @@ const Roles: React.FC = () => {
   const [form] = Form.useForm();
   const [bindForm] = Form.useForm();
   const [people, setPeople] = React.useState<PersonOption[]>([]);
+  const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
+  const [clusters, setClusters] = React.useState<
+    { id: number; name: string }[]
+  >([]);
+  const bindScopeType = Form.useWatch('scope_type', bindForm);
 
   const groupedCatalog = React.useMemo(() => {
     const groups = new Map<string, any[]>();
@@ -59,6 +64,26 @@ const Roles: React.FC = () => {
     load().catch(() => undefined);
     loadEnterprisePeople()
       .then(setPeople)
+      .catch(() => undefined);
+    request('/organization-directory', { params: { page: 1, perPage: 100 } })
+      .then((page) =>
+        setOrgs(
+          (page.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.display_name || item.name
+          }))
+        )
+      )
+      .catch(() => undefined);
+    request('/clusters', { params: { page: 1, perPage: 100 } })
+      .then((page) =>
+        setClusters(
+          (page.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.name
+          }))
+        )
+      )
       .catch(() => undefined);
   }, []);
 
@@ -143,7 +168,12 @@ const Roles: React.FC = () => {
                     },
                     {
                       title: intl.formatMessage({ id: 'roles.scope' }),
-                      dataIndex: 'scope'
+                      dataIndex: 'scope',
+                      render: (scope: string) =>
+                        intl.formatMessage({
+                          id: `roles.scope.${scope}`,
+                          defaultMessage: scope
+                        })
                     },
                     {
                       title: intl.formatMessage({ id: 'roles.permissions' }),
@@ -220,7 +250,12 @@ const Roles: React.FC = () => {
                     },
                     {
                       title: intl.formatMessage({ id: 'roles.scope' }),
-                      dataIndex: 'scope_type'
+                      dataIndex: 'scope_type',
+                      render: (scope: string) =>
+                        intl.formatMessage({
+                          id: `roles.scope.${scope}`,
+                          defaultMessage: scope
+                        })
                     },
                     {
                       title: intl.formatMessage({
@@ -279,8 +314,14 @@ const Roles: React.FC = () => {
           >
             <Select
               options={[
-                { label: 'org', value: 'org' },
-                { label: 'platform', value: 'platform' }
+                {
+                  label: intl.formatMessage({ id: 'roles.scope.org' }),
+                  value: 'org'
+                },
+                {
+                  label: intl.formatMessage({ id: 'roles.scope.platform' }),
+                  value: 'platform'
+                }
               ]}
             />
           </Form.Item>
@@ -359,18 +400,44 @@ const Roles: React.FC = () => {
           >
             <Select
               options={[
-                { label: 'org', value: 'org' },
-                { label: 'platform', value: 'platform' },
-                { label: 'cluster', value: 'cluster' }
+                {
+                  label: intl.formatMessage({ id: 'roles.scope.org' }),
+                  value: 'org'
+                },
+                {
+                  label: intl.formatMessage({ id: 'roles.scope.platform' }),
+                  value: 'platform'
+                },
+                {
+                  label: intl.formatMessage({ id: 'roles.scope.cluster' }),
+                  value: 'cluster'
+                }
               ]}
             />
           </Form.Item>
-          <Form.Item
-            name="scope_id"
-            label={intl.formatMessage({ id: 'roles.binding.scopeId' })}
-          >
-            <Input type="number" />
-          </Form.Item>
+          {bindScopeType === 'platform' ? null : (
+            <Form.Item
+              name="scope_id"
+              label={intl.formatMessage({
+                id:
+                  bindScopeType === 'cluster'
+                    ? 'roles.scope.cluster'
+                    : 'roles.scope.org'
+              })}
+              rules={[{ required: true }]}
+            >
+              <Select
+                showSearch
+                optionFilterProp="label"
+                options={(bindScopeType === 'cluster' ? clusters : orgs).map(
+                  (item) => ({
+                    label: item.name,
+                    value: item.id
+                  })
+                )}
+              />
+            </Form.Item>
+          )}
         </Form>
       </Drawer>
     </PageBox>

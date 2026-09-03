@@ -228,8 +228,16 @@ body {
     height: 100%;
 
     .ant-pro-sider-footer {
-      padding-block: 4px 0;
-      padding-left: 8px;
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px 12px;
+    }
+
+    .ant-layout-sider-collapsed .ant-pro-sider-footer {
+      justify-content: center;
+      padding-inline: 0;
     }
 
     .ant-pro-sider-actions-list-item {

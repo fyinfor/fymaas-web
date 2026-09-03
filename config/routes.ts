@@ -95,6 +95,9 @@ const baseRoutes = [
     name: 'models',
     path: '/models',
     key: 'models',
+    icon: 'icon-models',
+    selectedIcon: 'icon-models-filled',
+    defaultIcon: 'icon-models',
     routes: [
       {
         path: '/models',
@@ -217,6 +220,9 @@ const baseRoutes = [
     name: 'gpuService',
     path: '/gpu-service',
     key: 'gpuService',
+    icon: 'icon-gpu1',
+    selectedIcon: 'icon-gpu-filled',
+    defaultIcon: 'icon-gpu1',
     access: 'canSeeGpuService',
     routes: [
       {
@@ -290,6 +296,9 @@ const baseRoutes = [
     name: 'resources',
     path: '/resources',
     key: 'resources',
+    icon: 'icon-resources',
+    selectedIcon: 'icon-resources-filled',
+    defaultIcon: 'icon-resources',
     access: 'canSeeOrgAdmin',
     routes: [
       {
@@ -379,6 +388,9 @@ const baseRoutes = [
     name: 'accessControl',
     path: '/access-control',
     key: 'accessControl',
+    icon: 'icon-shield',
+    selectedIcon: 'icon-shield-filled',
+    defaultIcon: 'icon-shield',
     routes: [
       {
         path: '/access-control',

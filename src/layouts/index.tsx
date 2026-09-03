@@ -253,6 +253,10 @@ export default (props: any) => {
     return userSettings.collapsed || false;
   }, [userSettings.collapsed]);
 
+  // Chinese labels are 2–5 characters; 224px leaves a wide empty band.
+  // Latin menus keep the wider rail so "Inference Backends" still fits.
+  const siderWidth = intl.locale.startsWith('zh') ? 176 : 224;
+
   const renderMenuHeader = (logo: React.ReactNode, title: React.ReactNode) => {
     return <>{logo}</>;
   };
@@ -413,7 +417,7 @@ export default (props: any) => {
             }}
             openKeys={false}
             disableMobile={true}
-            siderWidth={224}
+            siderWidth={siderWidth}
             collapsedWidth={64}
             menuFooterRender={() => (
               <Button

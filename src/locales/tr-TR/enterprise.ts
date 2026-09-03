@@ -1,5 +1,42 @@
 export default {
+  'menu.settings.system': 'Sistem',
   'menu.settings.branding': 'Marka',
+  'menu.settings.ldap': 'Dizin',
+
+  'systemSettings.page.description':
+    'Platform varsayılanları. Faturalar temel para biriminde yazılır. Kesilmiş faturalar değişmez.',
+  'systemSettings.section.billing': 'Faturalama',
+  'systemSettings.section.billing.description':
+    'Yeni faturalar ve kullanım maliyeti bu para birimini kullanır. Birim fiyatlar kur çevrimi olmadan bu birimde okunur.',
+  'systemSettings.form.baseCurrency': 'Temel para birimi',
+  'systemSettings.currency.CNY': 'Çin yuanı (CNY)',
+  'systemSettings.currency.USD': 'ABD doları (USD)',
+  'systemSettings.message.saved': 'Sistem ayarları kaydedildi',
+  'systemSettings.tab.general': 'Genel',
+
+  'ldap.page.description':
+    'LDAP / Active Directory yapılandırın. Yerel parola başarısız olursa sunucu yeniden başlamadan dizin bağını dener.',
+  'ldap.section.server': 'Dizin sunucusu',
+  'ldap.section.server.description':
+    'Dizin girişini açmak için sunucu URI ve arama tabanını girin.',
+  'ldap.form.serverUri': 'Sunucu URI',
+  'ldap.form.searchBase': 'Arama tabanı',
+  'ldap.form.bindDn': 'Bind DN',
+  'ldap.form.bindPassword': 'Bind parolası',
+  'ldap.form.bindPassword.holder': 'Kayıtlı parolayı korumak için boş bırakın',
+  'ldap.section.mapping': 'Öznitelik eşlemesi',
+  'ldap.section.mapping.description':
+    'Dizin kaydının yerel kullanıcıya nasıl karşılık geldiği.',
+  'ldap.form.userFilter': 'Kullanıcı süzgeci',
+  'ldap.form.usernameAttr': 'Kullanıcı adı özniteliği',
+  'ldap.form.displayNameAttr': 'Görünen ad özniteliği',
+  'ldap.form.emailAttr': 'E-posta özniteliği',
+  'ldap.form.groupAttr': 'Grup özniteliği',
+  'ldap.status.enabled': 'Etkin',
+  'ldap.status.disabled': 'Yapılandırılmadı',
+  'ldap.test': 'Bağlantıyı dene',
+  'ldap.test.ok': 'Dizine bağlanıldı',
+  'ldap.message.saved': 'Dizin ayarları kaydedildi',
 
   'branding.page.description':
     'Platformu kendi ürününüz hâline getirin: ad, logolar, renkler ve bağlantılar. Değişiklikler tüm kullanıcılar için geçerli olur.',
@@ -233,6 +270,9 @@ export default {
   'roles.edit': 'Rolü Düzenle',
   'roles.form.scope': 'Kapsam',
   'roles.scope': 'Kapsam',
+  'roles.scope.org': 'Organizasyon',
+  'roles.scope.platform': 'Platform',
+  'roles.scope.cluster': 'Küme',
   'roles.permissions': 'İzinler',
   'roles.tab.roles': 'Roller',
   'roles.builtin': 'Yerleşik',
@@ -258,6 +298,14 @@ export default {
   'rollouts.pause': 'Duraklat',
   'rollouts.resume': 'Sürdür',
   'rollouts.abort': 'İptal',
+  'rollouts.abortConfirm':
+    'İptal edilince trafik kaynak hedefe döner. Bu yayını iptal edilsin mi?',
+  'rollouts.status.pending': 'Beklemede',
+  'rollouts.status.running': 'Çalışıyor',
+  'rollouts.status.paused': 'Duraklatıldı',
+  'rollouts.status.completed': 'Tamamlandı',
+  'rollouts.status.aborted': 'İptal edildi',
+  'rollouts.status.failed': 'Başarısız',
   'rollouts.percent': 'Yeni trafik (%)',
   'rollouts.hold': 'Bekleme (sn)',
   'rollouts.stageAdd': 'Aşama ekle',

@@ -36,6 +36,9 @@ const useStyles = createStyles(
       siderMenu: css`
         width: 100%;
         &.sider-menu-collapsed {
+          .menu-item-nested {
+            padding-left: 10px;
+          }
           .menu-item-title {
             /* Fades out, but has to finish well inside the rail's own 200ms.
                The row clips at overflow:hidden and the clip edge sweeps from
@@ -64,7 +67,7 @@ const useStyles = createStyles(
         gap: 8px;
         cursor: pointer;
         white-space: nowrap;
-        padding: 12px 10px 8px;
+        padding: 12px 2px 8px 10px;
         overflow: hidden;
         height: 36px;
         /* Deliberately NOT transitioned. Each group title grows ~41px on
@@ -73,19 +76,28 @@ const useStyles = createStyles(
            the whole list into a parallelogram and fights the horizontal
            reveal. Snapping the vertical layout in one frame leaves the rail's
            width as the only thing in motion. */
-        .anticon {
-          transform: scale(0.75);
+        .group-title-icon {
+          font-size: 16px;
           color: var(--text-primary);
+          flex-shrink: 0;
         }
         .group-title-text {
-          display: flex;
-          align-items: center;
-          gap: 4px;
+          flex: 1;
+          min-width: 0;
           font-size: 13px;
           line-height: 20px;
           letter-spacing: 0;
           color: var(--text-primary);
           font-weight: 600;
+          text-align: left;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .group-title-caret {
+          flex-shrink: 0;
+          margin-left: auto;
+          transform: scale(0.75);
+          color: var(--text-primary);
         }
 
         &.menu-item-group-title-collapsed {
@@ -95,6 +107,8 @@ const useStyles = createStyles(
           padding-inline: 0;
           justify-content: center;
 
+          .group-title-icon,
+          .group-title-caret,
           .group-title-text {
             /* overflow:hidden clips to the padding box, so this 1px row still
                paints a 1px band through the middle of the label. Hide it
@@ -112,7 +126,7 @@ const useStyles = createStyles(
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 12px;
+        gap: 8px;
         cursor: pointer;
         position: relative;
         /* Collapsed, the usable rail is 48px wide and this row's content box
@@ -153,6 +167,9 @@ const useStyles = createStyles(
           .anticon {
             color: var(--primary-hover);
           }
+        }
+        &.menu-item-nested {
+          padding-left: 26px;
         }
         &:active {
           background-color: var(--primary-soft);
@@ -254,7 +271,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
     );
   };
 
-  const menuItemRender = (menuItem: MenuItem, key: string) => {
+  const menuItemRender = (menuItem: MenuItem, key: string, nested = false) => {
     const selected =
       location.pathname === menuItem.path ||
       menuItem.subMenu?.includes(location.pathname);
@@ -282,7 +299,8 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
             to={to}
             target={menuItem.target}
             className={cx(styles.menuItemWrapper, 'menu-item', {
-              'menu-item-selected': selected
+              'menu-item-selected': selected,
+              'menu-item-nested': nested
             })}
             onMouseEnter={() => schedulePreload(to)}
             onMouseLeave={cancelPreload}
@@ -330,12 +348,17 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
                         the sider doesn't remount every group header. The
                         collapsed row is 1px tall, which is why the styles hide
                         this outright rather than relying on the clip. */}
-                    <span className="group-title-text">
-                      <span>{item.name}</span>
-                      <CaretDownOutlined
-                        rotate={collapseKeys.has(item.key) ? -90 : 0}
-                      ></CaretDownOutlined>
-                    </span>
+                    <IconFont
+                      className="group-title-icon"
+                      type={
+                        item.defaultIcon || item.icon || 'icon-cube'
+                      }
+                    />
+                    <span className="group-title-text">{item.name}</span>
+                    <CaretDownOutlined
+                      className="group-title-caret"
+                      rotate={collapseKeys.has(item.key) ? -90 : 0}
+                    />
                     {collapsed && <span className={styles.line}></span>}
                   </div>
                   <div
@@ -346,7 +369,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
                     })}
                   >
                     {item.children?.map((child: MenuItem) =>
-                      menuItemRender(child, child.key)
+                      menuItemRender(child, child.key, true)
                     )}
                   </div>
                 </>

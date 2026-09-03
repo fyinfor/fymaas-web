@@ -1,3 +1,4 @@
+import { queryBillingSettings } from '@/enterprise/system-settings/apis';
 import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
 import { downloadFile } from '@/utils/download-stream';
 import { request, useAccess, useIntl } from '@umijs/max';
@@ -42,6 +43,8 @@ const EnterpriseBilling: React.FC = () => {
   const [people, setPeople] = React.useState<PersonOption[]>([]);
   const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
   const [generating, setGenerating] = React.useState(false);
+  const [statusFilter, setStatusFilter] = React.useState<string | undefined>();
+  const [baseCurrency, setBaseCurrency] = React.useState('CNY');
   const [planForm] = Form.useForm();
   const [itemForm] = Form.useForm();
   const [centerForm] = Form.useForm();
@@ -84,6 +87,15 @@ const EnterpriseBilling: React.FC = () => {
           }))
         )
       )
+      .catch(() => undefined);
+    queryBillingSettings()
+      .then((data) => {
+        const currency = data.base_currency || 'CNY';
+        setBaseCurrency(currency);
+        if (!planForm.getFieldValue('currency')) {
+          planForm.setFieldValue('currency', currency);
+        }
+      })
       .catch(() => undefined);
   }, []);
 
@@ -181,6 +193,7 @@ const EnterpriseBilling: React.FC = () => {
     }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     planForm.resetFields();
+    planForm.setFieldValue('currency', baseCurrency);
     setActivePlan(null);
     load();
   };
@@ -278,6 +291,23 @@ const EnterpriseBilling: React.FC = () => {
                   >
                     <DatePicker.RangePicker format="YYYY-MM-DD" />
                   </Form.Item>
+                  <Form.Item>
+                    <Select
+                      allowClear
+                      style={{ minWidth: 140 }}
+                      placeholder={intl.formatMessage({
+                        id: 'billing.invoice.status'
+                      })}
+                      value={statusFilter}
+                      onChange={setStatusFilter}
+                      options={['draft', 'issued', 'void'].map((status) => ({
+                        value: status,
+                        label: intl.formatMessage({
+                          id: `billing.status.${status}`
+                        })
+                      }))}
+                    />
+                  </Form.Item>
                   <Button
                     type="primary"
                     loading={generating}
@@ -288,7 +318,11 @@ const EnterpriseBilling: React.FC = () => {
                 </Form>
                 <Table
                   rowKey="id"
-                  dataSource={invoices}
+                  dataSource={
+                    statusFilter
+                      ? invoices.filter((row) => row.status === statusFilter)
+                      : invoices
+                  }
                   locale={{
                     emptyText: (
                       <Empty
@@ -388,7 +422,7 @@ const EnterpriseBilling: React.FC = () => {
                       })}
                     />
                   </Form.Item>
-                  <Form.Item name="currency" initialValue="USD">
+                  <Form.Item name="currency" initialValue={baseCurrency}>
                     <Select
                       style={{ width: 100 }}
                       options={[{ value: 'USD' }, { value: 'CNY' }]}

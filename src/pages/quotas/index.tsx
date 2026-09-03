@@ -175,11 +175,48 @@ const Quotas: React.FC = () => {
     },
     {
       title: intl.formatMessage({ id: 'quotas.table.subject' }),
-      dataIndex: 'subject_type'
+      render: (_: any, row: ListItem) => {
+        const typeKey =
+          row.subject_type === 'api_key'
+            ? 'quotas.subject.apiKey'
+            : `quotas.subject.${row.subject_type}`;
+        const typeLabel = intl.formatMessage({
+          id: typeKey,
+          defaultMessage: row.subject_type
+        });
+        let extra = '';
+        if (row.subject_type === 'user' || row.subject_type === 'group') {
+          extra =
+            people.find((item) => item.id === row.subject_principal_id)
+              ?.name || '';
+        } else if (row.subject_type === 'api_key') {
+          extra =
+            apiKeys.find((item) => item.id === row.api_key_id)?.name || '';
+        }
+        return extra ? `${typeLabel} · ${extra}` : typeLabel;
+      }
     },
     {
       title: intl.formatMessage({ id: 'quotas.form.target' }),
-      dataIndex: 'target_type'
+      render: (_: any, row: ListItem) => {
+        const typeKey =
+          row.target_type === 'model_route'
+            ? 'quotas.target.route'
+            : `quotas.target.${row.target_type}`;
+        const typeLabel = intl.formatMessage({
+          id: typeKey,
+          defaultMessage: row.target_type
+        });
+        let extra = '';
+        if (row.target_type === 'model') {
+          extra =
+            models.find((item) => item.id === row.target_id)?.name || '';
+        } else if (row.target_type === 'model_route') {
+          extra =
+            routes.find((item) => item.id === row.target_id)?.name || '';
+        }
+        return extra ? `${typeLabel} · ${extra}` : typeLabel;
+      }
     },
     {
       title: intl.formatMessage({ id: 'quotas.table.usage' }),

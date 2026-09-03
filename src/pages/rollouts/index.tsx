@@ -6,9 +6,11 @@ import {
   Empty,
   Form,
   InputNumber,
+  Modal,
   Select,
   Space,
   Table,
+  Tag,
   message
 } from 'antd';
 import React from 'react';
@@ -85,9 +87,29 @@ const Rollouts: React.FC = () => {
     load();
   };
 
+  const statusColor = (status: string) => {
+    if (status === 'running') return 'processing';
+    if (status === 'completed') return 'success';
+    if (status === 'paused') return 'warning';
+    if (status === 'aborted' || status === 'failed') return 'error';
+    return 'default';
+  };
+
   const act = async (id: number, action: string) => {
-    await request(`/canary-rollouts/${id}/${action}`, { method: 'POST' });
-    load();
+    const run = async () => {
+      await request(`/canary-rollouts/${id}/${action}`, { method: 'POST' });
+      load();
+    };
+    if (action === 'abort') {
+      Modal.confirm({
+        title: intl.formatMessage({ id: 'rollouts.abortConfirm' }),
+        okText: intl.formatMessage({ id: 'common.button.confirm' }),
+        cancelText: intl.formatMessage({ id: 'common.button.cancel' }),
+        onOk: run
+      });
+      return;
+    }
+    await run();
   };
 
   return (
@@ -123,7 +145,15 @@ const Rollouts: React.FC = () => {
           },
           {
             title: intl.formatMessage({ id: 'rollouts.status' }),
-            dataIndex: 'status'
+            dataIndex: 'status',
+            render: (status: string) => (
+              <Tag color={statusColor(status)}>
+                {intl.formatMessage({
+                  id: `rollouts.status.${status}`,
+                  defaultMessage: status
+                })}
+              </Tag>
+            )
           },
           {
             title: intl.formatMessage({ id: 'rollouts.stage' }),

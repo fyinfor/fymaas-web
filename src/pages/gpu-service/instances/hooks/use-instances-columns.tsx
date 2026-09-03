@@ -1,3 +1,4 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import useCreatorColumn from '@/pages/gpu-service/hooks/use-creator-column';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { ExportOutlined } from '@ant-design/icons';
@@ -5,11 +6,10 @@ import {
   AutoTooltip,
   CopyButton,
   DropdownButtons,
-  StatusTag,
   type TableColumnProps
 } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { Fragment, useMemo } from 'react';
@@ -279,15 +279,13 @@ const useInstancesColumns = ({
         minWidth: 140,
         render: (_text: any, record: ListItem) => {
           const value = record?.status?.phase || '';
-          return (
-            <StatusTag
-              statusValue={{
-                status: status[value],
-                text: InstanceStatusLabelMap[value] || value,
-                message: record?.status?.phaseMessage || ''
-              }}
-            ></StatusTag>
+          const message = record?.status?.phaseMessage || '';
+          const badge = (
+            <StatusBadge tone={statusTone(status[value])} plain>
+              {InstanceStatusLabelMap[value] || value || '—'}
+            </StatusBadge>
           );
+          return message ? <Tooltip title={message}>{badge}</Tooltip> : badge;
         }
       },
       {

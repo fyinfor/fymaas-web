@@ -1,5 +1,42 @@
 export default {
+  'menu.settings.system': 'Система',
   'menu.settings.branding': 'Брендирование',
+  'menu.settings.ldap': 'Каталог',
+
+  'systemSettings.page.description':
+    'Общеплатформенные значения по умолчанию. Счета выставляются в базовой валюте. Выставленные счета не меняются.',
+  'systemSettings.section.billing': 'Биллинг',
+  'systemSettings.section.billing.description':
+    'Новые счета и оценка стоимости используют эту валюту. Цены читаются в ней без конвертации курса.',
+  'systemSettings.form.baseCurrency': 'Базовая валюта',
+  'systemSettings.currency.CNY': 'Юань (CNY)',
+  'systemSettings.currency.USD': 'Доллар США (USD)',
+  'systemSettings.message.saved': 'Системные настройки сохранены',
+  'systemSettings.tab.general': 'Общие',
+
+  'ldap.page.description':
+    'Настройте LDAP / Active Directory. Если локальный пароль не подошёл, сервер попробует привязку к каталогу без перезапуска.',
+  'ldap.section.server': 'Сервер каталога',
+  'ldap.section.server.description':
+    'Укажите URI сервера и базу поиска, чтобы включить вход через каталог.',
+  'ldap.form.serverUri': 'URI сервера',
+  'ldap.form.searchBase': 'База поиска',
+  'ldap.form.bindDn': 'Bind DN',
+  'ldap.form.bindPassword': 'Пароль привязки',
+  'ldap.form.bindPassword.holder': 'Оставьте пустым, чтобы сохранить текущий пароль',
+  'ldap.section.mapping': 'Сопоставление атрибутов',
+  'ldap.section.mapping.description':
+    'Как запись каталога соответствует локальному пользователю.',
+  'ldap.form.userFilter': 'Фильтр пользователя',
+  'ldap.form.usernameAttr': 'Атрибут имени',
+  'ldap.form.displayNameAttr': 'Атрибут отображаемого имени',
+  'ldap.form.emailAttr': 'Атрибут почты',
+  'ldap.form.groupAttr': 'Атрибут группы',
+  'ldap.status.enabled': 'Включено',
+  'ldap.status.disabled': 'Не настроено',
+  'ldap.test': 'Проверить соединение',
+  'ldap.test.ok': 'Привязка к каталогу выполнена',
+  'ldap.message.saved': 'Настройки каталога сохранены',
 
   'branding.page.description':
     'Настройте платформу под собственный продукт: название, логотипы, цвета и ссылки. Изменения применяются ко всем пользователям.',
@@ -232,6 +269,9 @@ export default {
   'roles.edit': 'Изменить роль',
   'roles.form.scope': 'Область',
   'roles.scope': 'Область',
+  'roles.scope.org': 'Организация',
+  'roles.scope.platform': 'Платформа',
+  'roles.scope.cluster': 'Кластер',
   'roles.permissions': 'Права',
   'roles.tab.roles': 'Роли',
   'roles.builtin': 'Встроенная',
@@ -257,6 +297,14 @@ export default {
   'rollouts.pause': 'Пауза',
   'rollouts.resume': 'Продолжить',
   'rollouts.abort': 'Отменить',
+  'rollouts.abortConfirm':
+    'После отмены трафик вернётся на исходный target. Отменить этот выкат?',
+  'rollouts.status.pending': 'Ожидание',
+  'rollouts.status.running': 'Выполняется',
+  'rollouts.status.paused': 'Пауза',
+  'rollouts.status.completed': 'Завершён',
+  'rollouts.status.aborted': 'Отменён',
+  'rollouts.status.failed': 'Ошибка',
   'rollouts.percent': 'Трафик новой версии (%)',
   'rollouts.hold': 'Пауза, сек',
   'rollouts.stageAdd': 'Добавить этап',
