@@ -9,12 +9,38 @@
  */
 import { GPUStackPluginManager } from '@/plugins/manager';
 import type { AppPlugin } from '@/plugins/types';
+import { nsLocal } from '@gpustack/core-ui/utils';
+import { request } from '@umijs/max';
 import { queryBranding } from './branding/apis';
 import {
   applyDocumentBranding,
   getBranding,
   setBranding
 } from './branding/runtime';
+
+const cacheMemberships = async () => {
+  try {
+    const orgs = await request('/users/me/organizations', {
+      skipErrorHandler: true
+    });
+    if (!Array.isArray(orgs)) return;
+    nsLocal.set(
+      'organizationList',
+      JSON.stringify(
+        orgs.map((item: any) => ({
+          id: item.organization?.id,
+          name: item.organization?.name,
+          role: item.role,
+          is_personal: item.organization?.is_personal,
+          is_platform: item.organization?.is_platform
+        }))
+      )
+    );
+  } catch {
+    // Login page / unauthenticated boot. Access predicates fall back
+    // to the platform-admin flags already on currentUser.
+  }
+};
 
 const enterprisePlugin: AppPlugin = {
   async onAppInit(context) {
@@ -25,6 +51,7 @@ const enterprisePlugin: AppPlugin = {
       // Branding is cosmetic. Failing to load it must not keep the app
       // from booting -- the bundled defaults are a complete fallback.
       console.error('Failed to load branding:', error);
+      await cacheMemberships();
       return {};
     }
 
@@ -38,6 +65,7 @@ const enterprisePlugin: AppPlugin = {
       colorPrimary: branding.color_primary || context.defaultColorPrimary
     });
     applyDocumentBranding(branding);
+    await cacheMemberships();
 
     return { branding };
   },

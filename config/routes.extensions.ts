@@ -37,8 +37,66 @@ const enterpriseRoutes: RouteLike[] = [
 // Enterprise pages that belong inside an existing upstream menu group
 // rather than in a new top-level one. Appending here keeps the group's
 // definition in `routes.ts` untouched and mergeable.
+const groupReplacements: Record<string, Record<string, Partial<RouteLike>>> = {
+  '/usage': {
+    billing: {
+      hideInMenu: false,
+      component: './enterprise-billing'
+    }
+  },
+  '/access-control': {
+    organizations: {
+      component: './enterprise-organizations'
+    }
+  }
+};
+
 const groupAdditions: Record<string, RouteLike[]> = {
+  '/usage': [
+    {
+      name: 'quotas',
+      path: '/usage/quotas',
+      key: 'quotas',
+      icon: 'icon-usage-outlined',
+      selectedIcon: 'icon-usage-filled',
+      defaultIcon: 'icon-usage-outlined',
+      access: 'canSeeOrgAdmin',
+      component: './quotas'
+    }
+  ],
+  '/resources': [
+    {
+      name: 'topology',
+      path: '/resources/topology',
+      key: 'topology',
+      icon: 'icon-cluster2-outline',
+      selectedIcon: 'icon-cluster2-filled',
+      defaultIcon: 'icon-cluster2-outline',
+      access: 'canSeeOrgAdmin',
+      component: './topology'
+    },
+    {
+      name: 'rollouts',
+      path: '/resources/rollouts',
+      key: 'rollouts',
+      icon: 'icon-cluster2-outline',
+      selectedIcon: 'icon-cluster2-filled',
+      defaultIcon: 'icon-cluster2-outline',
+      access: 'canSeeOrgAdmin',
+      component: './rollouts'
+    }
+  ],
   '/access-control': [
+    {
+      name: 'roles',
+      path: '/access-control/roles',
+      key: 'roles',
+      icon: 'icon-users',
+      selectedIcon: 'icon-users-filled',
+      defaultIcon: 'icon-users',
+      access: 'canSeeOrgAdmin',
+      component: './roles'
+    },
     {
       name: 'ipAccessControl',
       path: '/access-control/ip-access',
@@ -72,11 +130,22 @@ export const applyRouteExtensions = <T>(base: T): T => {
   }
 
   const routes = (base as RouteLike[]).map((route) => {
-    const additions = route?.path ? groupAdditions[route.path] : undefined;
-    if (!additions || !Array.isArray(route.routes)) {
+    if (!route?.path || !Array.isArray(route.routes)) {
       return route;
     }
-    return { ...route, routes: [...route.routes, ...additions] };
+    const replacements = groupReplacements[route.path];
+    let nextRoutes = route.routes;
+    if (replacements) {
+      nextRoutes = nextRoutes.map((child: RouteLike) => {
+        const patch = child?.name ? replacements[child.name] : undefined;
+        return patch ? { ...child, ...patch } : child;
+      });
+    }
+    const additions = groupAdditions[route.path];
+    if (additions) {
+      nextRoutes = [...nextRoutes, ...additions];
+    }
+    return nextRoutes === route.routes ? route : { ...route, routes: nextRoutes };
   });
   // The catch-all 404 must stay last, so enterprise entries are spliced
   // in ahead of it rather than appended.
