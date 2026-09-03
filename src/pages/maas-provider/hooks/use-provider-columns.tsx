@@ -1,9 +1,9 @@
 // columns.ts
+import { StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { AutoTooltip, DropdownButtons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
@@ -47,9 +47,15 @@ const useProviderColumns = (
               <span className="text-primary">{text}</span>
             </AutoTooltip>
             {record.builtin && (
-              <Tag color="blue" style={{ marginLeft: 8 }}>
+              <span
+                style={{
+                  marginLeft: 8,
+                  fontSize: 12,
+                  color: 'var(--text-muted)'
+                }}
+              >
                 BuiltIn
-              </Tag>
+              </span>
             )}
           </>
         )
@@ -71,6 +77,61 @@ const useProviderColumns = (
             </AutoTooltip>
           </div>
         )
+      },
+      {
+        title: intl.formatMessage({ id: 'common.table.status' }),
+        dataIndex: 'models',
+        key: 'status',
+        span: 3,
+        minWidth: 100,
+        render: (value: ProviderModel[]) => {
+          const models = value || [];
+          const known = models.filter((item) => item.accessible !== null);
+          const ready = known.filter((item) => item.accessible).length;
+          if (!models.length) {
+            return (
+              <StatusBadge tone="neutral" plain>
+                {intl.formatMessage({ id: 'providers.status.inactive' })}
+              </StatusBadge>
+            );
+          }
+          if (known.length && ready === 0) {
+            return (
+              <StatusBadge tone="warning" plain>
+                {intl.formatMessage({ id: 'providers.status.degraded' })}
+              </StatusBadge>
+            );
+          }
+          return (
+            <StatusBadge tone="success" plain>
+              {intl.formatMessage({ id: 'providers.status.ready' })}
+            </StatusBadge>
+          );
+        }
+      },
+      {
+        title: intl.formatMessage({ id: 'providers.table.endpoint' }),
+        dataIndex: 'proxy_url',
+        span: 4,
+        minWidth: 160,
+        render: (_value: string, record: MaasProviderItem) => {
+          const endpoint =
+            record.config?.openaiCustomUrl ||
+            record.config?.claudeCustomUrl ||
+            record.proxy_url;
+          return (
+            <AutoTooltip ghost>
+              <span
+                style={{
+                  color: 'var(--text-secondary)',
+                  fontSize: 12
+                }}
+              >
+                {endpoint || '—'}
+              </span>
+            </AutoTooltip>
+          );
+        }
       },
       {
         title: intl.formatMessage({ id: 'providers.table.models' }),

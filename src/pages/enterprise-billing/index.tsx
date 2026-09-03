@@ -6,9 +6,11 @@ import {
   DatePicker,
   Descriptions,
   Drawer,
+  Empty,
   Form,
   Input,
   InputNumber,
+  Modal,
   Select,
   Space,
   Table,
@@ -91,6 +93,29 @@ const EnterpriseBilling: React.FC = () => {
     return 'processing';
   };
 
+  const formatPeriod = (row: any) => {
+    const start = row.period_start
+      ? dayjs(row.period_start).format('YYYY-MM-DD')
+      : '';
+    const end = row.period_end
+      ? dayjs(row.period_end).format('YYYY-MM-DD')
+      : '';
+    return start && end ? `${start} → ${end}` : start || end || '—';
+  };
+
+  const formatAmount = (row: any) => {
+    const amount = Number(row.total_amount);
+    const text = Number.isFinite(amount) ? amount.toFixed(4) : row.total_amount;
+    return `${text} ${row.currency || ''}`.trim();
+  };
+
+  const orgLabel = (id?: number) => {
+    if (!id) {
+      return intl.formatMessage({ id: 'billing.center.platformDefault' });
+    }
+    return orgs.find((item) => item.id === id)?.name || String(id);
+  };
+
   const generate = async () => {
     const values = await genForm.validateFields();
     setGenerating(true);
@@ -112,15 +137,26 @@ const EnterpriseBilling: React.FC = () => {
   };
 
   const actInvoice = async (id: number, action: 'issue' | 'void') => {
-    const row = await request(`/billing/invoices/${id}/${action}`, {
-      method: 'POST'
+    Modal.confirm({
+      title: intl.formatMessage({
+        id:
+          action === 'issue'
+            ? 'billing.invoice.issueConfirm'
+            : 'billing.invoice.voidConfirm'
+      }),
+      okText: intl.formatMessage({ id: 'common.button.confirm' }),
+      cancelText: intl.formatMessage({ id: 'common.button.cancel' }),
+      onOk: async () => {
+        await request(`/billing/invoices/${id}/${action}`, {
+          method: 'POST'
+        });
+        message.success(intl.formatMessage({ id: 'common.message.success' }));
+        if (detail?.id === id) {
+          setDetail(await request(`/billing/invoices/${id}`));
+        }
+        load();
+      }
     });
-    message.success(intl.formatMessage({ id: 'common.message.success' }));
-    if (detail?.id === id) {
-      setDetail(await request(`/billing/invoices/${id}`));
-    }
-    load();
-    return row;
   };
 
   const exportInvoice = async (id: number) => {
@@ -208,7 +244,17 @@ const EnterpriseBilling: React.FC = () => {
                   initialValues={{ period: lastMonth() }}
                 >
                   {access.canSeeAdmin ? (
-                    <Form.Item name="org_principal_id">
+                    <Form.Item
+                      name="org_principal_id"
+                      rules={[
+                        {
+                          required: true,
+                          message: intl.formatMessage({
+                            id: 'billing.invoice.selectOrg'
+                          })
+                        }
+                      ]}
+                    >
                       <Select
                         allowClear
                         showSearch
@@ -230,7 +276,7 @@ const EnterpriseBilling: React.FC = () => {
                       id: 'billing.invoice.periodRange'
                     })}
                   >
-                    <DatePicker.RangePicker showTime />
+                    <DatePicker.RangePicker format="YYYY-MM-DD" />
                   </Form.Item>
                   <Button
                     type="primary"
@@ -243,6 +289,15 @@ const EnterpriseBilling: React.FC = () => {
                 <Table
                   rowKey="id"
                   dataSource={invoices}
+                  locale={{
+                    emptyText: (
+                      <Empty
+                        description={intl.formatMessage({
+                          id: 'billing.invoice.empty'
+                        })}
+                      />
+                    )
+                  }}
                   columns={[
                     {
                       title: intl.formatMessage({ id: 'billing.invoice.org' }),
@@ -250,16 +305,15 @@ const EnterpriseBilling: React.FC = () => {
                     },
                     {
                       title: intl.formatMessage({
-                        id: 'billing.invoice.period'
+                        id: 'billing.invoice.periodRange'
                       }),
-                      dataIndex: 'period_start'
+                      render: (_: any, row: any) => formatPeriod(row)
                     },
                     {
                       title: intl.formatMessage({
                         id: 'billing.invoice.amount'
                       }),
-                      render: (_: any, row: any) =>
-                        `${row.total_amount} ${row.currency || ''}`
+                      render: (_: any, row: any) => formatAmount(row)
                     },
                     {
                       title: intl.formatMessage({
@@ -359,10 +413,32 @@ const EnterpriseBilling: React.FC = () => {
                 <Table
                   rowKey="id"
                   dataSource={plans}
+                  locale={{
+                    emptyText: (
+                      <Empty
+                        description={intl.formatMessage({
+                          id: 'billing.plan.empty'
+                        })}
+                      />
+                    )
+                  }}
                   columns={[
                     {
                       title: intl.formatMessage({ id: 'common.table.name' }),
-                      dataIndex: 'name'
+                      dataIndex: 'name',
+                      render: (name: string, row: any) => (
+                        <Space>
+                          <span>{name}</span>
+                          {row.name === 'platform-default' ||
+                          row.org_principal_id === 0 ? (
+                            <Tag>
+                              {intl.formatMessage({
+                                id: 'billing.center.platformDefault'
+                              })}
+                            </Tag>
+                          ) : null}
+                        </Space>
+                      )
                     },
                     {
                       title: intl.formatMessage({
@@ -373,7 +449,15 @@ const EnterpriseBilling: React.FC = () => {
                     {
                       title: intl.formatMessage({ id: 'billing.plan.enabled' }),
                       dataIndex: 'enabled',
-                      render: (v) => String(v)
+                      render: (v: boolean) => (
+                        <Tag color={v ? 'success' : 'default'}>
+                          {v
+                            ? intl.formatMessage({ id: 'common.button.enable' })
+                            : intl.formatMessage({
+                                id: 'common.button.disable'
+                              })}
+                        </Tag>
+                      )
                     },
                     {
                       title: intl.formatMessage({
@@ -436,20 +520,24 @@ const EnterpriseBilling: React.FC = () => {
                 <Table
                   rowKey="id"
                   dataSource={centers}
+                  locale={{
+                    emptyText: (
+                      <Empty
+                        description={intl.formatMessage({
+                          id: 'billing.center.empty'
+                        })}
+                      />
+                    )
+                  }}
                   columns={[
                     {
                       title: intl.formatMessage({ id: 'common.table.name' }),
                       dataIndex: 'name'
                     },
                     {
-                      title: intl.formatMessage({ id: 'billing.center.orgId' }),
+                      title: intl.formatMessage({ id: 'billing.invoice.org' }),
                       dataIndex: 'org_principal_id',
-                      render: (id: number) =>
-                        id
-                          ? id
-                          : intl.formatMessage({
-                              id: 'billing.center.platformDefault'
-                            })
+                      render: (id: number) => orgLabel(id)
                     },
                     {
                       title: intl.formatMessage({
@@ -517,14 +605,26 @@ const EnterpriseBilling: React.FC = () => {
                 {detail.org_name}
               </Descriptions.Item>
               <Descriptions.Item
+                label={intl.formatMessage({
+                  id: 'billing.invoice.periodRange'
+                })}
+              >
+                {formatPeriod(detail)}
+              </Descriptions.Item>
+              <Descriptions.Item
                 label={intl.formatMessage({ id: 'billing.invoice.amount' })}
               >
-                {detail.total_amount} {detail.currency}
+                {formatAmount(detail)}
               </Descriptions.Item>
               <Descriptions.Item
                 label={intl.formatMessage({ id: 'billing.invoice.status' })}
               >
-                <Tag color={statusColor(detail.status)}>{detail.status}</Tag>
+                <Tag color={statusColor(detail.status)}>
+                  {intl.formatMessage({
+                    id: `billing.status.${detail.status}`,
+                    defaultMessage: detail.status
+                  })}
+                </Tag>
               </Descriptions.Item>
             </Descriptions>
             <Table
@@ -543,7 +643,12 @@ const EnterpriseBilling: React.FC = () => {
                 },
                 {
                   title: intl.formatMessage({ id: 'billing.item.amount' }),
-                  dataIndex: 'amount'
+                  render: (_: any, row: any) => {
+                    const amount = Number(row.amount);
+                    return Number.isFinite(amount)
+                      ? amount.toFixed(4)
+                      : row.amount;
+                  }
                 }
               ]}
             />

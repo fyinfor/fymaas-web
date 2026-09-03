@@ -25,6 +25,7 @@ import {
   Switch,
   Table,
   Tabs,
+  Tag,
   message
 } from 'antd';
 import _ from 'lodash';
@@ -196,10 +197,13 @@ const Quotas: React.FC = () => {
     {
       title: intl.formatMessage({ id: 'quotas.form.enabled' }),
       dataIndex: 'enabled',
-      render: (v: boolean) =>
-        v
-          ? intl.formatMessage({ id: 'common.button.enable' })
-          : intl.formatMessage({ id: 'common.button.disable' })
+      render: (v: boolean) => (
+        <Tag color={v ? 'success' : 'default'}>
+          {v
+            ? intl.formatMessage({ id: 'common.button.enable' })
+            : intl.formatMessage({ id: 'common.button.disable' })}
+        </Tag>
+      )
     },
     {
       title: intl.formatMessage({ id: 'common.table.operation' }),

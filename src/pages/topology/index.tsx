@@ -14,10 +14,10 @@ import React from 'react';
 import PageBox from '../_components/page-box';
 
 const KIND_COLOR: Record<string, string> = {
-  cluster: '#1677ff',
-  worker: '#52c41a',
-  gpu: '#722ed1',
-  instance: '#fa8c16'
+  cluster: '#0F8F8A',
+  worker: '#18A875',
+  gpu: '#7567B8',
+  instance: '#249EC2'
 };
 
 const NODE_W = 200;

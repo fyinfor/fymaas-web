@@ -191,6 +191,13 @@ export default {
   'billing.invoice.status': 'Durum',
   'billing.invoice.detail': 'Fatura ayrıntısı',
   'billing.invoice.generate': 'Fatura oluştur',
+  'billing.invoice.selectOrg': 'Faturalanacak organizasyonu seçin',
+  'billing.invoice.empty':
+    'Henüz fatura yok. Fiyat planını doğrulayıp bir dönem oluşturun.',
+  'billing.invoice.issueConfirm':
+    'Kesildikten sonra dönem kilitlenir. Bu faturayı kessin mi?',
+  'billing.invoice.voidConfirm':
+    'İptal geri alınamaz. Bu faturayı iptal edilsin mi?',
   'billing.invoice.issue': 'Kes',
   'billing.invoice.void': 'İptal et',
   'billing.invoice.export': 'CSV dışa aktar',
@@ -200,11 +207,14 @@ export default {
   'billing.status.draft': 'Taslak',
   'billing.status.issued': 'Kesildi',
   'billing.status.void': 'İptal',
+  'billing.plan.empty':
+    'Henüz fiyat planı yok. Sunucuyu yeniden başlatınca platform-default oluşur.',
   'billing.plan.add': 'Plan ekle',
   'billing.plan.edit': 'Planı kaydet',
   'billing.plan.items': 'Fiyat kalemleri',
   'billing.plan.currency': 'Para birimi',
   'billing.plan.enabled': 'Etkin',
+  'billing.center.empty': 'Henüz maliyet merkezi yok.',
   'billing.center.add': 'Maliyet merkezi ekle',
   'billing.center.orgId': 'Organizasyon kimliği',
   'billing.center.bindings': 'Bağlamalar',
@@ -225,6 +235,7 @@ export default {
   'roles.scope': 'Kapsam',
   'roles.permissions': 'İzinler',
   'roles.tab.roles': 'Roller',
+  'roles.builtin': 'Yerleşik',
   'roles.tab.bindings': 'Atamalar',
   'roles.binding.add': 'Rol ver',
   'roles.binding.principal': 'Kimlik',
@@ -251,6 +262,7 @@ export default {
   'rollouts.hold': 'Bekleme (sn)',
   'rollouts.stageAdd': 'Aşama ekle',
   'rollouts.error': 'Hata',
+  'rollouts.empty': 'Henüz yayın yok. Bir rota ve iki hedef seçerek başlayın.',
 
   'orgs.item': 'organizasyon',
   'orgs.add': 'Organizasyon Ekle',

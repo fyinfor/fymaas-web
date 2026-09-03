@@ -188,6 +188,12 @@ export default {
   'billing.invoice.status': 'Status',
   'billing.invoice.detail': 'Invoice detail',
   'billing.invoice.generate': 'Generate invoice',
+  'billing.invoice.selectOrg': 'Select an organization to bill',
+  'billing.invoice.empty':
+    'No invoices yet. Confirm a price plan, then generate a period.',
+  'billing.invoice.issueConfirm':
+    'Issuing locks this period. Issue this invoice?',
+  'billing.invoice.voidConfirm': 'Voiding cannot be undone. Void this invoice?',
   'billing.invoice.issue': 'Issue',
   'billing.invoice.void': 'Void',
   'billing.invoice.export': 'Export CSV',
@@ -197,11 +203,14 @@ export default {
   'billing.status.draft': 'Draft',
   'billing.status.issued': 'Issued',
   'billing.status.void': 'Void',
+  'billing.plan.empty':
+    'No price plans yet. Restart the server to seed platform-default.',
   'billing.plan.add': 'Add plan',
   'billing.plan.edit': 'Save plan',
   'billing.plan.items': 'Price items',
   'billing.plan.currency': 'Currency',
   'billing.plan.enabled': 'Enabled',
+  'billing.center.empty': 'No cost centres yet.',
   'billing.center.add': 'Add cost centre',
   'billing.center.orgId': 'Organization ID',
   'billing.center.bindings': 'Bindings',
@@ -222,6 +231,7 @@ export default {
   'roles.scope': 'Scope',
   'roles.permissions': 'Permissions',
   'roles.tab.roles': 'Roles',
+  'roles.builtin': 'Built-in',
   'roles.tab.bindings': 'Bindings',
   'roles.binding.add': 'Grant role',
   'roles.binding.principal': 'Principal',
@@ -248,6 +258,8 @@ export default {
   'rollouts.hold': 'Hold seconds',
   'rollouts.stageAdd': 'Add stage',
   'rollouts.error': 'Error',
+  'rollouts.empty':
+    'No rollouts yet. Pick a route and two targets to start one.',
 
   'orgs.item': 'organization',
   'orgs.add': 'Add Organization',

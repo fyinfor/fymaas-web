@@ -3,6 +3,7 @@ import { request, useIntl } from '@umijs/max';
 import {
   Button,
   Drawer,
+  Empty,
   Form,
   InputNumber,
   Select,
@@ -99,6 +100,11 @@ const Rollouts: React.FC = () => {
       <Table
         rowKey="id"
         dataSource={rows}
+        locale={{
+          emptyText: (
+            <Empty description={intl.formatMessage({ id: 'rollouts.empty' })} />
+          )
+        }}
         columns={[
           {
             title: intl.formatMessage({ id: 'rollouts.route' }),

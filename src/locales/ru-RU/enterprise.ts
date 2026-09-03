@@ -190,6 +190,13 @@ export default {
   'billing.invoice.status': 'Статус',
   'billing.invoice.detail': 'Детали счёта',
   'billing.invoice.generate': 'Сформировать счёт',
+  'billing.invoice.selectOrg': 'Выберите организацию для выставления счёта',
+  'billing.invoice.empty':
+    'Счетов пока нет. Проверьте тариф и сформируйте период.',
+  'billing.invoice.issueConfirm':
+    'После выставления период будет зафиксирован. Выставить этот счёт?',
+  'billing.invoice.voidConfirm':
+    'Аннулирование нельзя отменить. Аннулировать этот счёт?',
   'billing.invoice.issue': 'Выставить',
   'billing.invoice.void': 'Аннулировать',
   'billing.invoice.export': 'Экспорт CSV',
@@ -199,11 +206,14 @@ export default {
   'billing.status.draft': 'Черновик',
   'billing.status.issued': 'Выставлен',
   'billing.status.void': 'Аннулирован',
+  'billing.plan.empty':
+    'Тарифов пока нет. Перезапустите сервер, чтобы создать platform-default.',
   'billing.plan.add': 'Добавить тариф',
   'billing.plan.edit': 'Сохранить тариф',
   'billing.plan.items': 'Позиции тарифа',
   'billing.plan.currency': 'Валюта',
   'billing.plan.enabled': 'Включено',
+  'billing.center.empty': 'Центров затрат пока нет.',
   'billing.center.add': 'Добавить центр затрат',
   'billing.center.orgId': 'ID организации',
   'billing.center.bindings': 'Привязки',
@@ -224,6 +234,7 @@ export default {
   'roles.scope': 'Область',
   'roles.permissions': 'Права',
   'roles.tab.roles': 'Роли',
+  'roles.builtin': 'Встроенная',
   'roles.tab.bindings': 'Назначения',
   'roles.binding.add': 'Назначить роль',
   'roles.binding.principal': 'Субъект',
@@ -250,6 +261,8 @@ export default {
   'rollouts.hold': 'Пауза, сек',
   'rollouts.stageAdd': 'Добавить этап',
   'rollouts.error': 'Ошибка',
+  'rollouts.empty':
+    'Выкатов пока нет. Выберите маршрут и два target, чтобы начать.',
 
   'orgs.item': 'организация',
   'orgs.add': 'Добавить организацию',

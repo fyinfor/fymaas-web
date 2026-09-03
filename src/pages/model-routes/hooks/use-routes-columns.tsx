@@ -1,6 +1,8 @@
 // columns.ts
+import { StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import ModelTag from '@/pages/_components/model-tag';
+import { modelCategoriesMap } from '@/pages/llmodels/config';
 import { getGPUStackPlugin } from '@/plugins';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import {
@@ -61,9 +63,28 @@ interface ColumnsHookProps {
 // would exceed what these reductions can absorb fall back to their
 // declared widths and may visibly wrap — that's a plugin-author
 // concern, not a host one.
-const TARGETS_PREFERRED_SPAN = 10;
-const TARGETS_MIN_SPAN = 4;
-const CREATE_TIME_PREFERRED_SPAN = 5;
+const categoryEndpointMap: Record<string, string> = {
+  [modelCategoriesMap.llm]: '/v1/chat/completions',
+  [modelCategoriesMap.embedding]: '/v1/embeddings',
+  [modelCategoriesMap.reranker]: '/v1/rerank',
+  [modelCategoriesMap.image]: '/v1/images/generations',
+  [modelCategoriesMap.text_to_speech]: '/v1/audio/speech',
+  [modelCategoriesMap.speech_to_text]: '/v1/audio/transcriptions'
+};
+
+const getRouteStatus = (record: RouteItem) => {
+  if (record.ready_targets > 0 && record.ready_targets >= record.targets) {
+    return { tone: 'success' as const, id: 'routes.status.ready' };
+  }
+  if (record.ready_targets > 0) {
+    return { tone: 'warning' as const, id: 'routes.status.degraded' };
+  }
+  return { tone: 'neutral' as const, id: 'routes.status.inactive' };
+};
+
+const TARGETS_PREFERRED_SPAN = 4;
+const TARGETS_MIN_SPAN = 3;
+const CREATE_TIME_PREFERRED_SPAN = 4;
 const CREATE_TIME_MIN_SPAN = 2;
 
 const useAccessColumns = ({
@@ -206,7 +227,7 @@ const useAccessColumns = ({
         title: intl.formatMessage({ id: 'common.table.name' }),
         dataIndex: 'name',
         sorter: tableSorter(1),
-        span: 5,
+        span: 4,
         render: (text: string, record: RouteItem) => (
           <span className="flex-center" style={{ maxWidth: '100%' }}>
             <AutoTooltip ghost title={text}>
@@ -218,11 +239,45 @@ const useAccessColumns = ({
       },
       ...afterName,
       {
+        title: intl.formatMessage({ id: 'routes.table.endpoint' }),
+        dataIndex: 'categories',
+        span: 4,
+        render: (_value: string[], record: RouteItem) => (
+          <span
+            style={{
+              color: 'var(--text-secondary)',
+              fontFamily: 'var(--console-font-numeric)',
+              fontSize: 12
+            }}
+          >
+            {categoryEndpointMap[record.categories?.[0]] || '—'}
+          </span>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'common.table.status' }),
+        dataIndex: 'ready_targets',
+        span: 3,
+        render: (_value: number, record: RouteItem) => {
+          const status = getRouteStatus(record);
+          return (
+            <StatusBadge tone={status.tone} plain>
+              {intl.formatMessage({ id: status.id })}
+            </StatusBadge>
+          );
+        }
+      },
+      {
         title: intl.formatMessage({ id: 'routes.table.routeTargets' }),
         dataIndex: 'targets',
         span: targetsSpan,
         render: (value: number, record: RouteItem) => (
-          <span>
+          <span
+            style={{
+              fontVariantNumeric: 'tabular-nums',
+              color: 'var(--text-primary)'
+            }}
+          >
             {record.ready_targets} / {value}
           </span>
         )

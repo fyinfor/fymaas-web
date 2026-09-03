@@ -129,7 +129,17 @@ const Roles: React.FC = () => {
                   columns={[
                     {
                       title: intl.formatMessage({ id: 'common.table.name' }),
-                      dataIndex: 'name'
+                      dataIndex: 'name',
+                      render: (name: string, row: any) => (
+                        <Space>
+                          <span>{name}</span>
+                          {row.builtin ? (
+                            <Tag>
+                              {intl.formatMessage({ id: 'roles.builtin' })}
+                            </Tag>
+                          ) : null}
+                        </Space>
+                      )
                     },
                     {
                       title: intl.formatMessage({ id: 'roles.scope' }),

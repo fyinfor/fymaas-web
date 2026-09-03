@@ -190,6 +190,13 @@ export default {
   'billing.invoice.status': '状態',
   'billing.invoice.detail': '請求書の詳細',
   'billing.invoice.generate': '請求書を生成',
+  'billing.invoice.selectOrg': '請求対象の組織を選択してください',
+  'billing.invoice.empty':
+    '請求書はまだありません。料金プランを確認してから期間を生成してください。',
+  'billing.invoice.issueConfirm':
+    '発行すると対象期間がロックされます。この請求書を発行しますか？',
+  'billing.invoice.voidConfirm':
+    '無効化は取り消せません。この請求書を無効化しますか？',
   'billing.invoice.issue': '発行',
   'billing.invoice.void': '無効化',
   'billing.invoice.export': 'CSV を出力',
@@ -199,11 +206,14 @@ export default {
   'billing.status.draft': '下書き',
   'billing.status.issued': '発行済み',
   'billing.status.void': '無効',
+  'billing.plan.empty':
+    '料金プランはまだありません。サーバー再起動で platform-default が作成されます。',
   'billing.plan.add': 'プランを追加',
   'billing.plan.edit': 'プランを保存',
   'billing.plan.items': '価格項目',
   'billing.plan.currency': '通貨',
   'billing.plan.enabled': '有効',
+  'billing.center.empty': 'コストセンターはまだありません。',
   'billing.center.add': 'コストセンターを追加',
   'billing.center.orgId': '組織 ID',
   'billing.center.bindings': 'バインド',
@@ -224,6 +234,7 @@ export default {
   'roles.scope': 'スコープ',
   'roles.permissions': '権限',
   'roles.tab.roles': 'ロール',
+  'roles.builtin': '組み込み',
   'roles.tab.bindings': '付与',
   'roles.binding.add': 'ロールを付与',
   'roles.binding.principal': 'プリンシパル',
@@ -250,6 +261,8 @@ export default {
   'rollouts.hold': '待機秒数',
   'rollouts.stageAdd': 'ステージを追加',
   'rollouts.error': 'エラー',
+  'rollouts.empty':
+    'ロールアウトはまだありません。ルートと 2 つのターゲットを選んで開始します。',
 
   'orgs.item': '組織',
   'orgs.add': '組織を追加',

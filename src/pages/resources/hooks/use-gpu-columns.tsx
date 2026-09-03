@@ -1,38 +1,20 @@
+import { ResourceBar, StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { convertFileSize } from '@/utils';
-import { AutoTooltip, InfoColumn, ProgressBar } from '@gpustack/core-ui';
+import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { ColumnsType } from 'antd/lib/table';
 import _ from 'lodash';
 import { useMemo } from 'react';
 import { GPUDeviceItem } from '../config/types';
-const fieldList = [
-  {
-    label: 'resources.table.total',
-    key: 'total',
-    locale: true,
-    render: (val: any) => {
-      return convertFileSize(val, 0);
-    }
-  },
-  {
-    label: 'resources.table.used',
-    key: 'used',
-    locale: true,
-    render: (val: any) => {
-      return convertFileSize(val, 0);
-    }
-  },
-  {
-    label: 'resources.table.allocated',
-    key: 'allocated',
-    locale: true,
-    render: (val: any) => {
-      return convertFileSize(val, 0);
-    }
-  }
-];
+
+const isAllocated = (record: GPUDeviceItem) => {
+  return (
+    Number(record.memory?.allocated || 0) > 0 ||
+    Number(record.core?.utilization_rate || 0) > 1
+  );
+};
 
 const useGPUColumns = (props: {
   loadend: boolean;
@@ -40,7 +22,7 @@ const useGPUColumns = (props: {
   clusterList: Global.BaseOption<number>[];
   sortOrder: string[];
 }): ColumnsType<GPUDeviceItem> => {
-  const { clusterList, loadend, firstLoad, sortOrder } = props;
+  const { clusterList, sortOrder } = props;
   const intl = useIntl();
   const pluginCols = usePluginListColumns('gpus');
 
@@ -55,102 +37,116 @@ const useGPUColumns = (props: {
       {
         title: intl.formatMessage({ id: 'common.table.name' }),
         dataIndex: 'name',
-        width: 240,
+        width: 260,
         minWidth: 32,
         sorter: tableSorter(1),
         render: (text: string, record: GPUDeviceItem) => (
-          <AutoTooltip ghost maxWidth={240} title={text}>
-            <span className="text-primary">{text}</span>
+          <AutoTooltip ghost maxWidth={260} title={text}>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+              GPU {record.index}
+              {text ? `  ${text}` : ''}
+            </span>
           </AutoTooltip>
         )
       },
-      {
-        title: intl.formatMessage({ id: 'resources.table.index' }),
-        dataIndex: 'index',
-        sorter: tableSorter(2),
-        render: (text: string, record: GPUDeviceItem) => <span>{text}</span>
-      },
       ...pluginRendered,
+      {
+        title: intl.formatMessage({ id: 'resources.worker' }),
+        dataIndex: 'worker_name',
+        sorter: tableSorter(4),
+        render: (text: string) => <AutoTooltip ghost>{text}</AutoTooltip>
+      },
       {
         title: intl.formatMessage({ id: 'clusters.title' }),
         dataIndex: 'cluster_id',
         sorter: tableSorter(3),
-        render: (text: number, record: GPUDeviceItem) => (
+        render: (text: number) => (
           <AutoTooltip ghost>
             {clusterList.find((item) => item.value === text)?.label}
           </AutoTooltip>
         )
       },
       {
-        title: intl.formatMessage({ id: 'resources.worker' }),
-        dataIndex: 'worker_name',
-        sorter: tableSorter(4),
-        render: (text: string, record: GPUDeviceItem) => (
-          <AutoTooltip ghost>{text}</AutoTooltip>
-        )
-      },
-      {
-        title: intl.formatMessage({ id: 'resources.table.vendor' }),
-        dataIndex: 'vendor',
-        sorter: tableSorter(5)
-      },
-      {
-        title: `${intl.formatMessage({ id: 'resources.table.temperature' })} (°C)`,
-        dataIndex: 'temperature',
-        render: (text: number, record: GPUDeviceItem) => (
-          <span>{text ? _.round(text, 1) : '-'}</span>
-        )
-      },
-      {
-        title: `${intl.formatMessage({ id: 'resources.table.utilization' })}`,
-        dataIndex: 'core.utilization_rate',
-        key: 'core.utilization_rate',
-        sorter: tableSorter(6),
-        render: (text: number, record: GPUDeviceItem) => {
+        title: intl.formatMessage({ id: 'resources.table.allocation' }),
+        dataIndex: 'memory.allocated',
+        key: 'allocation',
+        render: (_text: number, record: GPUDeviceItem) => {
+          const allocated = isAllocated(record);
           return (
-            <span className="flex-center flex-full">
-              {record.core ? (
-                <ProgressBar
-                  percent={_.round(record.core?.utilization_rate, 2)}
-                ></ProgressBar>
-              ) : (
-                '-'
-              )}
-            </span>
+            <StatusBadge tone={allocated ? 'info' : 'neutral'} plain>
+              {intl.formatMessage({
+                id: allocated
+                  ? 'resources.gpu.status.allocated'
+                  : 'resources.gpu.status.available'
+              })}
+            </StatusBadge>
           );
         }
       },
       {
-        title: intl.formatMessage({ id: 'resources.table.vramutilization' }),
+        title: intl.formatMessage({ id: 'resources.table.utilization' }),
+        dataIndex: 'core.utilization_rate',
+        key: 'core.utilization_rate',
+        sorter: tableSorter(6),
+        width: 140,
+        render: (_text: number, record: GPUDeviceItem) =>
+          record.core ? (
+            <ResourceBar
+              percent={_.round(record.core.utilization_rate || 0, 1)}
+              color="var(--gpu)"
+            />
+          ) : (
+            '—'
+          )
+      },
+      {
+        title: intl.formatMessage({ id: 'resources.table.vram' }),
         dataIndex: 'memory.utilization_rate',
         key: 'memory.utilization_rate',
         sorter: tableSorter(7),
-        render: (text: number, record: GPUDeviceItem, index: number) => {
+        width: 180,
+        render: (_text: number, record: GPUDeviceItem) => {
+          const used = Number(record.memory?.used || 0);
+          const total = Number(record.memory?.total || 0);
+          const allocated = Number(record.memory?.allocated || 0);
+          const percent = used
+            ? _.round(record.memory?.utilization_rate || 0, 0)
+            : total
+              ? _.round((allocated / total) * 100, 0)
+              : 0;
           return (
-            <span className="flex-center flex-full">
-              <ProgressBar
-                defaultOpen={index === 0 && loadend && firstLoad}
-                percent={
-                  record.memory?.used
-                    ? _.round(record.memory?.utilization_rate, 0)
-                    : _.round(
-                        record.memory?.allocated / record.memory?.total,
-                        0
-                      ) * 100
-                }
-                label={
-                  <InfoColumn
-                    fieldList={fieldList}
-                    data={record.memory}
-                  ></InfoColumn>
-                }
-              ></ProgressBar>
+            <ResourceBar
+              percent={percent}
+              color="var(--vram)"
+              detail={
+                total
+                  ? `${convertFileSize(used || allocated, 0)} / ${convertFileSize(total, 0)}`
+                  : undefined
+              }
+            />
+          );
+        }
+      },
+      {
+        title: `${intl.formatMessage({ id: 'resources.table.temperature' })} (°C)`,
+        dataIndex: 'temperature',
+        render: (text: number) => {
+          const value = text ? _.round(text, 1) : null;
+          const hot = value !== null && value >= 80;
+          return (
+            <span
+              style={{
+                fontVariantNumeric: 'tabular-nums',
+                color: hot ? 'var(--warning)' : 'var(--text-primary)'
+              }}
+            >
+              {value === null ? '—' : value}
             </span>
           );
         }
       }
     ];
-  }, [intl, clusterList, loadend, firstLoad, pluginCols]);
+  }, [intl, clusterList, sortOrder, pluginCols]);
 };
 
 export default useGPUColumns;

@@ -317,11 +317,7 @@ const useInstancesColumns = ({
         title: intl.formatMessage({ id: GaugeLabelIdMap[gaugeKey] }),
         dataIndex: `utilization-${gaugeKey}`,
         key: `utilization-${gaugeKey}`,
-        // `width`, not `minWidth`: the content is a fixed GAUGE_SIZE gauge, so
-        // the column has nothing to gain from extra room and stays pinned. The
-        // cell's own inline padding eats 32 of this, and a header that outgrows
-        // what is left truncates through AutoTooltip.
-        width: 80,
+        minWidth: 120,
         render: (_text: any, record: ListItem) => (
           <UtilizationCell
             gaugeKey={gaugeKey}

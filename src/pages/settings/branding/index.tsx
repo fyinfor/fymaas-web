@@ -1,4 +1,5 @@
 import { queryBranding, updateBranding } from '@/enterprise/branding/apis';
+import { DEFAULT_PRODUCT_NAME } from '@/enterprise/branding/runtime';
 import type {
   BrandingConfig,
   BrandingPublic
@@ -45,6 +46,33 @@ const useStyles = createStyles(({ css }) => ({
   `,
   actions: css`
     margin-top: 40px;
+  `,
+  preview: css`
+    margin: 0 0 32px;
+    padding: 16px 20px;
+    border: 1px solid var(--ant-color-border-secondary);
+    border-radius: 8px;
+    background: #f8fafa;
+  `,
+  previewBar: css`
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  `,
+  previewName: css`
+    font-size: 18px;
+    font-weight: 600;
+    color: #182022;
+  `,
+  previewTitle: css`
+    margin-top: 8px;
+    font-size: 14px;
+    color: #182022;
+  `,
+  previewSubtitle: css`
+    margin-top: 4px;
+    font-size: 13px;
+    color: #5b6b6d;
   `
 }));
 
@@ -96,6 +124,21 @@ const Branding: React.FC = () => {
     }
   };
 
+  const previewName = Form.useWatch('product_name', form);
+  const previewColor = Form.useWatch('color_primary', form);
+  const previewTitle = Form.useWatch('login_title', form);
+  const previewSubtitle = Form.useWatch('login_subtitle', form);
+
+  const resolvedColor = React.useMemo(() => {
+    if (typeof previewColor === 'string' && previewColor) {
+      return previewColor;
+    }
+    if (previewColor && typeof previewColor.toHexString === 'function') {
+      return previewColor.toHexString();
+    }
+    return branding.color_primary || '#0F8F8A';
+  }, [previewColor, branding.color_primary]);
+
   const urlRules = [
     {
       pattern: URL_PATTERN,
@@ -110,6 +153,25 @@ const Branding: React.FC = () => {
           <p className={styles.description}>
             {intl.formatMessage({ id: 'branding.page.description' })}
           </p>
+          <div className={styles.preview}>
+            <div
+              className={styles.previewBar}
+              style={{ background: resolvedColor }}
+            />
+            <div className={styles.previewName}>
+              {previewName || branding.product_name || DEFAULT_PRODUCT_NAME}
+            </div>
+            {previewTitle || branding.login_title ? (
+              <div className={styles.previewTitle}>
+                {previewTitle || branding.login_title}
+              </div>
+            ) : null}
+            {previewSubtitle || branding.login_subtitle ? (
+              <div className={styles.previewSubtitle}>
+                {previewSubtitle || branding.login_subtitle}
+              </div>
+            ) : null}
+          </div>
 
           <Form form={form} layout="vertical" requiredMark={false}>
             <SettingsSection
