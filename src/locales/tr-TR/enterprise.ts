@@ -60,5 +60,74 @@ export default {
   'branding.message.saved':
     'Marka ayarları kaydedildi. Değişiklikleri uygulamak için sayfa yenileniyor…',
   'branding.message.assetUpdated': 'Görsel güncellendi',
-  'branding.message.assetRemoved': 'Görsel kaldırıldı'
+  'branding.message.assetRemoved': 'Görsel kaldırıldı',
+
+  'menu.accessControl.auditLogs': 'Denetim Kayıtları',
+  'menu.accessControl.ipAccessControl': 'IP Erişimi',
+
+  'auditLogs.table.time': 'Zaman',
+  'auditLogs.table.actor': 'İşlemi yapan',
+  'auditLogs.table.action': 'İşlem',
+  'auditLogs.table.resource': 'Kaynak',
+  'auditLogs.table.result': 'Sonuç',
+  'auditLogs.table.sourceIp': 'Kaynak IP',
+  'auditLogs.filter.search': 'Kişi veya kaynak ara',
+  'auditLogs.filter.action': 'Tüm işlemler',
+  'auditLogs.filter.result': 'Tüm sonuçlar',
+  'auditLogs.result.success': 'Başarılı',
+  'auditLogs.result.failure': 'Başarısız',
+  'auditLogs.button.detail': 'Ayrıntılar',
+  'auditLogs.button.export': "CSV'ye aktar",
+  'auditLogs.export.failed':
+    'Aktarma başarısız oldu. Tarih aralığını daraltmayı deneyin.',
+  'auditLogs.detail.title': 'Denetim kaydı',
+  'auditLogs.detail.actorType': 'Kişi türü',
+  'auditLogs.detail.apiKey': 'API anahtarı',
+  'auditLogs.detail.organization': 'Organizasyon',
+  'auditLogs.detail.request': 'İstek',
+  'auditLogs.detail.userAgent': 'İstemci',
+  'auditLogs.detail.requestId': 'İstek kimliği',
+  'auditLogs.detail.error': 'Hata',
+  'auditLogs.detail.changes': 'Değişiklikler',
+  'auditLogs.noresult.title': 'Henüz denetim kaydı yok',
+  'auditLogs.noresult.subTitle':
+    'Kullanıcılar kaynak oluşturdukça, güncelledikçe ve sildikçe kayıtlar burada görünür.',
+  'auditLogs.noresult.nofound': 'Bu filtrelere uyan kayıt yok',
+
+  'ipAccess.rule': 'IP erişim kuralı',
+  'ipAccess.rule.add': 'Kural Ekle',
+  'ipAccess.rule.edit': 'Kuralı Düzenle',
+  'ipAccess.page.description':
+    'Kurallar önceliğe göre artan sırada değerlendirilir; ilk eşleşen geçerli olur. Hiçbiri eşleşmezse varsayılan işlem uygulanır.',
+  'ipAccess.policy.enabled': 'IP kurallarını uygula',
+  'ipAccess.policy.defaultAction': 'Varsayılan işlem',
+  'ipAccess.policy.confirm.title': 'IP denetimi etkinleştirilsin mi?',
+  'ipAccess.policy.confirm.deny':
+    'Varsayılan işlem Reddet olduğundan, eşleşen bir izin kuralı olmayan tüm adresler — sizin adresiniz dahil — reddedilir. Önce kendi IP adresinizi test edin.',
+  'ipAccess.policy.confirm.allow':
+    'Varsayılan işlem İzin Ver olduğundan, yalnızca bir reddetme kuralıyla eşleşen adresler reddedilir.',
+  'ipAccess.policy.denyWarning':
+    'Varsayılan reddetme etkin. Platforma yalnızca bir izin kuralıyla eşleşen adresler erişebilir.',
+  'ipAccess.form.cidr': 'IP veya CIDR',
+  'ipAccess.form.action': 'İşlem',
+  'ipAccess.form.priority': 'Öncelik',
+  'ipAccess.form.priority.tips': 'Küçük değerler önce değerlendirilir.',
+  'ipAccess.form.enabled': 'Etkin',
+  'ipAccess.form.rule.cidr':
+    'Bir IP adresi veya CIDR bloğu girin, örn. 10.0.0.0/8',
+  'ipAccess.form.rule.cidrHostBits':
+    'Ana makine bitleri ayarlanmış. Ağ adresini mi kastettiniz, örn. 10.0.0.0/8?',
+  'ipAccess.action.allow': 'İzin ver',
+  'ipAccess.action.deny': 'Reddet',
+  'ipAccess.table.priority': 'Öncelik',
+  'ipAccess.filter.name': 'Ada göre ara',
+  'ipAccess.test.holder': 'Bir IP adresini test et',
+  'ipAccess.test.button': 'Test et',
+  'ipAccess.test.allowed': 'İzin verildi',
+  'ipAccess.test.blocked': 'Engellendi',
+  'ipAccess.test.byDefault': 'varsayılan olarak',
+  'ipAccess.noresult.title': 'Henüz IP kuralı yok',
+  'ipAccess.noresult.subTitle':
+    'Belirli ağlara izin vermek veya onları reddetmek için kural ekleyin, ardından denetimi etkinleştirin.',
+  'ipAccess.noresult.nofound': 'Bu filtrelere uyan kural yok'
 };

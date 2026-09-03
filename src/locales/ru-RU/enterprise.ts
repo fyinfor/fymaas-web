@@ -59,5 +59,74 @@ export default {
   'branding.message.saved':
     'Настройки брендирования сохранены. Перезагружаем страницу, чтобы применить изменения…',
   'branding.message.assetUpdated': 'Изображение обновлено',
-  'branding.message.assetRemoved': 'Изображение удалено'
+  'branding.message.assetRemoved': 'Изображение удалено',
+
+  'menu.accessControl.auditLogs': 'Журнал аудита',
+  'menu.accessControl.ipAccessControl': 'Доступ по IP',
+
+  'auditLogs.table.time': 'Время',
+  'auditLogs.table.actor': 'Пользователь',
+  'auditLogs.table.action': 'Действие',
+  'auditLogs.table.resource': 'Ресурс',
+  'auditLogs.table.result': 'Результат',
+  'auditLogs.table.sourceIp': 'IP-адрес источника',
+  'auditLogs.filter.search': 'Поиск по пользователю или ресурсу',
+  'auditLogs.filter.action': 'Все действия',
+  'auditLogs.filter.result': 'Все результаты',
+  'auditLogs.result.success': 'Успешно',
+  'auditLogs.result.failure': 'Ошибка',
+  'auditLogs.button.detail': 'Подробнее',
+  'auditLogs.button.export': 'Экспорт в CSV',
+  'auditLogs.export.failed':
+    'Не удалось выполнить экспорт. Попробуйте сузить период.',
+  'auditLogs.detail.title': 'Запись аудита',
+  'auditLogs.detail.actorType': 'Тип пользователя',
+  'auditLogs.detail.apiKey': 'API-ключ',
+  'auditLogs.detail.organization': 'Организация',
+  'auditLogs.detail.request': 'Запрос',
+  'auditLogs.detail.userAgent': 'User agent',
+  'auditLogs.detail.requestId': 'ID запроса',
+  'auditLogs.detail.error': 'Ошибка',
+  'auditLogs.detail.changes': 'Изменения',
+  'auditLogs.noresult.title': 'Записей аудита пока нет',
+  'auditLogs.noresult.subTitle':
+    'Записи появятся здесь, когда пользователи начнут создавать, изменять и удалять ресурсы.',
+  'auditLogs.noresult.nofound': 'Нет записей, удовлетворяющих фильтрам',
+
+  'ipAccess.rule': 'Правило доступа по IP',
+  'ipAccess.rule.add': 'Добавить правило',
+  'ipAccess.rule.edit': 'Изменить правило',
+  'ipAccess.page.description':
+    'Правила проверяются по возрастанию приоритета; применяется первое совпавшее. Если совпадений нет, действует политика по умолчанию.',
+  'ipAccess.policy.enabled': 'Применять правила IP',
+  'ipAccess.policy.defaultAction': 'Действие по умолчанию',
+  'ipAccess.policy.confirm.title': 'Включить контроль по IP?',
+  'ipAccess.policy.confirm.deny':
+    'Действие по умолчанию — «Запретить», поэтому все адреса без совпадающего разрешающего правила будут отклонены, включая ваш. Сначала проверьте свой IP.',
+  'ipAccess.policy.confirm.allow':
+    'Действие по умолчанию — «Разрешить», поэтому будут отклонены только адреса, совпавшие с запрещающим правилом.',
+  'ipAccess.policy.denyWarning':
+    'Запрет по умолчанию активен. Доступ к платформе есть только у адресов, совпавших с разрешающим правилом.',
+  'ipAccess.form.cidr': 'IP или CIDR',
+  'ipAccess.form.action': 'Действие',
+  'ipAccess.form.priority': 'Приоритет',
+  'ipAccess.form.priority.tips': 'Меньшие значения проверяются раньше.',
+  'ipAccess.form.enabled': 'Включено',
+  'ipAccess.form.rule.cidr':
+    'Укажите IP-адрес или блок CIDR, например 10.0.0.0/8',
+  'ipAccess.form.rule.cidrHostBits':
+    'Заданы биты узла. Возможно, вы имели в виду адрес сети, например 10.0.0.0/8?',
+  'ipAccess.action.allow': 'Разрешить',
+  'ipAccess.action.deny': 'Запретить',
+  'ipAccess.table.priority': 'Приоритет',
+  'ipAccess.filter.name': 'Поиск по названию',
+  'ipAccess.test.holder': 'Проверить IP-адрес',
+  'ipAccess.test.button': 'Проверить',
+  'ipAccess.test.allowed': 'Разрешён',
+  'ipAccess.test.blocked': 'Запрещён',
+  'ipAccess.test.byDefault': 'по умолчанию',
+  'ipAccess.noresult.title': 'Правил IP пока нет',
+  'ipAccess.noresult.subTitle':
+    'Добавьте правила, чтобы разрешить или запретить конкретные сети, затем включите контроль.',
+  'ipAccess.noresult.nofound': 'Нет правил, удовлетворяющих фильтрам'
 };

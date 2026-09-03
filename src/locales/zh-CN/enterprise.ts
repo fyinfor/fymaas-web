@@ -54,5 +54,71 @@ export default {
 
   'branding.message.saved': '品牌设置已保存，正在刷新以应用更改…',
   'branding.message.assetUpdated': '图片已更新',
-  'branding.message.assetRemoved': '图片已移除'
+  'branding.message.assetRemoved': '图片已移除',
+
+  'menu.accessControl.auditLogs': '审计日志',
+  'menu.accessControl.ipAccessControl': 'IP 访问控制',
+
+  'auditLogs.table.time': '时间',
+  'auditLogs.table.actor': '操作者',
+  'auditLogs.table.action': '操作',
+  'auditLogs.table.resource': '资源',
+  'auditLogs.table.result': '结果',
+  'auditLogs.table.sourceIp': '来源 IP',
+  'auditLogs.filter.search': '搜索操作者或资源',
+  'auditLogs.filter.action': '全部操作',
+  'auditLogs.filter.result': '全部结果',
+  'auditLogs.result.success': '成功',
+  'auditLogs.result.failure': '失败',
+  'auditLogs.button.detail': '详情',
+  'auditLogs.button.export': '导出 CSV',
+  'auditLogs.export.failed': '导出失败，请尝试缩小时间范围。',
+  'auditLogs.detail.title': '审计记录',
+  'auditLogs.detail.actorType': '操作者类型',
+  'auditLogs.detail.apiKey': 'API 密钥',
+  'auditLogs.detail.organization': '组织',
+  'auditLogs.detail.request': '请求',
+  'auditLogs.detail.userAgent': '客户端',
+  'auditLogs.detail.requestId': '请求 ID',
+  'auditLogs.detail.error': '错误信息',
+  'auditLogs.detail.changes': '变更内容',
+  'auditLogs.noresult.title': '暂无审计记录',
+  'auditLogs.noresult.subTitle':
+    '用户创建、修改、删除资源时，记录会出现在这里。',
+  'auditLogs.noresult.nofound': '没有符合筛选条件的记录',
+
+  'ipAccess.rule': 'IP 访问规则',
+  'ipAccess.rule.add': '添加规则',
+  'ipAccess.rule.edit': '编辑规则',
+  'ipAccess.page.description':
+    '规则按优先级从小到大匹配，命中即生效；全部未命中时应用默认策略。',
+  'ipAccess.policy.enabled': '启用 IP 管控',
+  'ipAccess.policy.defaultAction': '默认策略',
+  'ipAccess.policy.confirm.title': '确认启用 IP 管控？',
+  'ipAccess.policy.confirm.deny':
+    '默认策略为拒绝，所有没有命中允许规则的地址都将被拒绝访问，包括你当前的地址。建议先测试自己的 IP。',
+  'ipAccess.policy.confirm.allow':
+    '默认策略为允许，只有命中拒绝规则的地址会被拒绝访问。',
+  'ipAccess.policy.denyWarning':
+    '默认拒绝已生效，只有命中允许规则的地址才能访问平台。',
+  'ipAccess.form.cidr': 'IP 或网段',
+  'ipAccess.form.action': '动作',
+  'ipAccess.form.priority': '优先级',
+  'ipAccess.form.priority.tips': '数值越小越先匹配。',
+  'ipAccess.form.enabled': '启用',
+  'ipAccess.form.rule.cidr': '请填写 IP 地址或网段，例如 10.0.0.0/8',
+  'ipAccess.form.rule.cidrHostBits':
+    '主机位不为 0，你要填的是不是网络地址，例如 10.0.0.0/8？',
+  'ipAccess.action.allow': '允许',
+  'ipAccess.action.deny': '拒绝',
+  'ipAccess.table.priority': '优先级',
+  'ipAccess.filter.name': '按名称搜索',
+  'ipAccess.test.holder': '测试 IP 地址',
+  'ipAccess.test.button': '测试',
+  'ipAccess.test.allowed': '允许',
+  'ipAccess.test.blocked': '拒绝',
+  'ipAccess.test.byDefault': '默认策略',
+  'ipAccess.noresult.title': '暂无 IP 规则',
+  'ipAccess.noresult.subTitle': '添加规则以允许或拒绝特定网段，然后启用管控。',
+  'ipAccess.noresult.nofound': '没有符合筛选条件的规则'
 };

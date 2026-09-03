@@ -58,5 +58,73 @@ export default {
 
   'branding.message.saved': 'Branding saved. Reloading to apply the changes…',
   'branding.message.assetUpdated': 'Image updated',
-  'branding.message.assetRemoved': 'Image removed'
+  'branding.message.assetRemoved': 'Image removed',
+
+  'menu.accessControl.auditLogs': 'Audit Logs',
+  'menu.accessControl.ipAccessControl': 'IP Access',
+
+  'auditLogs.table.time': 'Time',
+  'auditLogs.table.actor': 'Actor',
+  'auditLogs.table.action': 'Action',
+  'auditLogs.table.resource': 'Resource',
+  'auditLogs.table.result': 'Result',
+  'auditLogs.table.sourceIp': 'Source IP',
+  'auditLogs.filter.search': 'Search actor or resource',
+  'auditLogs.filter.action': 'All actions',
+  'auditLogs.filter.result': 'All results',
+  'auditLogs.result.success': 'Success',
+  'auditLogs.result.failure': 'Failure',
+  'auditLogs.button.detail': 'Details',
+  'auditLogs.button.export': 'Export CSV',
+  'auditLogs.export.failed': 'Export failed. Try narrowing the time range.',
+  'auditLogs.detail.title': 'Audit entry',
+  'auditLogs.detail.actorType': 'Actor type',
+  'auditLogs.detail.apiKey': 'API key',
+  'auditLogs.detail.organization': 'Organization',
+  'auditLogs.detail.request': 'Request',
+  'auditLogs.detail.userAgent': 'User agent',
+  'auditLogs.detail.requestId': 'Request ID',
+  'auditLogs.detail.error': 'Error',
+  'auditLogs.detail.changes': 'Changes',
+  'auditLogs.noresult.title': 'No audit entries yet',
+  'auditLogs.noresult.subTitle':
+    'Entries appear here as users create, update and delete resources.',
+  'auditLogs.noresult.nofound': 'No entries match these filters',
+
+  'ipAccess.rule': 'IP access rule',
+  'ipAccess.rule.add': 'Add Rule',
+  'ipAccess.rule.edit': 'Edit Rule',
+  'ipAccess.page.description':
+    'Rules are checked in ascending priority; the first match decides. If none match, the default action applies.',
+  'ipAccess.policy.enabled': 'Enforce IP rules',
+  'ipAccess.policy.defaultAction': 'Default action',
+  'ipAccess.policy.confirm.title': 'Enable IP enforcement?',
+  'ipAccess.policy.confirm.deny':
+    'The default action is Deny, so every address without a matching Allow rule will be refused — including yours. Test your address first.',
+  'ipAccess.policy.confirm.allow':
+    'The default action is Allow, so only addresses matching a Deny rule will be refused.',
+  'ipAccess.policy.denyWarning':
+    'Deny by default is active. Only addresses matched by an Allow rule can reach the platform.',
+  'ipAccess.form.cidr': 'CIDR',
+  'ipAccess.form.action': 'Action',
+  'ipAccess.form.priority': 'Priority',
+  'ipAccess.form.priority.tips': 'Lower numbers are checked first.',
+  'ipAccess.form.enabled': 'Enabled',
+  'ipAccess.form.rule.cidr':
+    'Must be an address or CIDR block, e.g. 10.0.0.0/8',
+  'ipAccess.form.rule.cidrHostBits':
+    'Host bits are set. Did you mean the network address, e.g. 10.0.0.0/8?',
+  'ipAccess.action.allow': 'Allow',
+  'ipAccess.action.deny': 'Deny',
+  'ipAccess.table.priority': 'Priority',
+  'ipAccess.filter.name': 'Search by name',
+  'ipAccess.test.holder': 'Test an IP address',
+  'ipAccess.test.button': 'Test',
+  'ipAccess.test.allowed': 'Allowed',
+  'ipAccess.test.blocked': 'Blocked',
+  'ipAccess.test.byDefault': 'by default',
+  'ipAccess.noresult.title': 'No IP rules yet',
+  'ipAccess.noresult.subTitle':
+    'Add rules to allow or deny specific networks, then turn enforcement on.',
+  'ipAccess.noresult.nofound': 'No rules match these filters'
 };
