@@ -148,7 +148,7 @@ const GPUCell = ({ devices }: { devices: GPUDeviceItem[] }) => (
   </Flex>
 );
 
-// index + ProgressBar
+// index + ResourceBar
 const VRAMItem = ({
   item,
   autoOpen
