@@ -1,5 +1,6 @@
 import { systemConfigAtom } from '@/atoms/system';
 import { GPUStackVersionAtom } from '@/atoms/user';
+import { ResourceBar, StatusBadge, statusTone } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { convertFileSize } from '@/utils';
@@ -17,8 +18,6 @@ import {
   IconFont,
   InfoColumn,
   LabelCell,
-  ProgressBar,
-  StatusTag,
   type TableColumnProps
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -128,7 +127,7 @@ const GPUCell = ({ devices }: { devices: GPUDeviceItem[] }) => (
     {_.map(
       _.sortBy(devices || [], ['index']),
       (item: GPUDeviceItem, index: number) => (
-        <span className="flex-center" key={index} style={{ height: 18 }}>
+        <span className="flex-center" key={index}>
           <span
             className="m-r-5"
             style={{ display: 'flex', width: 25, lineHeight: 1 }}
@@ -136,9 +135,12 @@ const GPUCell = ({ devices }: { devices: GPUDeviceItem[] }) => (
             [{item.index}]
           </span>
           {item.core ? (
-            <ProgressBar percent={_.round(item.core?.utilization_rate, 0)} />
+            <ResourceBar
+              percent={_.round(item.core?.utilization_rate, 0)}
+              color="var(--gpu)"
+            />
           ) : (
-            '-'
+            '—'
           )}
         </span>
       )
@@ -178,13 +180,13 @@ const VRAMItem = ({
           <span
             style={{
               paddingBottom: 3,
-              borderBottom: '1px dashed var(--ant-blue-6)'
+              borderBottom: '1px dashed var(--text-muted)'
             }}
           >
             [{item.index}]
           </span>
         </span>
-        <ProgressBar percent={percent} />
+        <ResourceBar percent={percent} color="var(--vram)" />
       </span>
     </Tooltip>
   );
@@ -224,20 +226,23 @@ const StorageCell = ({ files }: { files: Filesystem[] }) => {
     files,
     (item: Filesystem) => item.mount_point === '/'
   );
+  const bar = (
+    <ResourceBar percent={calcStorage(files)} color="var(--text-muted)" />
+  );
+  if (!mountRoot) {
+    return bar;
+  }
   return (
-    <ProgressBar
-      percent={calcStorage(files)}
-      label={
-        mountRoot ? (
-          <InfoColumn
-            fieldList={fieldList.filter((f) => f.key !== 'allocated')}
-            data={mountRoot}
-          />
-        ) : (
-          0
-        )
+    <Tooltip
+      title={
+        <InfoColumn
+          fieldList={fieldList.filter((f) => f.key !== 'allocated')}
+          data={mountRoot}
+        />
       }
-    />
+    >
+      {bar}
+    </Tooltip>
   );
 };
 
@@ -250,7 +255,7 @@ const statusAvailable = (record: ListItem) => {
 };
 
 const HolderStatus = () => {
-  return <span>N/A</span>;
+  return <span style={{ color: 'var(--text-muted)' }}>—</span>;
 };
 
 const useWorkerColumns = ({
@@ -412,7 +417,7 @@ const useWorkerColumns = ({
               style={{ color: 'var(--ant-color-warning)' }}
             ></IconFont>
           ) : (
-            <InfoCircleOutlined style={{ color: 'var(--ant-blue-5)' }} />
+            <InfoCircleOutlined style={{ color: 'var(--text-muted)' }} />
           )}
         </span>
       </Tooltip>
@@ -475,17 +480,19 @@ const useWorkerColumns = ({
         dataIndex: 'state',
         minWidth: 130,
         sorter: tableSorter(2),
-        render: (_text: any, record: ListItem) => (
-          <StatusTag
-            maxTooltipWidth={400}
-            suffix={record.provision_progress}
-            statusValue={{
-              status: status[record.state] as any,
-              text: WorkerStatusMapValue[record.state],
-              message: record.state_message
-            }}
-          />
-        )
+        render: (_text: any, record: ListItem) => {
+          const badge = (
+            <StatusBadge tone={statusTone(status[record.state])} plain>
+              {WorkerStatusMapValue[record.state]}
+              {record.provision_progress ? ` ${record.provision_progress}` : ''}
+            </StatusBadge>
+          );
+          return record.state_message ? (
+            <Tooltip title={record.state_message}>{badge}</Tooltip>
+          ) : (
+            badge
+          );
+        }
       },
       {
         title: 'IP',
@@ -508,8 +515,9 @@ const useWorkerColumns = ({
         render: (_text: any, record: ListItem) => (
           <span className="flex-center flex-full">
             {statusAvailable(record) ? (
-              <ProgressBar
+              <ResourceBar
                 percent={_.round(record?.status?.cpu?.utilization_rate, 0)}
+                color="var(--cpu)"
               />
             ) : (
               <HolderStatus />
@@ -525,18 +533,29 @@ const useWorkerColumns = ({
         render: (_text: any, record: ListItem) => (
           <span className="flex-center flex-full">
             {statusAvailable(record) ? (
-              <ProgressBar
-                percent={formateUtilization(
-                  record?.status?.memory?.used,
-                  record?.status?.memory?.total
-                )}
-                label={
+              <Tooltip
+                title={
                   <InfoColumn
                     fieldList={fieldList}
                     data={record.status.memory}
                   />
                 }
-              />
+              >
+                <span className="flex-center flex-full">
+                  <ResourceBar
+                    percent={formateUtilization(
+                      record?.status?.memory?.used,
+                      record?.status?.memory?.total
+                    )}
+                    color="var(--memory)"
+                    detail={
+                      record.status?.memory?.total
+                        ? `${convertFileSize(record.status.memory.used || 0, 0)} / ${convertFileSize(record.status.memory.total, 0)}`
+                        : undefined
+                    }
+                  />
+                </span>
+              </Tooltip>
             ) : (
               <HolderStatus />
             )}

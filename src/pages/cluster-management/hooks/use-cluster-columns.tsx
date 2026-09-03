@@ -1,5 +1,6 @@
 // columns.ts
 import { systemConfigAtom } from '@/atoms/system';
+import { StatusBadge, statusTone } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { getGPUStackPlugin } from '@/plugins';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
@@ -8,7 +9,6 @@ import {
   AutoTooltip,
   DropdownButtons,
   GrafanaIcon,
-  StatusTag,
   icons,
   type TableColumnProps as SealColumnProps
 } from '@gpustack/core-ui';
@@ -223,15 +223,18 @@ const useClusterColumns = (
         span: spans.status,
         minWidth: 80,
         align: 'center',
-        render: (value: number, record: ClusterListItem) => (
-          <StatusTag
-            statusValue={{
-              status: ClusterStatus[value],
-              text: ClusterStatusLabelMap[value],
-              message: record.state_message || undefined
-            }}
-          />
-        )
+        render: (value: number, record: ClusterListItem) => {
+          const badge = (
+            <StatusBadge tone={statusTone(ClusterStatus[value])} plain>
+              {ClusterStatusLabelMap[value]}
+            </StatusBadge>
+          );
+          return record.state_message ? (
+            <Tooltip title={record.state_message}>{badge}</Tooltip>
+          ) : (
+            badge
+          );
+        }
       },
       {
         title: intl.formatMessage({ id: 'common.table.createTime' }),

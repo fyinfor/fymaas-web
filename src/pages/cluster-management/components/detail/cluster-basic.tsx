@@ -1,5 +1,6 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import { StarFilled } from '@ant-design/icons';
-import { CardWrapper, IconFont, StatusTag } from '@gpustack/core-ui';
+import { CardWrapper, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import type { DescriptionsProps } from 'antd';
 import { Descriptions, Tooltip } from 'antd';
@@ -32,7 +33,7 @@ const Container = styled.div`
       align-items: center;
       justify-content: center;
       border-radius: 8px;
-      background-color: var(--ant-blue-1);
+      background-color: var(--console-bg-muted);
       .anticon {
         font-size: 36px;
       }
@@ -108,12 +109,12 @@ const ClusterBasic: React.FC<{ clusterId: number }> = ({ clusterId }) => {
             }
           </div>
           <div className="status">
-            <StatusTag
-              statusValue={{
-                status: ClusterStatus[clusterDetail?.state || ''],
-                text: ClusterStatusLabelMap[clusterDetail?.state || '']
-              }}
-            />
+            <StatusBadge
+              tone={statusTone(ClusterStatus[clusterDetail?.state || ''])}
+              plain
+            >
+              {ClusterStatusLabelMap[clusterDetail?.state || ''] || '—'}
+            </StatusBadge>
           </div>
         </div>
         <div className="right">
