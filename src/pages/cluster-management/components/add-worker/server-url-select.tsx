@@ -8,6 +8,7 @@ import {
   CUSTOM_VALUE,
   defaultServerUrlConfig,
   mergeServerUrlCandidates,
+  normalizeLanServerUrl,
   ServerUrlNetwork
 } from '../../utils/server-url';
 import { useAddWorkerContext } from './add-worker-context';
@@ -22,6 +23,7 @@ const ServerUrlSelect: React.FC = () => {
     () => mergeServerUrlCandidates(registrationInfo),
     [
       registrationInfo?.server_url,
+      registrationInfo?.server_lan_url,
       registrationInfo?.api_port,
       JSON.stringify(registrationInfo?.server_url_candidates || [])
     ]
@@ -58,7 +60,10 @@ const ServerUrlSelect: React.FC = () => {
     const first = list[0]?.url || '';
     setConfig({
       network,
-      url: first,
+      url:
+        network === 'private'
+          ? normalizeLanServerUrl(first, merged.apiPort)
+          : first,
       custom: !first
     });
   };
@@ -180,6 +185,18 @@ const ServerUrlSelect: React.FC = () => {
             onChange={(e) =>
               setConfig({ custom: true, url: e.target.value.trim() })
             }
+            onBlur={() => {
+              if (serverUrlConfig.network !== 'private') {
+                return;
+              }
+              const next = normalizeLanServerUrl(
+                serverUrlConfig.url,
+                merged.apiPort
+              );
+              if (next !== serverUrlConfig.url) {
+                setConfig({ custom: true, url: next });
+              }
+            }}
           />
         )}
         {serverUrlConfig.custom && !serverUrlConfig.url && (

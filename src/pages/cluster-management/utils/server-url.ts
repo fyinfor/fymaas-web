@@ -53,6 +53,27 @@ export const buildLanUrl = (host: string, apiPort = 30080) => {
   return `http://${host}:${apiPort}`;
 };
 
+/** Add the worker-facing API port when a private URL omits it. */
+export const normalizeLanServerUrl = (url: string, apiPort = 30080) => {
+  const trimmed = (url || '').trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed.includes('://') ? trimmed : `http://${trimmed}`);
+  } catch {
+    return trimmed;
+  }
+  if (!isPrivateHostname(parsed.hostname)) {
+    return parsed.origin;
+  }
+  if (!parsed.port && apiPort && apiPort !== 80) {
+    parsed.port = String(apiPort);
+  }
+  return parsed.origin;
+};
+
 const addCandidate = (
   map: Map<string, ServerUrlCandidate>,
   url?: string | null,
@@ -159,9 +180,13 @@ export const defaultServerUrlConfig = (
     network === 'private'
       ? registrationInfo?.server_lan_url || merged.private[0]?.url
       : merged.public[0]?.url;
+  const url =
+    network === 'private'
+      ? normalizeLanServerUrl(first || '', merged.apiPort)
+      : first || '';
   return {
     network,
-    url: first || '',
+    url,
     custom: !first
   };
 };
