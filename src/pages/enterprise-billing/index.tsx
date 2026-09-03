@@ -1,6 +1,6 @@
 import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
 import { downloadFile } from '@/utils/download-stream';
-import { request, useIntl } from '@umijs/max';
+import { request, useAccess, useIntl } from '@umijs/max';
 import {
   Button,
   DatePicker,
@@ -27,6 +27,7 @@ const lastMonth = () => {
 
 const EnterpriseBilling: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
   const [invoices, setInvoices] = React.useState<any[]>([]);
   const [plans, setPlans] = React.useState<any[]>([]);
   const [centers, setCenters] = React.useState<any[]>([]);
@@ -37,6 +38,7 @@ const EnterpriseBilling: React.FC = () => {
   const [bindings, setBindings] = React.useState<any[]>([]);
   const [activeCenter, setActiveCenter] = React.useState<any>(null);
   const [people, setPeople] = React.useState<PersonOption[]>([]);
+  const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
   const [generating, setGenerating] = React.useState(false);
   const [planForm] = Form.useForm();
   const [itemForm] = Form.useForm();
@@ -69,6 +71,18 @@ const EnterpriseBilling: React.FC = () => {
     loadEnterprisePeople()
       .then(setPeople)
       .catch(() => undefined);
+    request('/organization-directory', {
+      params: { page: 1, perPage: 100 }
+    })
+      .then((page) =>
+        setOrgs(
+          (page.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.display_name || item.name
+          }))
+        )
+      )
+      .catch(() => undefined);
   }, []);
 
   const statusColor = (status: string) => {
@@ -85,6 +99,7 @@ const EnterpriseBilling: React.FC = () => {
       await request('/billing/invoices/generate', {
         method: 'POST',
         data: {
+          org_principal_id: values.org_principal_id,
           period_start: range[0].toISOString(),
           period_end: range[1].toISOString()
         }
@@ -192,6 +207,23 @@ const EnterpriseBilling: React.FC = () => {
                   style={{ margin: '8px 0 16px' }}
                   initialValues={{ period: lastMonth() }}
                 >
+                  {access.canSeeAdmin ? (
+                    <Form.Item name="org_principal_id">
+                      <Select
+                        allowClear
+                        showSearch
+                        optionFilterProp="label"
+                        style={{ minWidth: 200 }}
+                        placeholder={intl.formatMessage({
+                          id: 'billing.invoice.org'
+                        })}
+                        options={orgs.map((item) => ({
+                          label: item.name,
+                          value: item.id
+                        }))}
+                      />
+                    </Form.Item>
+                  ) : null}
                   <Form.Item
                     name="period"
                     label={intl.formatMessage({

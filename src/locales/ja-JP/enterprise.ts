@@ -233,6 +233,9 @@ export default {
 
   'topology.filter.cluster': 'クラスタで絞り込み',
   'topology.empty': 'トポロジデータはまだありません',
+  'topology.detail': 'ノード詳細',
+  'topology.kind': '種別',
+  'topology.status': '状態',
   'menu.resources.rollouts': 'カナリア公開',
   'rollouts.add': 'ロールアウト開始',
   'rollouts.route': 'モデルルート',
@@ -246,6 +249,7 @@ export default {
   'rollouts.percent': '新バージョン流量 (%)',
   'rollouts.hold': '待機秒数',
   'rollouts.stageAdd': 'ステージを追加',
+  'rollouts.error': 'エラー',
 
   'orgs.item': '組織',
   'orgs.add': '組織を追加',

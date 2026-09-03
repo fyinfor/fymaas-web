@@ -225,6 +225,9 @@ export default {
 
   'topology.filter.cluster': '按集群筛选',
   'topology.empty': '暂无拓扑数据',
+  'topology.detail': '节点详情',
+  'topology.kind': '类型',
+  'topology.status': '状态',
   'menu.resources.rollouts': '灰度发布',
   'rollouts.add': '开始灰度',
   'rollouts.route': '模型路由',
@@ -238,6 +241,7 @@ export default {
   'rollouts.percent': '新版本流量 (%)',
   'rollouts.hold': '停留秒数',
   'rollouts.stageAdd': '添加阶段',
+  'rollouts.error': '错误',
 
   'orgs.item': '组织',
   'orgs.add': '添加组织',

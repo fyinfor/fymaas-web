@@ -234,6 +234,9 @@ export default {
 
   'topology.filter.cluster': 'Kümeye göre süz',
   'topology.empty': 'Henüz topoloji verisi yok',
+  'topology.detail': 'Düğüm ayrıntısı',
+  'topology.kind': 'Tür',
+  'topology.status': 'Durum',
   'menu.resources.rollouts': 'Canary yayın',
   'rollouts.add': 'Yayını başlat',
   'rollouts.route': 'Model rotası',
@@ -247,6 +250,7 @@ export default {
   'rollouts.percent': 'Yeni trafik (%)',
   'rollouts.hold': 'Bekleme (sn)',
   'rollouts.stageAdd': 'Aşama ekle',
+  'rollouts.error': 'Hata',
 
   'orgs.item': 'organizasyon',
   'orgs.add': 'Organizasyon Ekle',

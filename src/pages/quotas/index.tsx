@@ -1,10 +1,11 @@
 import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
+import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { queryApisKeysList } from '@/pages/api-keys/apis';
+import { queryModelsList } from '@/pages/llmodels/apis';
 import { queryModelRoutes } from '@/pages/model-routes/apis';
-import { queryUserDirectory } from '@/pages/users/apis';
 import {
   DeleteModal,
   FilterBar,
@@ -12,8 +13,7 @@ import {
   IconFont,
   NoResult
 } from '@gpustack/core-ui';
-import { nsLocal } from '@gpustack/core-ui/utils';
-import { request, useIntl } from '@umijs/max';
+import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import {
   ConfigProvider,
@@ -47,7 +47,8 @@ const Quotas: React.FC = () => {
   const [channelForm] = Form.useForm<ChannelForm>();
   const [channels, setChannels] = React.useState<ChannelItem[]>([]);
   const [channelOpen, setChannelOpen] = React.useState(false);
-  const [people, setPeople] = React.useState<{ id: number; name: string }[]>(
+  const [people, setPeople] = React.useState<PersonOption[]>([]);
+  const [models, setModels] = React.useState<{ id: number; name: string }[]>(
     []
   );
   const [routes, setRoutes] = React.useState<{ id: number; name: string }[]>(
@@ -93,6 +94,16 @@ const Quotas: React.FC = () => {
     queryModelRoutes({ page: 1, perPage: 100 })
       .then((page) => setRoutes(page.items || []))
       .catch(() => undefined);
+    queryModelsList({ page: 1, perPage: 100 })
+      .then((page) =>
+        setModels(
+          (page.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.name || String(item.id)
+          }))
+        )
+      )
+      .catch(() => undefined);
     queryApisKeysList({ page: 1, perPage: 100 })
       .then((page) =>
         setApiKeys(
@@ -103,50 +114,9 @@ const Quotas: React.FC = () => {
         )
       )
       .catch(() => undefined);
-    const orgId = (() => {
-      try {
-        const raw = nsLocal.get('currentOrganizationId');
-        return raw ? JSON.parse(raw) : null;
-      } catch {
-        return null;
-      }
-    })();
-    const loadPeople = async () => {
-      const options: { id: number; name: string }[] = [];
-      if (orgId) {
-        try {
-          const members = await request(`/organizations/${orgId}/members`);
-          if (Array.isArray(members)) {
-            options.push(
-              ...members.map((item: any) => ({
-                id: item.principal_id,
-                name:
-                  item.principal_display_name ||
-                  item.principal_name ||
-                  String(item.principal_id)
-              }))
-            );
-          }
-        } catch {
-          // fall through to the directory
-        }
-      }
-      try {
-        const directory = await queryUserDirectory({ page: 1, perPage: 100 });
-        for (const item of directory.items || []) {
-          if (!options.some((row) => row.id === item.id)) {
-            options.push({
-              id: item.id,
-              name: item.full_name || item.username || String(item.id)
-            });
-          }
-        }
-      } catch {
-        // org-scoped member list is enough
-      }
-      setPeople(options);
-    };
-    loadPeople().catch(() => undefined);
+    loadEnterprisePeople()
+      .then(setPeople)
+      .catch(() => undefined);
   }, []);
 
   const openCreate = () => {
@@ -486,7 +456,15 @@ const Quotas: React.FC = () => {
               name="target_id"
               label={intl.formatMessage({ id: 'quotas.form.targetId' })}
             >
-              <InputNumber style={{ width: '100%' }} min={0} />
+              <Select
+                showSearch
+                allowClear
+                optionFilterProp="label"
+                options={models.map((item) => ({
+                  label: item.name,
+                  value: item.id
+                }))}
+              />
             </Form.Item>
           ) : null}
           <Form.Item

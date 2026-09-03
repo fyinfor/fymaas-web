@@ -14,6 +14,7 @@ import {
   Space,
   Table,
   Tabs,
+  Tag,
   Typography,
   message
 } from 'antd';
@@ -137,7 +138,20 @@ const Roles: React.FC = () => {
                     {
                       title: intl.formatMessage({ id: 'roles.permissions' }),
                       dataIndex: 'permissions',
-                      render: (v: string[]) => (v || []).join(', ')
+                      render: (v: string[]) => {
+                        const keys = v || [];
+                        const shown = keys.slice(0, 3);
+                        return (
+                          <Space size={[4, 4]} wrap>
+                            {shown.map((key) => (
+                              <Tag key={key}>{key}</Tag>
+                            ))}
+                            {keys.length > 3 ? (
+                              <Tag>+{keys.length - 3}</Tag>
+                            ) : null}
+                          </Space>
+                        );
+                      }
                     },
                     {
                       title: intl.formatMessage({

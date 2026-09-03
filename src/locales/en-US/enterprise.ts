@@ -231,6 +231,9 @@ export default {
 
   'topology.filter.cluster': 'Filter by cluster',
   'topology.empty': 'No topology data yet',
+  'topology.detail': 'Node detail',
+  'topology.kind': 'Kind',
+  'topology.status': 'Status',
   'menu.resources.rollouts': 'Canary rollouts',
   'rollouts.add': 'Start rollout',
   'rollouts.route': 'Model route',
@@ -244,6 +247,7 @@ export default {
   'rollouts.percent': 'New traffic (%)',
   'rollouts.hold': 'Hold seconds',
   'rollouts.stageAdd': 'Add stage',
+  'rollouts.error': 'Error',
 
   'orgs.item': 'organization',
   'orgs.add': 'Add Organization',

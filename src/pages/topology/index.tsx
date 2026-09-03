@@ -8,7 +8,7 @@ import {
   type Node
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Card, Empty, Select, Space, Tag } from 'antd';
+import { Card, Descriptions, Drawer, Empty, Select, Space, Tag } from 'antd';
 import dagre from 'dagre';
 import React from 'react';
 import PageBox from '../_components/page-box';
@@ -57,6 +57,7 @@ const Topology: React.FC = () => {
     edges: []
   });
   const [clusterId, setClusterId] = React.useState<number | undefined>();
+  const [selected, setSelected] = React.useState<any>(null);
 
   const load = async (id?: number) => {
     const data = await request('/topology', {
@@ -75,6 +76,7 @@ const Topology: React.FC = () => {
     const nodes: Node[] = graph.nodes.map((n) => ({
       id: String(n.id),
       data: {
+        raw: n,
         label: (
           <Space size={4}>
             <Tag color={KIND_COLOR[n.kind] || 'default'}>{n.kind}</Tag>
@@ -125,7 +127,14 @@ const Topology: React.FC = () => {
       </Space>
       <Card styles={{ body: { height: 640, padding: 0 } }}>
         {graph.nodes.length ? (
-          <ReactFlow nodes={flow.nodes} edges={flow.edges} fitView>
+          <ReactFlow
+            nodes={flow.nodes}
+            edges={flow.edges}
+            fitView
+            onNodeClick={(_event, node) =>
+              setSelected((node.data as any)?.raw || null)
+            }
+          >
             <Background />
             <Controls />
             <MiniMap />
@@ -137,6 +146,32 @@ const Topology: React.FC = () => {
           />
         )}
       </Card>
+      <Drawer
+        open={!!selected}
+        width={400}
+        onClose={() => setSelected(null)}
+        title={selected?.label || intl.formatMessage({ id: 'topology.detail' })}
+      >
+        {selected ? (
+          <Descriptions column={1} size="small" bordered>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'topology.kind' })}
+            >
+              {selected.kind}
+            </Descriptions.Item>
+            <Descriptions.Item
+              label={intl.formatMessage({ id: 'topology.status' })}
+            >
+              {selected.status || '—'}
+            </Descriptions.Item>
+            {Object.entries(selected.extra || {}).map(([key, value]) => (
+              <Descriptions.Item key={key} label={key}>
+                {String(value)}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+        ) : null}
+      </Drawer>
     </PageBox>
   );
 };

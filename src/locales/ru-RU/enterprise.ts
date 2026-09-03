@@ -233,6 +233,9 @@ export default {
 
   'topology.filter.cluster': 'Фильтр по кластеру',
   'topology.empty': 'Данных топологии пока нет',
+  'topology.detail': 'Сведения об узле',
+  'topology.kind': 'Тип',
+  'topology.status': 'Состояние',
   'menu.resources.rollouts': 'Canary-выкат',
   'rollouts.add': 'Начать выкат',
   'rollouts.route': 'Маршрут модели',
@@ -246,6 +249,7 @@ export default {
   'rollouts.percent': 'Трафик новой версии (%)',
   'rollouts.hold': 'Пауза, сек',
   'rollouts.stageAdd': 'Добавить этап',
+  'rollouts.error': 'Ошибка',
 
   'orgs.item': 'организация',
   'orgs.add': 'Добавить организацию',

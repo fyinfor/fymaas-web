@@ -125,6 +125,11 @@ const Rollouts: React.FC = () => {
               `${row.current_stage + 1}/${(row.stages || []).length || 1}`
           },
           {
+            title: intl.formatMessage({ id: 'rollouts.error' }),
+            dataIndex: 'last_error',
+            render: (v: string) => v || '—'
+          },
+          {
             title: intl.formatMessage({ id: 'common.table.operation' }),
             render: (_: any, row: any) => (
               <Space>
