@@ -1,3 +1,4 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { modelSourceMap } from '@/pages/llmodels/config';
 import { modelFileActions } from '@/pages/llmodels/config/button-actions';
@@ -11,11 +12,10 @@ import {
 import {
   AutoTooltip,
   DropdownButtons,
-  StatusTag,
   TooltipOverlayScroller
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag, Typography } from 'antd';
+import { Tag, Tooltip, Typography } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import _ from 'lodash';
@@ -132,28 +132,23 @@ const InstanceStatusTag = (props: { data: ListItem }) => {
   if (!data.state) {
     return null;
   }
-  return (
-    <StatusTag
-      download={
-        data.state === ModelfileStateMap.Downloading
-          ? { percent: data.download_progress }
-          : undefined
-      }
-      statusValue={{
-        status:
-          data.state === ModelfileStateMap.Downloading &&
-          data.download_progress === 100
-            ? ModelfileState[ModelfileStateMap.Ready]
-            : ModelfileState[data.state],
-        text: ModelfileStateMapValue[data.state],
-        message:
-          data.state === ModelfileStateMap.Downloading &&
-          data.download_progress === 100
-            ? ''
-            : data.state_message
-      }}
-    />
+  const downloading = data.state === ModelfileStateMap.Downloading;
+  const downloadDone = downloading && data.download_progress === 100;
+  const tone = statusTone(
+    downloadDone
+      ? ModelfileState[ModelfileStateMap.Ready]
+      : ModelfileState[data.state]
   );
+  const message = downloadDone ? '' : data.state_message;
+  const badge = (
+    <StatusBadge tone={tone} plain>
+      {ModelfileStateMapValue[data.state]}
+      {downloading && !downloadDone
+        ? ` ${Math.round(data.download_progress || 0)}%`
+        : ''}
+    </StatusBadge>
+  );
+  return message ? <Tooltip title={message}>{badge}</Tooltip> : badge;
 };
 
 const getModelInfo = (record: ListItem) => {
