@@ -1,4 +1,5 @@
 import { clusterSessionAtom, expandKeysAtom } from '@/atoms/clusters';
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
@@ -8,7 +9,6 @@ import {
   DeleteModal,
   FilterBar,
   IconFont,
-  NoResult,
   Table as SealTable,
   TableOrder,
   TableProvider,
@@ -19,7 +19,6 @@ import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { message } from 'antd';
 import { useAtom } from 'jotai';
-import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import PageBox from '../_components/page-box';
 import useGranfanaLink from '../resources/hooks/use-grafana-link';
@@ -410,52 +409,58 @@ const Clusters: React.FC = () => {
             setDisableExpand: setDisableExpand
           }}
         >
-          <SealTable
-            rowKey="id"
-            emptyMinHeight="calc(100vh - 300px)"
-            loadChildren={getWorkerPoolList}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            expandedRowKeys={expandedRowKeys}
-            onExpand={handleExpandChange}
-            onExpandAll={handleToggleExpandAll}
-            renderChildren={renderChildren}
-            onTableSort={handleOnSortChange}
-            showSorterTooltip={false}
-            dataSource={dataSource.dataList}
+          <TableLoadGate
             loading={dataSource.loading}
             loadend={dataSource.loadend}
-            rowSelection={rowSelection}
-            columns={columns}
-            childParentKey="cluster_id"
-            expandable={true}
-            empty={
-              <NoResult
-                loading={dataSource.loading}
-                loadend={dataSource.loadend}
-                dataSource={dataSource.dataList}
-                image={<IconFont type="icon-cluster-outline" />}
-                filters={_.omit(queryParams, ['sort_by', 'mine'])}
-                noFoundText={intl.formatMessage({
-                  id: 'noresult.cluster.nofound'
-                })}
-                title={intl.formatMessage({ id: 'noresult.cluster.title' })}
-                subTitle={intl.formatMessage({
-                  id: 'noresult.cluster.subTitle'
-                })}
-                onClick={handleClickDropdown}
-                buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-              ></NoResult>
-            }
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></SealTable>
+            error={dataSource.error}
+            hasRows={!!dataSource.dataList.length}
+            onRetry={() => fetchData()}
+          >
+            <SealTable
+              rowKey="id"
+              emptyMinHeight="calc(100vh - 300px)"
+              loadChildren={getWorkerPoolList}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              expandedRowKeys={expandedRowKeys}
+              onExpand={handleExpandChange}
+              onExpandAll={handleToggleExpandAll}
+              renderChildren={renderChildren}
+              onTableSort={handleOnSortChange}
+              showSorterTooltip={false}
+              dataSource={dataSource.dataList}
+              loading={false}
+              loadend={dataSource.loadend}
+              rowSelection={rowSelection}
+              columns={columns}
+              childParentKey="cluster_id"
+              expandable={true}
+              empty={
+                <ListEmpty
+                  icon={<IconFont type="icon-cluster-outline" />}
+                  title={intl.formatMessage({ id: 'noresult.cluster.title' })}
+                  description={intl.formatMessage({
+                    id: 'noresult.cluster.subTitle'
+                  })}
+                  noFound={intl.formatMessage({
+                    id: 'noresult.cluster.nofound'
+                  })}
+                  queryParams={queryParams}
+                  omitKeys={['sort_by', 'page', 'perPage', 'mine']}
+                  onAdd={handleClickDropdown}
+                  addText={intl.formatMessage({ id: 'noresult.button.add' })}
+                />
+              }
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></SealTable>
+          </TableLoadGate>
         </TableProvider>
       </PageBox>
       <AddCluster

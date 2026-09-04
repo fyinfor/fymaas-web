@@ -1,11 +1,11 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import PageBox from '@/pages/_components/page-box';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ConfigProvider, Table } from 'antd';
-import _ from 'lodash';
 import { forwardRef, useEffect, useImperativeHandle } from 'react';
 import {
   deleteModelInstance,
@@ -101,22 +101,15 @@ const InstanceView = forwardRef((props, ref) => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-instance-outline" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.instances.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-instance-outline" />}
         title={intl.formatMessage({ id: 'noresult.instances.title' })}
-        subTitle={intl.formatMessage({
+        description={intl.formatMessage({
           id: 'noresult.instances.subTitle'
         })}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-      ></NoResult>
+        noFound={intl.formatMessage({ id: 'noresult.instances.nofound' })}
+        queryParams={queryParams}
+      />
     );
   };
 
@@ -173,32 +166,37 @@ const InstanceView = forwardRef((props, ref) => {
             ></LeftFilters>
           }
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            rowKey="id"
-            tableLayout="auto"
-            className={'scroll-table'}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            dataSource={dataSource.dataList}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            rowSelection={rowSelection}
-            columns={columns}
-            scroll={{ x: 900 }}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              rowKey="id"
+              tableLayout="auto"
+              className={'scroll-table'}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              dataSource={dataSource.dataList}
+              loading={false}
+              rowSelection={rowSelection}
+              columns={columns}
+              scroll={{ x: 900 }}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <ViewLogsModal
         status={openViewLogsModalStatus.currentData.status}

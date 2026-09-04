@@ -1,4 +1,5 @@
 import { modelsExpandKeysAtom } from '@/atoms/models';
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
@@ -20,7 +21,6 @@ import {
   DeleteModal,
   FilterBar,
   IconFont,
-  NoResult,
   useAppUtils,
   useBodyScroll
 } from '@gpustack/core-ui';
@@ -232,17 +232,15 @@ const ModelFiles = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-files" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({ id: 'noresult.modelfiles.nofound' })}
+      <ListEmpty
+        icon={<IconFont type="icon-files" />}
         title={intl.formatMessage({ id: 'noresult.modelfiles.title' })}
-        subTitle={intl.formatMessage({ id: 'noresult.modelfiles.subTitle' })}
-      ></NoResult>
+        description={intl.formatMessage({
+          id: 'noresult.modelfiles.subTitle'
+        })}
+        noFound={intl.formatMessage({ id: 'noresult.modelfiles.nofound' })}
+        queryParams={queryParams}
+      />
     );
   };
 
@@ -338,35 +336,40 @@ const ModelFiles = () => {
           actionItems={onLineSourceOptions}
           showSelect={true}
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            rowKey="id"
-            tableLayout="fixed"
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            scroll={{
-              x: 900
-            }}
-            onChange={handleTableChange}
-            dataSource={dataSource.dataList}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            rowSelection={rowSelection}
-            columns={columns}
-            pagination={{
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange,
-              size: 'middle'
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table'}
+              rowKey="id"
+              tableLayout="fixed"
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              scroll={{
+                x: 900
+              }}
+              onChange={handleTableChange}
+              dataSource={dataSource.dataList}
+              loading={false}
+              rowSelection={rowSelection}
+              columns={columns}
+              pagination={{
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange,
+                size: 'middle'
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
         <DeleteModal ref={modalRef}></DeleteModal>
         <DownloadModal
           onCancel={handleDownloadCancel}

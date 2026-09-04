@@ -1,3 +1,4 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { useQueryClusterList } from '@/pages/cluster-management/services/use-query-cluster-list';
@@ -5,14 +6,12 @@ import {
   DeleteModal,
   FilterBar,
   IconFont,
-  NoResult,
   Table as SealTable,
   type TableOrder
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { message } from 'antd';
-import _ from 'lodash';
 import { useEffect } from 'react';
 import ErrorMessageContent from '../../_components/error-message-content';
 import PageBox from '../../_components/page-box';
@@ -204,32 +203,27 @@ const GPUServiceInstanceTypes: React.FC = () => {
   // narrowing params count as filters — `purpose` rides every request, and
   // passing it would make an empty fleet read as "no match" forever.
   const renderEmpty = () => (
-    <NoResult
-      minHeight="calc(100vh - 300px)"
-      loading={dataSource.loading || clusterLoading}
-      loadend={dataSource.loadend}
-      dataSource={dataSource.dataList}
-      image={<IconFont type="icon-gpu1" />}
-      filters={_.pick(queryParams, ['search', 'cluster_id'])}
-      noFoundText={intl.formatMessage({
-        id: 'noresult.gpuservice.instanceType.nofound'
-      })}
+    <ListEmpty
+      icon={<IconFont type="icon-gpu1" />}
       title={intl.formatMessage({
         id: 'noresult.gpuservice.instanceType.title'
       })}
-      subTitle={
+      description={
         hasK8sCluster
           ? intl.formatMessage({
               id: 'noresult.gpuservice.instanceType.subTitle'
             })
           : intl.formatMessage({ id: 'noresult.resources.k8sCluster' })
       }
-      {...(hasK8sCluster
-        ? {
-            onClick: handleAdd,
-            buttonText: intl.formatMessage({ id: 'noresult.button.add' })
-          }
-        : {})}
+      noFound={intl.formatMessage({
+        id: 'noresult.gpuservice.instanceType.nofound'
+      })}
+      queryParams={{
+        search: queryParams.search,
+        cluster_id: queryParams.cluster_id
+      }}
+      onAdd={hasK8sCluster ? handleAdd : undefined}
+      addText={intl.formatMessage({ id: 'noresult.button.add' })}
     />
   );
 
@@ -253,36 +247,44 @@ const GPUServiceInstanceTypes: React.FC = () => {
           handleInputChange={handleNameChange}
           widths={{ select: 230, input: 230 }}
         />
-        <SealTable
-          rowKey="id"
-          columns={columns}
-          dataSource={dataSource.dataList}
-          loading={dataSource.loading}
+        <TableLoadGate
+          loading={dataSource.loading || clusterLoading}
           loadend={dataSource.loadend}
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          showSorterTooltip={false}
-          onTableSort={handleTableSort}
-          // `true` widens the row out to the columns' own floors (sum of their
-          // `minWidth` / `width` + the prefix gutter) and scrolls past that. Not
-          // `'max-content'`: the columns are `fr` tracks, and under a
-          // content-driven constraint the greediest cell sets the `fr` unit for
-          // every track, which blows the table far past the width it needs.
-          scroll={{ x: true }}
-          empty={renderEmpty()}
-          // Matches the `<NoResult minHeight>` inside the empty state, so the
-          // first-load spinner, the empty state and the eventual rows occupy one
-          // stable block instead of jumping on entry.
-          emptyMinHeight="calc(100vh - 300px)"
-          pagination={{
-            size: 'middle',
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: dataSource.total,
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        />
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <SealTable
+            rowKey="id"
+            columns={columns}
+            dataSource={dataSource.dataList}
+            loading={false}
+            loadend={dataSource.loadend}
+            sortDirections={TABLE_SORT_DIRECTIONS}
+            showSorterTooltip={false}
+            onTableSort={handleTableSort}
+            // `true` widens the row out to the columns' own floors (sum of their
+            // `minWidth` / `width` + the prefix gutter) and scrolls past that. Not
+            // `'max-content'`: the columns are `fr` tracks, and under a
+            // content-driven constraint the greediest cell sets the `fr` unit for
+            // every track, which blows the table far past the width it needs.
+            scroll={{ x: true }}
+            empty={renderEmpty()}
+            // Matches the `<NoResult minHeight>` inside the empty state, so the
+            // first-load spinner, the empty state and the eventual rows occupy one
+            // stable block instead of jumping on entry.
+            emptyMinHeight="calc(100vh - 300px)"
+            pagination={{
+              size: 'middle',
+              showSizeChanger: true,
+              pageSize: queryParams.perPage,
+              current: queryParams.page,
+              total: dataSource.total,
+              hideOnSinglePage: queryParams.perPage === 10,
+              onChange: handlePageChange
+            }}
+          />
+        </TableLoadGate>
       </PageBox>
       <AddInstanceTypeModal
         open={openInstanceTypeModalStatus.open}

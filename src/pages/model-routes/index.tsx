@@ -1,5 +1,6 @@
 import { expandKeysAtom } from '@/atoms/clusters';
 import { registerRouteConfigAtom } from '@/atoms/routes';
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
@@ -9,7 +10,6 @@ import {
   DeleteModal,
   FilterBar,
   IconFont,
-  NoResult,
   Table as SealTable,
   TableOrder,
   TableProvider,
@@ -20,7 +20,6 @@ import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { message } from 'antd';
 import { useAtom } from 'jotai';
-import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PageBox from '../_components/page-box';
 import { queryModelsList } from '../llmodels/apis';
@@ -365,53 +364,57 @@ const ModelRoutes: React.FC = () => {
             setDisableExpand: setDisableExpand
           }}
         >
-          <SealTable
-            rowKey="id"
-            emptyMinHeight="calc(100vh - 300px)"
-            loadChildren={loadChildrenData}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            expandedRowKeys={expandedRowKeys}
-            onExpand={handleExpandChange}
-            onExpandAll={handleToggleExpandAll}
-            renderChildren={renderChildren}
-            onTableSort={handleOnSortChange}
-            showSorterTooltip={false}
-            dataSource={dataSource.dataList}
+          <TableLoadGate
             loading={dataSource.loading}
             loadend={dataSource.loadend}
-            rowSelection={rowSelection}
-            columns={columns}
-            childParentKey="route_id"
-            expandable={true}
-            empty={
-              <NoResult
-                minHeight="calc(100vh - 300px)"
-                loading={dataSource.loading}
-                loadend={dataSource.loadend}
-                dataSource={dataSource.dataList}
-                image={<IconFont type="icon-captive_portal" />}
-                filters={_.omit(queryParams, ['sort_by'])}
-                noFoundText={intl.formatMessage({
-                  id: 'noresult.routes.nofound'
-                })}
-                title={intl.formatMessage({ id: 'noresult.routes.title' })}
-                subTitle={intl.formatMessage({
-                  id: 'noresult.routes.subTitle'
-                })}
-                onClick={handleClickDropdown}
-                buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-              ></NoResult>
-            }
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></SealTable>
+            error={dataSource.error}
+            hasRows={!!dataSource.dataList.length}
+            onRetry={() => fetchData()}
+          >
+            <SealTable
+              rowKey="id"
+              emptyMinHeight="calc(100vh - 300px)"
+              loadChildren={loadChildrenData}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              expandedRowKeys={expandedRowKeys}
+              onExpand={handleExpandChange}
+              onExpandAll={handleToggleExpandAll}
+              renderChildren={renderChildren}
+              onTableSort={handleOnSortChange}
+              showSorterTooltip={false}
+              dataSource={dataSource.dataList}
+              loading={false}
+              loadend={dataSource.loadend}
+              rowSelection={rowSelection}
+              columns={columns}
+              childParentKey="route_id"
+              expandable={true}
+              empty={
+                <ListEmpty
+                  icon={<IconFont type="icon-captive_portal" />}
+                  title={intl.formatMessage({ id: 'noresult.routes.title' })}
+                  description={intl.formatMessage({
+                    id: 'noresult.routes.subTitle'
+                  })}
+                  noFound={intl.formatMessage({
+                    id: 'noresult.routes.nofound'
+                  })}
+                  queryParams={queryParams}
+                  onAdd={handleClickDropdown}
+                  addText={intl.formatMessage({ id: 'noresult.button.add' })}
+                />
+              }
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></SealTable>
+          </TableLoadGate>
         </TableProvider>
       </PageBox>
       <AddRouteModal
