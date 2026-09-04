@@ -285,6 +285,8 @@ export default {
   'permissions.desc.org:write': 'Organizasyonları ve üyeleri yönet',
   'permissions.desc.user:read': 'Platform kullanıcılarını görüntüle',
   'permissions.desc.user:write': 'Platform kullanıcısı oluştur ve yönet',
+  'permissions.desc.workspace:read': 'Çalışma alanlarını görüntüle',
+  'permissions.desc.workspace:write': 'Çalışma alanlarını ve üyeleri yönet',
   'permissions.desc.settings:read': 'Sistem ayarlarını görüntüle',
   'permissions.desc.settings:write':
     'Marka, katalog ve platform varsayılanlarını değiştir',
@@ -407,9 +409,17 @@ export default {
   'roles.permissions.action': 'İzinler',
   'roles.permissions.title': '{name} izinleri',
   'roles.permissions.hint':
-    'Değişiklikler hemen uygulanır. Rol oluşturduktan sonra burada atayın.',
+    'Modül başına erişim düzeyi seçin, gerekirse ayrıntıları açın. Değişiklikler hemen uygulanır.',
   'roles.permissions.builtinHint':
     'Yerleşik rol izinleri sistem tarafından belirlenir, salt okunur.',
+  'roles.permissions.level.none': 'Erişim yok',
+  'roles.permissions.level.read': 'Okuma',
+  'roles.permissions.level.write': 'Yazma',
+  'roles.permissions.level.custom': 'Özel',
+  'roles.permissions.details': 'Ayrıntılı izinler',
+  'roles.permissions.granted': '{count} / {total} verildi',
+  'roles.permissions.selectAll': 'Tümünü ver',
+  'roles.permissions.clearAll': 'Tümünü kaldır',
   'roles.tab.roles': 'Roller',
   'roles.builtin': 'Yerleşik',
   'roles.tab.bindings': 'Atamalar',

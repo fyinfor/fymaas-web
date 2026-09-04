@@ -284,6 +284,9 @@ export default {
   'permissions.desc.user:read': 'Просмотр пользователей платформы',
   'permissions.desc.user:write':
     'Создание и управление пользователями платформы',
+  'permissions.desc.workspace:read': 'Просмотр рабочих пространств',
+  'permissions.desc.workspace:write':
+    'Управление рабочими пространствами и участниками',
   'permissions.desc.settings:read': 'Просмотр системных настроек',
   'permissions.desc.settings:write':
     'Изменение брендинга, каталога и значений по умолчанию',
@@ -406,9 +409,17 @@ export default {
   'roles.permissions.action': 'Права',
   'roles.permissions.title': 'Права роли {name}',
   'roles.permissions.hint':
-    'Изменения применяются сразу. Назначайте права после создания роли.',
+    'Выберите уровень доступа для модуля и при необходимости уточните пункты. Изменения применяются сразу.',
   'roles.permissions.builtinHint':
     'Права встроенных ролей задаёт система, только просмотр.',
+  'roles.permissions.level.none': 'Нет доступа',
+  'roles.permissions.level.read': 'Чтение',
+  'roles.permissions.level.write': 'Запись',
+  'roles.permissions.level.custom': 'Свой',
+  'roles.permissions.details': 'Детальные права',
+  'roles.permissions.granted': 'Выдано {count} / {total}',
+  'roles.permissions.selectAll': 'Выдать все',
+  'roles.permissions.clearAll': 'Снять все',
   'roles.tab.roles': 'Роли',
   'roles.builtin': 'Встроенная',
   'roles.tab.bindings': 'Назначения',

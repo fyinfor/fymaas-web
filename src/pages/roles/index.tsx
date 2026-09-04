@@ -7,7 +7,6 @@ import { DeleteModal } from '@gpustack/core-ui';
 import { request, useAccess, useIntl, useModel } from '@umijs/max';
 import {
   Button,
-  Checkbox,
   Drawer,
   Form,
   Input,
@@ -25,8 +24,15 @@ import PageBox from '../_components/page-box';
 import {
   patchRolePermission,
   queryPermissionCatalog,
+  replaceRolePermissions,
   type PermissionItem
 } from '../permissions/apis';
+import PermissionDrawer from './components/permission-drawer';
+import {
+  keysForAccessLevel,
+  mergeGroupPermissions,
+  type AccessLevel
+} from './permission-access';
 
 const Roles: React.FC = () => {
   const intl = useIntl();
@@ -39,8 +45,7 @@ const Roles: React.FC = () => {
   const [open, setOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<any>(null);
   const [permRole, setPermRole] = React.useState<any>(null);
-  const [permSearch, setPermSearch] = React.useState('');
-  const [pending, setPending] = React.useState<string | null>(null);
+  const [pending, setPending] = React.useState(false);
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const modalRef = React.useRef<any>(null);
@@ -49,39 +54,6 @@ const Roles: React.FC = () => {
     code?: string;
     is_active?: boolean;
   }>({});
-
-  const groupedCatalog = React.useMemo(() => {
-    const q = permSearch.trim().toLowerCase();
-    const groups = new Map<string, PermissionItem[]>();
-    for (const item of catalog) {
-      if (q) {
-        const group = intl
-          .formatMessage({
-            id: `permissions.group.${item.group}`,
-            defaultMessage: item.group
-          })
-          .toLowerCase();
-        const desc = intl
-          .formatMessage({
-            id: `permissions.desc.${item.key}`,
-            defaultMessage: item.description
-          })
-          .toLowerCase();
-        if (
-          !item.key.toLowerCase().includes(q) &&
-          !item.description.toLowerCase().includes(q) &&
-          !group.includes(q) &&
-          !desc.includes(q)
-        ) {
-          continue;
-        }
-      }
-      const list = groups.get(item.group) || [];
-      list.push(item);
-      groups.set(item.group, list);
-    }
-    return [...groups.entries()];
-  }, [catalog, intl, permSearch]);
 
   const load = async () => {
     const page = await request('/roles', {
@@ -102,30 +74,73 @@ const Roles: React.FC = () => {
 
   const openPermissions = (row: any) => {
     setPermRole(row);
-    setPermSearch('');
+  };
+
+  const applyRoleUpdate = (updated: any) => {
+    setPermRole((prev: any) => (prev ? { ...prev, ...updated } : prev));
+    setRoles((prev) =>
+      prev.map((item) =>
+        item.id === updated.id ? { ...item, ...updated } : item
+      )
+    );
   };
 
   const togglePermission = async (permission: string, granted: boolean) => {
     if (!permRole || permRole.builtin || !canWrite) {
       return;
     }
-    setPending(permission);
+    setPending(true);
     try {
       const updated = await patchRolePermission(
         permRole.id,
         permission,
         granted
       );
-      setPermRole((prev: any) => (prev ? { ...prev, ...updated } : prev));
-      setRoles((prev) =>
-        prev.map((item) =>
-          item.id === permRole.id ? { ...item, ...updated } : item
-        )
-      );
+      applyRoleUpdate(updated);
     } catch {
       message.error(intl.formatMessage({ id: 'permissions.toggle.failed' }));
     } finally {
-      setPending(null);
+      setPending(false);
+    }
+  };
+
+  const replaceAllPermissions = async (permissions: string[]) => {
+    if (!permRole || permRole.builtin || !canWrite) {
+      return;
+    }
+    setPending(true);
+    try {
+      const updated = await replaceRolePermissions(permRole.id, permissions);
+      applyRoleUpdate(updated);
+    } catch {
+      message.error(intl.formatMessage({ id: 'permissions.toggle.failed' }));
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const setGroupLevel = async (
+    items: PermissionItem[],
+    level: Exclude<AccessLevel, 'custom'>
+  ) => {
+    if (!permRole || permRole.builtin || !canWrite) {
+      return;
+    }
+    setPending(true);
+    try {
+      const updated = await replaceRolePermissions(
+        permRole.id,
+        mergeGroupPermissions(
+          permRole.permissions || [],
+          items,
+          keysForAccessLevel(items, level)
+        )
+      );
+      applyRoleUpdate(updated);
+    } catch {
+      message.error(intl.formatMessage({ id: 'permissions.toggle.failed' }));
+    } finally {
+      setPending(false);
     }
   };
 
@@ -437,73 +452,19 @@ const Roles: React.FC = () => {
           </Form.Item>
         </Form>
       </Drawer>
-      <Drawer
-        open={!!permRole}
-        width={560}
+      <PermissionDrawer
+        role={permRole}
+        catalog={catalog}
+        canWrite={canWrite}
+        pending={pending}
         onClose={() => setPermRole(null)}
-        title={intl.formatMessage(
-          { id: 'roles.permissions.title' },
-          {
-            name: permRole ? roleDisplayName(permRole, intl.formatMessage) : ''
-          }
-        )}
-      >
-        <Typography.Paragraph type="secondary">
-          {intl.formatMessage({
-            id: permRole?.builtin
-              ? 'roles.permissions.builtinHint'
-              : 'roles.permissions.hint'
-          })}
-        </Typography.Paragraph>
-        <Input.Search
-          allowClear
-          style={{ marginBottom: 16 }}
-          value={permSearch}
-          onChange={(event) => setPermSearch(event.target.value)}
-          placeholder={intl.formatMessage({ id: 'permissions.search' })}
-        />
-        <Checkbox.Group
-          style={{ width: '100%' }}
-          value={permRole?.permissions || []}
-        >
-          <Space direction="vertical" size={16} style={{ width: '100%' }}>
-            {groupedCatalog.map(([group, items]) => (
-              <div key={group}>
-                <Typography.Text type="secondary">
-                  {intl.formatMessage({
-                    id: `permissions.group.${group}`,
-                    defaultMessage: group
-                  })}
-                </Typography.Text>
-                <Space
-                  direction="vertical"
-                  size={4}
-                  style={{ display: 'flex', marginTop: 8 }}
-                >
-                  {items.map((item) => (
-                    <Checkbox
-                      key={item.key}
-                      value={item.key}
-                      disabled={
-                        !!permRole?.builtin || !canWrite || pending === item.key
-                      }
-                      onChange={(event) =>
-                        togglePermission(item.key, event.target.checked)
-                      }
-                    >
-                      {item.key} —{' '}
-                      {intl.formatMessage({
-                        id: `permissions.desc.${item.key}`,
-                        defaultMessage: item.description
-                      })}
-                    </Checkbox>
-                  ))}
-                </Space>
-              </div>
-            ))}
-          </Space>
-        </Checkbox.Group>
-      </Drawer>
+        onToggle={togglePermission}
+        onSetGroupLevel={setGroupLevel}
+        onGrantAll={() =>
+          replaceAllPermissions(catalog.map((item) => item.key))
+        }
+        onRevokeAll={() => replaceAllPermissions([])}
+      />
       <DeleteModal ref={modalRef} />
     </PageBox>
   );

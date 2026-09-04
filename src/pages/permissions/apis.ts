@@ -33,3 +33,9 @@ export const patchRolePermission = (
     method: 'PATCH',
     data: { permission, granted }
   });
+
+export const replaceRolePermissions = (roleId: number, permissions: string[]) =>
+  request<RoleItem>(`/roles/${roleId}`, {
+    method: 'PUT',
+    data: { permissions }
+  });

@@ -229,7 +229,7 @@ export default {
   'menu.accessControl.permissions': 'Permissions',
   'permissions.page.description':
     'Review every permission point and grant it to custom roles. Built-in roles follow system identity and cannot be rewritten here. Changes apply immediately.',
-  'permissions.search': 'Search permission or description',
+  'permissions.search': 'Search modules or permission descriptions',
   'permissions.column.key': 'Permission',
   'permissions.builtinHint':
     'Built-in role columns are read-only and show the default grants.',
@@ -280,6 +280,8 @@ export default {
   'permissions.desc.org:write': 'Manage organizations and members',
   'permissions.desc.user:read': 'View platform users',
   'permissions.desc.user:write': 'Create and manage platform users',
+  'permissions.desc.workspace:read': 'View workspaces',
+  'permissions.desc.workspace:write': 'Manage workspaces and members',
   'permissions.desc.settings:read': 'View system settings',
   'permissions.desc.settings:write':
     'Update branding, catalog, and platform defaults',
@@ -402,9 +404,17 @@ export default {
   'roles.permissions.action': 'Permissions',
   'roles.permissions.title': 'Permissions for {name}',
   'roles.permissions.hint':
-    'Changes apply immediately. Assign permissions after creating a role.',
+    'Pick an access level per module, then expand for finer control. Changes apply immediately.',
   'roles.permissions.builtinHint':
     'Built-in role permissions are set by the system and are read-only.',
+  'roles.permissions.level.none': 'No access',
+  'roles.permissions.level.read': 'Read',
+  'roles.permissions.level.write': 'Write',
+  'roles.permissions.level.custom': 'Custom',
+  'roles.permissions.details': 'Fine-grained permissions',
+  'roles.permissions.granted': '{count} / {total} granted',
+  'roles.permissions.selectAll': 'Grant all',
+  'roles.permissions.clearAll': 'Clear all',
   'roles.tab.roles': 'Roles',
   'roles.builtin': 'Built-in',
   'roles.tab.bindings': 'Bindings',

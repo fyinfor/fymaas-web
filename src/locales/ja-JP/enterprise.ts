@@ -282,6 +282,8 @@ export default {
   'permissions.desc.org:write': '組織とメンバーを管理',
   'permissions.desc.user:read': 'プラットフォームユーザーを表示',
   'permissions.desc.user:write': 'プラットフォームユーザーを作成および管理',
+  'permissions.desc.workspace:read': 'ワークスペースを表示',
+  'permissions.desc.workspace:write': 'ワークスペースとメンバーを管理',
   'permissions.desc.settings:read': 'システム設定を表示',
   'permissions.desc.settings:write':
     'ブランド、カタログ、プラットフォームの既定値を変更',
@@ -404,9 +406,17 @@ export default {
   'roles.permissions.action': '権限',
   'roles.permissions.title': '{name} の権限',
   'roles.permissions.hint':
-    '変更はすぐに反映されます。ロール作成後にここで割り当てます。',
+    'モジュールごとにアクセスレベルを選び、必要なら細項を調整します。変更はすぐ反映されます。',
   'roles.permissions.builtinHint':
     '組み込みロールの権限はシステムが決めるため参照のみです。',
+  'roles.permissions.level.none': '権限なし',
+  'roles.permissions.level.read': '読み取り',
+  'roles.permissions.level.write': '読み書き',
+  'roles.permissions.level.custom': 'カスタム',
+  'roles.permissions.details': '細かい権限',
+  'roles.permissions.granted': '{count} / {total} 件を許可',
+  'roles.permissions.selectAll': 'すべて許可',
+  'roles.permissions.clearAll': 'すべて解除',
   'roles.tab.roles': 'ロール',
   'roles.builtin': '組み込み',
   'roles.tab.bindings': '付与',
