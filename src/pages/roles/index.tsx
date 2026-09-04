@@ -6,7 +6,6 @@ import {
 import { request, useIntl, useModel } from '@umijs/max';
 import {
   Button,
-  Checkbox,
   Drawer,
   Form,
   Input,
@@ -28,7 +27,6 @@ const Roles: React.FC = () => {
   const { initialState } = useModel('@@initialState') || {};
   const isPlatformAdmin = !!initialState?.currentUser?.is_admin;
   const [roles, setRoles] = React.useState<any[]>([]);
-  const [catalog, setCatalog] = React.useState<any[]>([]);
   const [open, setOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<any>(null);
   const [form] = Form.useForm();
@@ -39,26 +37,11 @@ const Roles: React.FC = () => {
     is_active?: boolean;
   }>({});
 
-  const groupedCatalog = React.useMemo(() => {
-    const groups = new Map<string, any[]>();
-    for (const item of catalog) {
-      const key = item.group || 'other';
-      const list = groups.get(key) || [];
-      list.push(item);
-      groups.set(key, list);
-    }
-    return [...groups.entries()];
-  }, [catalog]);
-
   const load = async () => {
-    const [r, p] = await Promise.all([
-      request('/roles', {
-        params: { page: 1, perPage: 100, ...filters }
-      }),
-      request('/roles/permissions')
-    ]);
-    setRoles(sortCatalogRoles(r.items || []));
-    setCatalog(p || []);
+    const page = await request('/roles', {
+      params: { page: 1, perPage: 100, ...filters }
+    });
+    setRoles(sortCatalogRoles(page.items || []));
   };
 
   React.useEffect(() => {
@@ -68,7 +51,9 @@ const Roles: React.FC = () => {
   const save = async () => {
     const values = await form.validateFields();
     const payload = {
-      ...values,
+      name: values.name,
+      code: values.code,
+      description: values.description,
       is_active: values.is_active !== false
     };
     if (editing) {
@@ -187,7 +172,7 @@ const Roles: React.FC = () => {
           onClick={() => {
             setEditing(null);
             form.resetFields();
-            form.setFieldsValue({ is_active: true, permissions: [] });
+            form.setFieldsValue({ is_active: true });
             setOpen(true);
           }}
         >
@@ -304,11 +289,7 @@ const Roles: React.FC = () => {
           </Button>
         }
       >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={{ permissions: [], is_active: true }}
-        >
+        <Form form={form} layout="vertical" initialValues={{ is_active: true }}>
           <Form.Item
             name="name"
             label={intl.formatMessage({ id: 'roles.form.name' })}
@@ -356,31 +337,6 @@ const Roles: React.FC = () => {
             label={intl.formatMessage({ id: 'common.table.description' })}
           >
             <Input.TextArea rows={2} />
-          </Form.Item>
-          <Form.Item
-            name="permissions"
-            label={intl.formatMessage({ id: 'roles.permissions' })}
-          >
-            <Checkbox.Group style={{ width: '100%' }}>
-              <Space direction="vertical" size={16} style={{ width: '100%' }}>
-                {groupedCatalog.map(([group, items]) => (
-                  <div key={group}>
-                    <Typography.Text type="secondary">{group}</Typography.Text>
-                    <Space
-                      direction="vertical"
-                      size={4}
-                      style={{ display: 'flex', marginTop: 8 }}
-                    >
-                      {items.map((item) => (
-                        <Checkbox key={item.key} value={item.key}>
-                          {item.key} — {item.description}
-                        </Checkbox>
-                      ))}
-                    </Space>
-                  </div>
-                ))}
-              </Space>
-            </Checkbox.Group>
           </Form.Item>
         </Form>
       </Drawer>
