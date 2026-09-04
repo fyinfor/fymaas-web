@@ -1,3 +1,4 @@
+import { ErrorState, TableSkeleton } from '@/components/console';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import PageBox from '@/pages/_components/page-box';
@@ -312,37 +313,46 @@ const Workers: React.FC<WorkersProps> = ({ clusterId, source }) => {
             )
           }
         ></FilterBar>
-        <SealTable
-          rowKey="id"
-          columns={columns}
-          dataSource={dataSource.dataList}
-          loading={dataSource.loading}
-          loadend={dataSource.loadend}
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          showSorterTooltip={false}
-          onTableSort={handleTableSort}
-          // `true` widens the row to the columns' own floors (sum of their
-          // `minWidth` + the prefix gutter) and scrolls past that. Not
-          // `'max-content'`: on a grid of `fr` tracks the greediest cell — the
-          // wrap-happy labels column — sets the `fr` unit for every track, which
-          // blows the table up to ~3.4x the width it actually needs.
-          scroll={{ x: true }}
-          rowSelection={source === 'clusterDetail' ? undefined : rowSelection}
-          empty={noResourceResult}
-          // Matches the `<NoResult minHeight>` inside `noResourceResult` so the
-          // first-load spinner, the empty state and the eventual rows occupy
-          // one stable block instead of jumping on entry.
-          emptyMinHeight="calc(100vh - 300px)"
-          pagination={{
-            size: 'middle',
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: dataSource.total,
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        ></SealTable>
+        {dataSource.loading && !dataSource.loadend ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : dataSource.error && !dataSource.dataList.length ? (
+          <ErrorState
+            onRetry={() => fetchData()}
+            style={{ minHeight: 'calc(100vh - 300px)' }}
+          />
+        ) : (
+          <SealTable
+            rowKey="id"
+            columns={columns}
+            dataSource={dataSource.dataList}
+            loading={false}
+            loadend={dataSource.loadend}
+            sortDirections={TABLE_SORT_DIRECTIONS}
+            showSorterTooltip={false}
+            onTableSort={handleTableSort}
+            // `true` widens the row to the columns' own floors (sum of their
+            // `minWidth` + the prefix gutter) and scrolls past that. Not
+            // `'max-content'`: on a grid of `fr` tracks the greediest cell — the
+            // wrap-happy labels column — sets the `fr` unit for every track, which
+            // blows the table up to ~3.4x the width it actually needs.
+            scroll={{ x: true }}
+            rowSelection={source === 'clusterDetail' ? undefined : rowSelection}
+            empty={noResourceResult}
+            // Matches the `<NoResult minHeight>` inside `noResourceResult` so the
+            // first-load spinner, the empty state and the eventual rows occupy
+            // one stable block instead of jumping on entry.
+            emptyMinHeight="calc(100vh - 300px)"
+            pagination={{
+              size: 'middle',
+              showSizeChanger: true,
+              pageSize: queryParams.perPage,
+              current: queryParams.page,
+              total: dataSource.total,
+              hideOnSinglePage: queryParams.perPage === 10,
+              onChange: handlePageChange
+            }}
+          ></SealTable>
+        )}
         <DeleteModal ref={modalRef}></DeleteModal>
         <UpdateLabels
           open={updateLabelsData.open}

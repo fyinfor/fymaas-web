@@ -1,15 +1,10 @@
-import { getGpuColor } from '@/pages/backends/config';
-import { AutoTooltip, IconFont, ThemeTag } from '@gpustack/core-ui';
+import { MetaChip } from '@/components/console';
+import { AutoTooltip, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Typography } from 'antd';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import {
-  ProviderSourceColorMap,
-  ProviderSourceLabelMap,
-  ServiceModeColorMap,
-  ServiceModeMap
-} from '../config';
+import { ProviderSourceLabelMap, ServiceModeMap } from '../config';
 import { CacheProviderItem } from '../config/types';
 import '../style/provider-catalog.less';
 
@@ -78,16 +73,15 @@ const ProviderCard: React.FC<{
         </span>
         <AutoTooltip ghost>{data.display_name || data.name}</AutoTooltip>
         {ProviderSourceLabelMap[data.source] && (
-          <ThemeTag
-            className="tag-item"
-            color={ProviderSourceColorMap[data.source] || 'blue'}
-            opacity={0.7}
+          <MetaChip
+            icon={
+              data.source === 'partner' ? (
+                <SparkleIcon style={{ width: 12, height: 12 }} />
+              ) : undefined
+            }
           >
-            {data.source === 'partner' && (
-              <SparkleIcon style={{ marginRight: 4, fontSize: 12 }} />
-            )}
             {intl.formatMessage({ id: ProviderSourceLabelMap[data.source] })}
-          </ThemeTag>
+          </MetaChip>
         )}
       </div>
       <Typography.Paragraph
@@ -118,14 +112,7 @@ const ProviderCard: React.FC<{
             {intl.formatMessage({ id: 'backend.availableFrameworks' })}:
           </span>
           {frameworks.map((framework) => (
-            <ThemeTag
-              key={framework}
-              className="tag-item"
-              color={getGpuColor(framework)}
-              opacity={0.7}
-            >
-              {framework}
-            </ThemeTag>
+            <MetaChip key={framework}>{framework}</MetaChip>
           ))}
         </div>
       )}
@@ -135,14 +122,9 @@ const ProviderCard: React.FC<{
               shows only that one — display and behavior must agree
               until the card offers a mode choice */}
           {data.supported_modes?.slice(0, 1).map((mode) => (
-            <ThemeTag
-              key={mode}
-              className="tag-item"
-              color={ServiceModeColorMap[mode] || 'blue'}
-              opacity={0.7}
-            >
+            <MetaChip key={mode}>
               {intl.formatMessage({ id: ServiceModeMap[mode] })}
-            </ThemeTag>
+            </MetaChip>
           ))}
         </span>
         <span className="links">

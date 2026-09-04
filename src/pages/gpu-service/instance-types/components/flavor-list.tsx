@@ -1,15 +1,10 @@
+import { MetaChip } from '@/components/console';
 import { FileSkeletonRows } from '@/pages/llmodels/components/model-source/file-skeleton';
-import {
-  AutoTooltip,
-  IconFont,
-  TemplateCard,
-  ThemeTag
-} from '@gpustack/core-ui';
+import { AutoTooltip, IconFont, TemplateCard } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Empty, Flex, Spin, Typography } from 'antd';
 import _ from 'lodash';
 import { formatMemoryDisplay } from '../../instances/config';
-import { manufactureColorMap } from '../../templates/config';
 import { FlavorItem } from '../config/types';
 import styles from '../styles/instance-types.module.less';
 
@@ -63,7 +58,6 @@ const FlavorList: React.FC<FlavorListProps> = ({
       {dataList.map((item) => {
         const spec = item.spec || {};
         const manufacturer = spec.manufacturer || '';
-        const color = manufactureColorMap[manufacturer] ?? 'purple';
         // A generic (no product, no/`generic` manufacturer) flavor is shown as
         // "CPU-only" instead of falling back to the raw flavor name.
         const isCpuOnly =
@@ -89,9 +83,7 @@ const FlavorList: React.FC<FlavorListProps> = ({
                   </AutoTooltip>
                 </div>
                 {manufacturer && (
-                  <ThemeTag color={color} style={{ fontWeight: 400 }}>
-                    {manufacturer.toUpperCase()}
-                  </ThemeTag>
+                  <MetaChip>{manufacturer.toUpperCase()}</MetaChip>
                 )}
               </Flex>
               {/* Memory only applies to accelerator (GPU) flavors; a

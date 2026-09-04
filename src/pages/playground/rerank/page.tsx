@@ -1,3 +1,4 @@
+import { MetaChip } from '@/components/console';
 import {
   ClearOutlined,
   PlusOutlined,
@@ -10,7 +11,7 @@ import {
   useRequestToken
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Button, Checkbox, Input, Spin, Tag, Tooltip, Typography } from 'antd';
+import { Button, Checkbox, Input, Spin, Tooltip, Typography } from 'antd';
 import _ from 'lodash';
 import React, {
   forwardRef,
@@ -219,7 +220,7 @@ const GroundReranker: React.FC<MessageProps> = forwardRef((props, ref) => {
           <div
             className="pregress-bar"
             style={{
-              backgroundImage: `linear-gradient(90deg, var(--ant-blue-5) 0%, var(--ant-blue-2) 100%)`,
+              backgroundImage: `linear-gradient(90deg, var(--primary) 0%, var(--primary-soft) 100%)`,
               width: `${percent}%`,
               height: '4px',
               borderRadius: '2px'
@@ -227,13 +228,13 @@ const GroundReranker: React.FC<MessageProps> = forwardRef((props, ref) => {
           ></div>
         </div>
         <span className="flex-center hover-hidden rank-tag">
-          <Tag color={'geekblue'} variant="filled">
+          <MetaChip>
             {intl.formatMessage({ id: 'playground.rerank.rank' })}: {data.rank}
-          </Tag>
-          <Tag color={'gold'} variant="filled">
+          </MetaChip>
+          <MetaChip>
             {intl.formatMessage({ id: 'playground.rerank.score' })}:{' '}
             {_.round(data.score, 2)}
-          </Tag>
+          </MetaChip>
         </span>
       </div>
     );

@@ -1,5 +1,6 @@
+import { MetaChip } from '@/components/console';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { InfoColumn, ThemeTag } from '@gpustack/core-ui';
+import { InfoColumn } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Tooltip } from 'antd';
 import _ from 'lodash';
@@ -52,25 +53,11 @@ const CPUOffloadingCell: React.FC<CPUOffloadingCellProps> = ({ record }) => {
       title={<InfoColumn fieldList={fieldList} data={offloadData}></InfoColumn>}
     >
       <span>
-        <ThemeTag
-          opacity={0.75}
-          color="cyan"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            maxWidth: '100%',
-            minWidth: 50,
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            borderRadius: 12
-          }}
-        >
-          <InfoCircleOutlined className="m-r-5" />
+        <MetaChip icon={<InfoCircleOutlined />}>
           {intl.formatMessage({
             id: 'models.table.cpuoffload'
           })}
-        </ThemeTag>
+        </MetaChip>
       </span>
     </Tooltip>
   );

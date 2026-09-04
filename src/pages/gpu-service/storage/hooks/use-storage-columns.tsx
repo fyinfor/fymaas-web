@@ -1,6 +1,7 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import useCreatorColumn from '@/pages/gpu-service/hooks/use-creator-column';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
-import { AutoTooltip, DropdownButtons, StatusTag } from '@gpustack/core-ui';
+import { AutoTooltip, DropdownButtons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import type { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
@@ -77,13 +78,13 @@ const useStorageColumns = ({
         sorter: false,
         render: (value: string, record: ListItem) =>
           value ? (
-            <StatusTag
-              statusValue={{
-                status: status[value],
-                text: StoragePhaseLabelMap[value] || value,
-                message: record?.status?.phaseMessage || ''
-              }}
-            ></StatusTag>
+            <StatusBadge
+              tone={statusTone(status[value])}
+              plain
+              title={record?.status?.phaseMessage || undefined}
+            >
+              {StoragePhaseLabelMap[value] || value}
+            </StatusBadge>
           ) : (
             '-'
           )

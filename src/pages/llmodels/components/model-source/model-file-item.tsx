@@ -1,6 +1,7 @@
+import { MetaChip } from '@/components/console';
 import { convertFileSize } from '@/utils';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { ThemeTag, TooltipOverlayScroller } from '@gpustack/core-ui';
+import { TooltipOverlayScroller } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import classNames from 'classnames';
 import _ from 'lodash';
@@ -27,22 +28,9 @@ const FilePartsTag = (props: { parts: any[] }) => {
 
   return (
     <TooltipOverlayScroller title={<FileParts fileList={parts}></FileParts>}>
-      <ThemeTag
-        opacity={0.7}
-        className="tag-item"
-        color="purple"
-        style={{
-          marginRight: 0
-        }}
-      >
-        <span style={{ opacity: 1 }}>
-          <InfoCircleOutlined className="m-r-5" />
-          {intl.formatMessage(
-            { id: 'models.search.parts' },
-            { n: parts.length }
-          )}
-        </span>
-      </ThemeTag>
+      <MetaChip className="tag-item" icon={<InfoCircleOutlined />}>
+        {intl.formatMessage({ id: 'models.search.parts' }, { n: parts.length })}
+      </MetaChip>
     </TooltipOverlayScroller>
   );
 };
@@ -57,18 +45,7 @@ const ModelFileItem: React.FC<ModelFileItemProps> = (props) => {
     }
     const quanType = getFileType(path);
     if (quanType) {
-      return (
-        <ThemeTag
-          opacity={0.7}
-          className="tag-item"
-          color="cyan"
-          style={{
-            marginRight: 0
-          }}
-        >
-          {_.toUpper(quanType)}
-        </ThemeTag>
-      );
+      return <MetaChip className="tag-item">{_.toUpper(quanType)}</MetaChip>;
     }
     return null;
   };
@@ -83,16 +60,7 @@ const ModelFileItem: React.FC<ModelFileItemProps> = (props) => {
       <div className="title">{item.path}</div>
       <div className="tags flex-between">
         <span className="flex-center gap-8">
-          <ThemeTag
-            opacity={0.7}
-            className="tag-item"
-            color="green"
-            style={{
-              marginRight: 0
-            }}
-          >
-            {convertFileSize(item.size)}
-          </ThemeTag>
+          <MetaChip className="tag-item">{convertFileSize(item.size)}</MetaChip>
           {getModelQuantizationType(item)}
           <FilePartsTag parts={item.parts}></FilePartsTag>
         </span>

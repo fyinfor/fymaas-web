@@ -120,7 +120,7 @@ const AuditLogs: React.FC = () => {
         loading={dataSource.loading}
         loadend={dataSource.loadend}
         dataSource={dataSource.dataList}
-        image={<IconFont type="icon-list" />}
+        image={<IconFont type="icon-logs" />}
         filters={_.pick(queryParams, ['search', 'action', 'result'])}
         noFoundText={intl.formatMessage({ id: 'auditLogs.noresult.nofound' })}
         title={intl.formatMessage({ id: 'auditLogs.noresult.title' })}

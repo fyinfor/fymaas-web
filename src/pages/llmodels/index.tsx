@@ -1,3 +1,4 @@
+import { PageHeader } from '@/components/console';
 import { HeaderLeft, usePageContentStyle } from '@/pages/_components/page-box';
 import { IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -48,33 +49,34 @@ const LLModels: React.FC = () => {
 
   const title = useMemo(() => {
     return (
-      <div className="flex items-center">
-        <span className="font-600 flex-center">
-          {intl.formatMessage({ id: 'menu.models.deployment' })}
-        </span>
-        <Segmented
-          style={{
-            backgroundColor: 'var(--bg-hover)',
-            fontSize: 13
-          }}
-          size="middle"
-          className="m-l-24 font-400"
-          options={[
-            {
-              label: intl.formatMessage({ id: 'models.table.modelView' }),
-              value: TabsValueMap.ModelView,
-              icon: <IconFont type={'icon-models'}></IconFont>
-            },
-            {
-              label: intl.formatMessage({ id: 'models.table.instanceView' }),
-              value: TabsValueMap.InstanceView,
-              icon: <IconFont type={'icon-instance-outline'}></IconFont>
-            }
-          ]}
-          value={activeKey}
-          onChange={handleTabChange}
-        ></Segmented>
-      </div>
+      <PageHeader
+        title={intl.formatMessage({ id: 'menu.models.deployment' })}
+        subtitle={intl.formatMessage({ id: 'page.subtitle.deployments' })}
+        extra={
+          <Segmented
+            style={{
+              backgroundColor: 'var(--bg-hover)',
+              fontSize: 13
+            }}
+            size="middle"
+            className="font-400"
+            options={[
+              {
+                label: intl.formatMessage({ id: 'models.table.modelView' }),
+                value: TabsValueMap.ModelView,
+                icon: <IconFont type={'icon-models'}></IconFont>
+              },
+              {
+                label: intl.formatMessage({ id: 'models.table.instanceView' }),
+                value: TabsValueMap.InstanceView,
+                icon: <IconFont type={'icon-instance-outline'}></IconFont>
+              }
+            ]}
+            value={activeKey}
+            onChange={handleTabChange}
+          ></Segmented>
+        }
+      />
     );
   }, [activeKey, intl]);
 

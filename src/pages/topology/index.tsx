@@ -1,3 +1,4 @@
+import { MetaChip, StatusBadge } from '@/components/console';
 import { request, useIntl } from '@umijs/max';
 import {
   Background,
@@ -8,7 +9,7 @@ import {
   type Node
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Card, Descriptions, Drawer, Empty, Select, Space, Tag } from 'antd';
+import { Card, Descriptions, Drawer, Empty, Select, Space } from 'antd';
 import dagre from 'dagre';
 import React from 'react';
 import PageBox from '../_components/page-box';
@@ -79,9 +80,11 @@ const Topology: React.FC = () => {
         raw: n,
         label: (
           <Space size={4}>
-            <Tag color={KIND_COLOR[n.kind] || 'default'}>{n.kind}</Tag>
+            <MetaChip>{n.kind}</MetaChip>
             <span>{n.label}</span>
-            {n.status ? <Tag>{n.status}</Tag> : null}
+            {n.status ? (
+              <StatusBadge tone="neutral">{n.status}</StatusBadge>
+            ) : null}
           </Space>
         )
       },

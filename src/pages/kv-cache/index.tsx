@@ -243,7 +243,8 @@ const KVCache: React.FC = () => {
               {ActionButton()}
               <Button
                 icon={<PlusOutlined></PlusOutlined>}
-                type="primary"
+                color="primary"
+                variant="outlined"
                 onClick={handleAddService}
               >
                 {intl.formatMessage({ id: 'kvCache.button.add' })}

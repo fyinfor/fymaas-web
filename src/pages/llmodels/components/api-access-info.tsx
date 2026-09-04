@@ -221,7 +221,7 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
             <CreateButton
               type="link"
               size="small"
-              onClick={() => navigate('/access-control/api-keys')}
+              onClick={() => navigate('/usage/api-keys')}
             >
               {intl.formatMessage({
                 id: 'models.table.apiAccessInfo.gotoCreate'

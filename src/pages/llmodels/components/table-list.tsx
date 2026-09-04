@@ -1,4 +1,5 @@
 import { modelsExpandKeysAtom, modelsSessionAtom } from '@/atoms/models';
+import { TableSkeleton } from '@/components/console';
 import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
@@ -58,7 +59,7 @@ import useViewInstanceLogs from '../hooks/use-view-instance-logs';
 import LeftFilters from '../instance-view/left-filters';
 import DeployModal from './deployment/deploy-modal';
 import UpdateModelModal from './deployment/update-modal';
-import Instances from './instance/instances';
+import DeploymentExpand from './instance/deployment-expand';
 import ViewLogsModal from './view-logs-modal';
 interface ModelsProps {
   handleSearch: (params?: any) => void;
@@ -435,7 +436,7 @@ const Models: React.FC<ModelsProps> = ({
   const renderChildren = useCallback(
     (list: any, options: { parent?: any; [key: string]: any }) => {
       return (
-        <Instances
+        <DeploymentExpand
           list={list}
           currentExpanded={options.currentExpanded}
           modelData={options.parent}
@@ -444,7 +445,7 @@ const Models: React.FC<ModelsProps> = ({
           gridTemplate={options.gridTemplate}
           prefixWidth={options.prefixWidth}
           columns={options.columns}
-        ></Instances>
+        />
       );
     },
     [workerList]
@@ -593,7 +594,8 @@ const Models: React.FC<ModelsProps> = ({
               >
                 <Button
                   icon={<DownOutlined></DownOutlined>}
-                  type="primary"
+                  color="primary"
+                  variant="outlined"
                   iconPlacement="end"
                 >
                   {intl?.formatMessage?.({ id: 'models.button.deploy' })}
@@ -614,39 +616,43 @@ const Models: React.FC<ModelsProps> = ({
             </Space>
           }
         ></PageTools>
-        <SealTable
-          columns={columns}
-          emptyMinHeight="calc(100vh - 300px)"
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          dataSource={dataSource}
-          rowSelection={rowSelection}
-          expandedRowKeys={expandedRowKeys}
-          showSorterTooltip={false}
-          onExpand={handleExpandChange}
-          onExpandAll={handleToggleExpandAll}
-          loading={loading}
-          loadend={loadend}
-          rowKey="id"
-          childParentKey="model_id"
-          expandable={true}
-          onTableSort={handleOnSort}
-          onCell={handleOnCell}
-          pollingChildren={false}
-          watchChildren={true}
-          loadChildren={getModelInstances}
-          loadChildrenAPI={generateChildrenRequestAPI}
-          renderChildren={renderChildren}
-          empty={noResourceResult}
-          pagination={{
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: total,
-            size: 'middle',
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        ></SealTable>
+        {loading && !loadend ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : (
+          <SealTable
+            columns={columns}
+            emptyMinHeight="calc(100vh - 300px)"
+            sortDirections={TABLE_SORT_DIRECTIONS}
+            dataSource={dataSource}
+            rowSelection={rowSelection}
+            expandedRowKeys={expandedRowKeys}
+            showSorterTooltip={false}
+            onExpand={handleExpandChange}
+            onExpandAll={handleToggleExpandAll}
+            loading={false}
+            loadend={loadend}
+            rowKey="id"
+            childParentKey="model_id"
+            expandable={true}
+            onTableSort={handleOnSort}
+            onCell={handleOnCell}
+            pollingChildren={false}
+            watchChildren={true}
+            loadChildren={getModelInstances}
+            loadChildrenAPI={generateChildrenRequestAPI}
+            renderChildren={renderChildren}
+            empty={noResourceResult}
+            pagination={{
+              showSizeChanger: true,
+              pageSize: queryParams.perPage,
+              current: queryParams.page,
+              total: total,
+              size: 'middle',
+              hideOnSinglePage: queryParams.perPage === 10,
+              onChange: handlePageChange
+            }}
+          ></SealTable>
+        )}
       </div>
       <UpdateModelModal
         open={openEditModalStatus.open}

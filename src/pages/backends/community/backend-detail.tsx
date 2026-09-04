@@ -1,8 +1,9 @@
+import { StatusBadge } from '@/components/console';
 import FullMarkdown from '@/components/full-markdown';
 import { BulbOutlined } from '@ant-design/icons';
 import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Button, Tag } from 'antd';
+import { Button } from 'antd';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
@@ -111,9 +112,9 @@ const BackendDetail: React.FC<{
         {currentData && (
           <span>
             {currentData?.enabled ? (
-              <Tag color="geekblue" variant="filled">
+              <StatusBadge tone="success" plain>
                 {intl.formatMessage({ id: 'common.status.enabled' })}
-              </Tag>
+              </StatusBadge>
             ) : (
               <Button
                 type="primary"

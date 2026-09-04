@@ -1,5 +1,6 @@
-import { queryBillingSettings } from '@/enterprise/system-settings/apis';
+import { StatusBadge } from '@/components/console';
 import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
+import { queryBillingSettings } from '@/enterprise/system-settings/apis';
 import { downloadFile } from '@/utils/download-stream';
 import { request, useAccess, useIntl } from '@umijs/max';
 import {
@@ -99,10 +100,10 @@ const EnterpriseBilling: React.FC = () => {
       .catch(() => undefined);
   }, []);
 
-  const statusColor = (status: string) => {
-    if (status === 'issued') return 'success';
-    if (status === 'void') return 'default';
-    return 'processing';
+  const invoiceTone = (status: string) => {
+    if (status === 'issued') return 'success' as const;
+    if (status === 'void') return 'neutral' as const;
+    return 'info' as const;
   };
 
   const formatPeriod = (row: any) => {
@@ -355,12 +356,12 @@ const EnterpriseBilling: React.FC = () => {
                       }),
                       dataIndex: 'status',
                       render: (status: string) => (
-                        <Tag color={statusColor(status)}>
+                        <StatusBadge tone={invoiceTone(status)}>
                           {intl.formatMessage({
                             id: `billing.status.${status}`,
                             defaultMessage: status
                           })}
-                        </Tag>
+                        </StatusBadge>
                       )
                     },
                     {
@@ -484,13 +485,13 @@ const EnterpriseBilling: React.FC = () => {
                       title: intl.formatMessage({ id: 'billing.plan.enabled' }),
                       dataIndex: 'enabled',
                       render: (v: boolean) => (
-                        <Tag color={v ? 'success' : 'default'}>
+                        <StatusBadge tone={v ? 'success' : 'neutral'}>
                           {v
                             ? intl.formatMessage({ id: 'common.button.enable' })
                             : intl.formatMessage({
                                 id: 'common.button.disable'
                               })}
-                        </Tag>
+                        </StatusBadge>
                       )
                     },
                     {
@@ -653,12 +654,12 @@ const EnterpriseBilling: React.FC = () => {
               <Descriptions.Item
                 label={intl.formatMessage({ id: 'billing.invoice.status' })}
               >
-                <Tag color={statusColor(detail.status)}>
+                <StatusBadge tone={invoiceTone(detail.status)}>
                   {intl.formatMessage({
                     id: `billing.status.${detail.status}`,
                     defaultMessage: detail.status
                   })}
-                </Tag>
+                </StatusBadge>
               </Descriptions.Item>
             </Descriptions>
             <Table

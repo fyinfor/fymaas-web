@@ -229,7 +229,7 @@ export const getRightRenderContent = (opts: {
               </span>
             ),
             onClick: () => {
-              history.push('/api-keys');
+              history.push('/usage/api-keys');
             }
           },
           {
@@ -243,7 +243,7 @@ export const getRightRenderContent = (opts: {
               </span>
             ),
             onClick: () => {
-              history.push('/preferences');
+              history.push('/settings/profile');
             }
           },
           {

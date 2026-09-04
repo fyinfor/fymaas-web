@@ -1,3 +1,4 @@
+import { MetaChip } from '@/components/console';
 import NumberSelection from '@/pages/_components/number-selection';
 import { queryGPUInstanceTypes } from '@/pages/gpu-service/instance-types/apis';
 import { ListItem as InstanceTypeListItem } from '@/pages/gpu-service/instance-types/config/types';
@@ -7,12 +8,10 @@ import {
   isLogicalSliceable,
   isPhysicalSliceable
 } from '@/pages/gpu-service/instances/config';
-import { manufactureColorMap } from '@/pages/gpu-service/templates/config';
 import { formatManufacturer } from '@/pages/gpu-service/utils';
 import {
   AutoTooltip,
   Select as SealSelect,
-  ThemeTag,
   useAppUtils
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -132,12 +131,9 @@ const GPUTypeOption: React.FC<{ item: InstanceTypeListItem }> = ({ item }) => {
         }}
       >
         {manufacturer && (
-          <ThemeTag
-            color={manufactureColorMap[manufacturer] ?? 'purple'}
-            style={{ fontWeight: 400, marginInlineEnd: 0 }}
-          >
+          <MetaChip style={{ fontWeight: 400 }}>
             {formatManufacturer(manufacturer)}
-          </ThemeTag>
+          </MetaChip>
         )}
         {pieces.map((piece, index) => (
           <React.Fragment key={piece}>

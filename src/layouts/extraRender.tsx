@@ -1,12 +1,13 @@
 import { GPUStackVersionAtom, UpdateCheckAtom } from '@/atoms/user';
-import ThemeToggle from '@/components/theme-toggle';
 import PluginExtraField from '@/components/plugin-extra-fields';
+import ThemeToggle from '@/components/theme-toggle';
 import VersionInfo, { modalConfig } from '@/components/version-info';
 import HotKeys from '@/config/hotkeys';
 import externalLinks from '@/constants/external-links';
 import { getBranding } from '@/enterprise/branding/runtime';
 import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
+import { platformCall } from '@/utils';
 import { useModel } from '@@/plugin-model';
 import {
   DiscordOutlined,
@@ -21,7 +22,6 @@ import { useAtom } from 'jotai';
 import { useMemo, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import styled from 'styled-components';
-import { platformCall } from '@/utils';
 import { DEFAULT_ENTER_PAGE } from '../config/settings';
 import CommandPalette from './command-palette';
 
@@ -85,7 +85,11 @@ const SearchTrigger = styled.button`
     background-color 120ms ease;
 
   &:hover {
-    border-color: color-mix(in srgb, var(--console-border) 60%, var(--console-brand));
+    border-color: color-mix(
+      in srgb,
+      var(--console-border) 60%,
+      var(--console-brand)
+    );
     color: var(--console-text-secondary);
   }
 
@@ -256,12 +260,12 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
           <span className="flex flex-center">
             <IconFont type="icon-preferences" />
             <span className="m-l-8" style={{ marginLeft: 8 }}>
-              {intl?.formatMessage?.({ id: 'common.preferences' })}
+              {intl?.formatMessage?.({ id: 'menu.settings.profile' })}
             </span>
           </span>
         ),
         onClick: () => {
-          history.push('/preferences');
+          history.push('/settings/profile');
         }
       },
       {
@@ -321,7 +325,10 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
   return (
     <Wrapper>
       {contextHolder}
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+      />
       <PluginExtraField name="OrgSwitcher" isDarkTheme={isDarkTheme} />
       <SearchTrigger type="button" onClick={() => setPaletteOpen(true)}>
         <SearchOutlined />

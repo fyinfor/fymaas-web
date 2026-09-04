@@ -1,8 +1,8 @@
-import { AutoTooltip, ThemeTag } from '@gpustack/core-ui';
+import { MetaChip } from '@/components/console';
+import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Flex } from 'antd';
 import { formatMemoryDisplay } from '../../instances/config';
-import { manufactureColorMap } from '../../templates/config';
 import { formatManufacturer } from '../../utils';
 
 // The subset of a flavor / instance-type display shape the flavor renderers
@@ -39,7 +39,6 @@ export const FlavorMeta: React.FC<{ spec?: FlavorSpecLike }> = ({
 }) => {
   const intl = useIntl();
   const manufacturer = spec.manufacturer || '';
-  const color = manufactureColorMap[manufacturer] ?? 'purple';
   const memory = spec.acceleratable
     ? formatMemoryDisplay(spec.memory ?? undefined)
     : '';
@@ -47,13 +46,7 @@ export const FlavorMeta: React.FC<{ spec?: FlavorSpecLike }> = ({
   const pieces: React.ReactNode[] = [];
   if (manufacturer) {
     pieces.push(
-      <ThemeTag
-        key="vendor"
-        color={color}
-        style={{ fontWeight: 400, marginInlineEnd: 0 }}
-      >
-        {formatManufacturer(manufacturer)}
-      </ThemeTag>
+      <MetaChip key="vendor">{formatManufacturer(manufacturer)}</MetaChip>
     );
   }
   if (memory) {

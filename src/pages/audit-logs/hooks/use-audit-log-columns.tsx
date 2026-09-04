@@ -1,4 +1,5 @@
-import { AutoTooltip, StatusTag } from '@gpustack/core-ui';
+import { StatusBadge, statusTone } from '@/components/console';
+import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Button } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
@@ -74,14 +75,12 @@ const useAuditLogColumns = ({
         key: 'result',
         width: 120,
         render: (text: string, record: ListItem) => (
-          <StatusTag
-            statusValue={{
-              status: text === 'success' ? 'success' : 'error',
-              text: record.http_status
-                ? `${text} · ${record.http_status}`
-                : text
-            }}
-          />
+          <StatusBadge
+            tone={statusTone(text === 'success' ? 'success' : 'error')}
+            plain
+          >
+            {record.http_status ? `${text} · ${record.http_status}` : text}
+          </StatusBadge>
         )
       },
       {

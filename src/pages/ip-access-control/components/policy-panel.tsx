@@ -1,3 +1,4 @@
+import { StatusBadge } from '@/components/console';
 import { useIntl } from '@umijs/max';
 import {
   Alert,
@@ -8,7 +9,6 @@ import {
   Select,
   Space,
   Switch,
-  Tag,
   Typography,
   message
 } from 'antd';
@@ -152,7 +152,7 @@ const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion, scope }) => {
             {intl.formatMessage({ id: 'ipAccess.test.button' })}
           </Button>
           {testResult && (
-            <Tag color={testResult.allowed ? 'success' : 'error'}>
+            <StatusBadge tone={testResult.allowed ? 'success' : 'danger'} plain>
               {intl.formatMessage({
                 id: testResult.allowed
                   ? 'ipAccess.test.allowed'
@@ -161,7 +161,7 @@ const PolicyPanel: React.FC<PolicyPanelProps> = ({ rulesVersion, scope }) => {
               {testResult.matched_rule_id
                 ? ` · #${testResult.matched_rule_id}`
                 : ` · ${intl.formatMessage({ id: 'ipAccess.test.byDefault' })}`}
-            </Tag>
+            </StatusBadge>
           )}
         </Space>
       </Flex>

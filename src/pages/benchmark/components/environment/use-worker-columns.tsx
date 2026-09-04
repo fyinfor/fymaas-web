@@ -1,7 +1,7 @@
+import { MetaChip } from '@/components/console';
 import { convertFileSize } from '@/utils';
 import { AutoTooltip } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag } from 'antd';
 export default function useWorkerColumns(): {
   title: string;
   dataIndex: string;
@@ -23,9 +23,7 @@ export default function useWorkerColumns(): {
           <>
             <AutoTooltip ghost>{value}</AutoTooltip>
             {record.isMain && (
-              <Tag color="geekblue" style={{ marginLeft: 8 }}>
-                Main
-              </Tag>
+              <MetaChip style={{ marginLeft: 8 }}>Main</MetaChip>
             )}
           </>
         );

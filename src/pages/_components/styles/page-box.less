@@ -82,7 +82,8 @@
     color: var(--console-text);
     font-weight: 600;
     padding-block: 0;
-    height: var(--console-topbar-height);
+    min-height: var(--console-topbar-height);
+    height: auto;
     background: var(--console-bg-elevated);
     border-bottom: 1px solid var(--console-divider);
     flex-shrink: 0;
@@ -107,10 +108,26 @@
 
     .defaultTitle {
       display: inline-flex;
-      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      min-width: 0;
+      padding-block: 8px;
+    }
+
+    .defaultTitleText {
       font-size: 20px;
       font-weight: 600;
       letter-spacing: -0.2px;
+      line-height: 24px;
+      color: var(--text-primary);
+    }
+
+    .defaultSubtitle {
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 18px;
+      color: var(--text-muted);
     }
 
     .leftSlot:not(:empty) ~ .defaultTitle {

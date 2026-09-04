@@ -1,7 +1,8 @@
+import { StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { AutoTooltip, ColumnSettings, InfoColumn } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag, Tooltip, Typography } from 'antd';
+import { Tooltip, Typography } from 'antd';
 import dayjs from 'dayjs';
 import _, { round } from 'lodash';
 import React from 'react';
@@ -434,9 +435,9 @@ const useColumnSettings = (options: {
         const warnings = v.warnings || [];
         if (warnings.length === 0) {
           return (
-            <Tag color="success" bordered={false}>
+            <StatusBadge tone="success">
               {intl.formatMessage({ id: 'benchmark.detail.validity.ok' })}
-            </Tag>
+            </StatusBadge>
           );
         }
         const msgs = warnings.map((w) =>
@@ -455,9 +456,9 @@ const useColumnSettings = (options: {
               </ul>
             }
           >
-            <Tag color="warning" bordered={false}>
+            <StatusBadge tone="warning">
               {`⚠ ${intl.formatMessage({ id: 'benchmark.table.coverage.insufficient' })}`}
-            </Tag>
+            </StatusBadge>
           </Tooltip>
         );
       }

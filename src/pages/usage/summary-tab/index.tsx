@@ -3,27 +3,25 @@
  *
  * Token and time-based resources carry different detail, so the page is three
  * symmetric full-width domain sections instead of a flat KPI stack. Each
- * section is identical in shape: a headline stat line, then a breakdown donut
- * (left) and a fixed-metric trend (right). A single granularity control at the
- * top is shared by all three trends.
+ * section is identical in shape: a headline stat line, then a horizontal
+ * breakdown (left) and a fixed-metric trend (right).
  *
- *   ● Tokens   headline · Input/Output donut · Tokens-over-time
- *   ● Compute  headline · GPU-type donut    · GPU-Hours-over-time
- *   ● Storage  headline · storage-type donut · GB-Days-over-time
+ *   ● Tokens   headline · Input/Output bars · Tokens-over-time
+ *   ● Compute  headline · GPU-type bars     · GPU-Hours-over-time
+ *   ● Storage  headline · storage-type bars · GB-Days-over-time
  *
  * Data sources (all share date + scope):
- *   - /usage/summary             → token totals (Input/Output) + GPU-type donut
+ *   - /usage/summary             → token totals (Input/Output) + GPU-type split
  *   - /usage/breakdown (tokens)  → Tokens trend (token series is daily-only)
  *   - /usage/resource/breakdown  → Compute trend + active instances
- *   - /usage/storage/breakdown   → Storage trend, volumes, type donut
+ *   - /usage/storage/breakdown   → Storage trend, volumes, type split
  *
- * Shows quantity metrics only (no cost). Donuts use
+ * Shows quantity metrics only (no cost). Breakdowns use
  * each domain's natural unit (tokens / GPU-Hours / GB-Days); a true
  * cross-resource split needs a common unit.
  */
-import { useCoolAccents } from '@/hooks/use-cool-colors';
+import { MetricSkeleton, ProgressMetric } from '@/components/console';
 import BarChart from '@/pages/_components/bar-chart';
-import PieChart from '@/pages/_components/pie-chart';
 import { formatLargeNumber } from '@/utils';
 import { useModel } from '@@/plugin-model';
 import { CardWrapper } from '@gpustack/core-ui';
@@ -56,7 +54,15 @@ type QueryParams = {
   selectedUserGroups: number[];
 };
 
-// Round to at most 2 decimals everywhere (avoid 1.60999999… in the donut center).
+const BREAKDOWN_COLORS = [
+  'var(--console-brand)',
+  'var(--console-chart-memory)',
+  'var(--console-chart-gpu)',
+  'var(--console-chart-vram)',
+  'var(--console-chart-cpu)'
+];
+
+// Round to at most 2 decimals everywhere (avoid 1.60999999… in the total).
 const round2 = (n?: number) => Math.round((Number(n) || 0) * 100) / 100;
 const fmt = (n?: number) => formatLargeNumber(round2(n));
 
@@ -107,8 +113,7 @@ const Stat: React.FC<{ value: React.ReactNode; label: string }> = ({
 );
 
 // One compact card per domain: accent + title + headline stats on a single
-// row, then a donut (left, legend hugging it) beside a trend (right) that
-// carries its own chart title — no wasteful caption rows.
+// row, then a horizontal breakdown (left) beside a trend (right).
 const DomainSection: React.FC<{
   pieLoading?: boolean;
   barLoading?: boolean;
@@ -117,6 +122,7 @@ const DomainSection: React.FC<{
   headline: React.ReactNode;
   donutData: { name: string; value: number }[];
   donutTotalLabel: string;
+  breakdownColors?: string[];
   trendTitle: string;
   trendXAxis: string[];
   trendData: number[];
@@ -130,6 +136,7 @@ const DomainSection: React.FC<{
   headline,
   donutData,
   donutTotalLabel,
+  breakdownColors = BREAKDOWN_COLORS,
   trendTitle,
   trendXAxis,
   trendData,
@@ -142,7 +149,7 @@ const DomainSection: React.FC<{
     return [{ name: trendTitle, data: trendData, color: trendColor }].filter(
       (s) => s.data.some((v) => !!v)
     );
-  }, [trendData, trendColor]);
+  }, [trendData, trendColor, trendTitle]);
 
   return (
     <CardWrapper style={{ paddingBlock: 16 }}>
@@ -181,14 +188,60 @@ const DomainSection: React.FC<{
           flexWrap: 'wrap'
         }}
       >
-        <div style={{ width: 340, maxWidth: '100%', flexShrink: 0 }}>
-          <PieChart
-            loading={pieLoading}
-            data={donutData}
-            height={180}
-            total={donutTotal}
-            totalLabel={donutTotalLabel}
-          />
+        <div
+          style={{
+            width: 320,
+            maxWidth: '100%',
+            flexShrink: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12
+          }}
+        >
+          <div
+            style={{
+              fontSize: 12,
+              color: 'var(--console-text-tertiary)'
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 600,
+                color: 'var(--console-text)',
+                fontVariantNumeric: 'tabular-nums'
+              }}
+            >
+              {pieLoading ? '—' : fmt(donutTotal)}
+            </span>{' '}
+            {donutTotalLabel}
+          </div>
+          {pieLoading ? (
+            <MetricSkeleton rows={Math.max(donutData.length, 2)} />
+          ) : donutData.length === 0 ? (
+            <div
+              style={{
+                color: 'var(--console-text-tertiary)',
+                fontSize: 13,
+                padding: '24px 0'
+              }}
+            >
+              —
+            </div>
+          ) : (
+            donutData.map((item, index) => (
+              <ProgressMetric
+                key={`${item.name}-${index}`}
+                label={item.name}
+                percent={
+                  donutTotal > 0
+                    ? (round2(item.value) / donutTotal) * 100
+                    : null
+                }
+                detail={fmt(item.value)}
+                color={breakdownColors[index % breakdownColors.length]}
+              />
+            ))
+          )}
         </div>
         <div style={{ flex: 1, minWidth: 260 }}>
           <BarChart
@@ -217,8 +270,9 @@ const SummaryTab: React.FC = () => {
   const { initialState } = useModel('@@initialState');
   const currentUserId = initialState?.currentUser?.id;
   const t = (id: string) => intl.formatMessage({ id });
-  // One vivid primary per summary card (Tokens / Compute / Storage).
-  const coolColors = useCoolAccents()(3);
+  const tokenColor = 'var(--console-brand)';
+  const computeColor = 'var(--console-chart-gpu)';
+  const storageColor = 'var(--console-chart-vram)';
 
   // No All/My dropdown (matches the Tokens tab): managers see the org-wide
   // view and narrow it with the user filter, others only their own rows.
@@ -558,15 +612,19 @@ const SummaryTab: React.FC = () => {
         <Col span={24}>
           <DomainSection
             title={t('usage.metric.tokens')}
-            accent={coolColors[0]}
+            accent={tokenColor}
             donutData={tokenDonut}
             donutTotalLabel={t('usage.metric.tokens')}
+            breakdownColors={[
+              'var(--console-brand)',
+              'var(--console-chart-memory)'
+            ]}
             trendTitle={t('usage.summary.tokensOverTime')}
             trendXAxis={tokenTrend.xAxis}
             trendData={tokenTrend.data}
             pieLoading={summaryLoading}
             barLoading={tokenSeriesLoading}
-            trendColor={coolColors[0]}
+            trendColor={tokenColor}
             trendGran={granularity}
             headline={
               <>
@@ -594,13 +652,20 @@ const SummaryTab: React.FC = () => {
         <Col span={24}>
           <DomainSection
             title={t('usage.summary.compute')}
-            accent={coolColors[1]}
+            accent={computeColor}
             donutData={computeDonut}
             donutTotalLabel={t('usage.metric.gpuHours')}
+            breakdownColors={[
+              'var(--console-chart-gpu)',
+              'var(--console-chart-vram)',
+              'var(--console-chart-memory)',
+              'var(--console-brand)',
+              'var(--console-chart-cpu)'
+            ]}
             trendTitle={t('usage.summary.gpuHoursOverTime')}
             trendXAxis={computeTrend.xAxis}
             trendData={computeTrend.data}
-            trendColor={coolColors[1]}
+            trendColor={computeColor}
             trendGran={granularity}
             pieLoading={summaryLoading}
             barLoading={computeLoading}
@@ -626,13 +691,19 @@ const SummaryTab: React.FC = () => {
         <Col span={24}>
           <DomainSection
             title={t('usage.tabs.storage')}
-            accent={coolColors[2]}
+            accent={storageColor}
             donutData={storageDonut}
             donutTotalLabel={t('usage.metric.gbDays')}
+            breakdownColors={[
+              'var(--console-chart-vram)',
+              'var(--console-chart-memory)',
+              'var(--console-chart-gpu)',
+              'var(--console-brand)'
+            ]}
             trendTitle={t('usage.summary.gbDaysOverTime')}
             trendXAxis={storageTrend.xAxis}
             trendData={storageTrend.data}
-            trendColor={coolColors[2]}
+            trendColor={storageColor}
             trendGran={granularity}
             pieLoading={storageByTypeLoading}
             barLoading={storageByDateLoading}

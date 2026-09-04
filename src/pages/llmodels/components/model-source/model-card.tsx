@@ -1,15 +1,11 @@
+import { MetaChip } from '@/components/console';
 import { GPUSTACK_API_BASE_URL } from '@/config/settings';
 import {
   DownOutlined,
   FileMarkdownOutlined,
   RightOutlined
 } from '@ant-design/icons';
-import {
-  IconFont,
-  SimpleOverlay,
-  ThemeTag,
-  useRequestToken
-} from '@gpustack/core-ui';
+import { IconFont, SimpleOverlay, useRequestToken } from '@gpustack/core-ui';
 import { MarkdownViewer } from '@gpustack/core-ui/markdown';
 import { useIntl } from '@umijs/max';
 import { Button, Empty, Spin, Tooltip } from 'antd';
@@ -316,29 +312,20 @@ const ModelCard: React.FC<{
           <div className="model-card-wrap">
             <div className="flex-center flex-wrap gap-8">
               {modelType && (
-                <ThemeTag className="tag-item" color="gold" opacity={0.65}>
+                <MetaChip className="tag-item">
                   <span className="m-r-5">
                     {intl.formatMessage({ id: 'models.architecture' })}:
                   </span>
                   {modelType}
-                </ThemeTag>
+                </MetaChip>
               )}
-              {isGGUF && (
-                <ThemeTag className="tag-item" color="magenta" opacity={0.65}>
-                  GGUF
-                </ThemeTag>
-              )}
+              {isGGUF && <MetaChip className="tag-item">GGUF</MetaChip>}
               {!!modelTags.length &&
                 modelTags.map((tag: string, index: number) => {
                   return (
-                    <ThemeTag
-                      className="tag-item"
-                      color="geekblue"
-                      key={index}
-                      opacity={0.65}
-                    >
+                    <MetaChip className="tag-item" key={index}>
                       {tag}
-                    </ThemeTag>
+                    </MetaChip>
                   );
                 })}
             </div>

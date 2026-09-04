@@ -1,9 +1,9 @@
+import { MetaChip } from '@/components/console';
 import { ListItem as WorkerListItem } from '@/pages/resources/config/types';
 import { convertFileSize } from '@/utils';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   SimpleTable,
-  ThemeTag,
   TooltipOverlayScroller,
   type ColumnProps
 } from '@gpustack/core-ui';
@@ -200,26 +200,11 @@ const DistributeInfoCell: React.FC<{
       }
     >
       <span>
-        <ThemeTag
-          opacity={0.75}
-          color="processing"
-          style={{
-            marginRight: 0,
-            display: 'flex',
-            alignItems: 'center',
-            maxWidth: 'max-content',
-            minWidth: 50,
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            borderRadius: 12
-          }}
-        >
-          <InfoCircleOutlined className="m-r-5" />
+        <MetaChip icon={<InfoCircleOutlined />}>
           {intl.formatMessage({
             id: 'models.table.acrossworker'
           })}
-        </ThemeTag>
+        </MetaChip>
       </span>
     </TooltipOverlayScroller>
   );

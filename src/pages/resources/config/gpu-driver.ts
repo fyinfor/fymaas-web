@@ -234,6 +234,9 @@ export const dockerEnvCommandMap = {
   )
 };
 
+export const DEFAULT_WORKER_CONTAINER_NAME = 'fymaas-worker';
+export const DEFAULT_DATA_VOLUME = 'fymaas-data';
+
 interface AddWorkerCommandParams {
   server: string;
   tag: string;
@@ -298,14 +301,14 @@ const generateExtraModelDirArg = (modelDir: string) => {
 };
 
 const setNormalArgs = (params: any) => {
-  return `sudo docker run -d --name ${params.containerName || 'gpustack-worker'} \\
-      -e "GPUSTACK_RUNTIME_DEPLOY_MIRRORED_NAME=${params.containerName || 'gpustack-worker'}" \\
+  return `sudo docker run -d --name ${params.containerName || DEFAULT_WORKER_CONTAINER_NAME} \\
+      -e "GPUSTACK_RUNTIME_DEPLOY_MIRRORED_NAME=${params.containerName || DEFAULT_WORKER_CONTAINER_NAME}" \\
       ${generateEnvArgs(params)}
       --restart=unless-stopped \\
       --privileged \\
       --network=host \\
       --volume /var/run/docker.sock:/var/run/docker.sock \\
-      --volume ${params.gpustackDataVolume || 'gpustack-data'}:/var/lib/gpustack \\
+      --volume ${params.gpustackDataVolume || DEFAULT_DATA_VOLUME}:/var/lib/gpustack \\
       ${generateExtraModelDirArg(params.modelDir)}
       ${params.cacheDir ? `--volume ${params.cacheDir}:/var/lib/gpustack/cache \\` : ''}`;
 };

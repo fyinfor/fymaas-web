@@ -17,11 +17,10 @@ const enterpriseRoutes: RouteLike[] = [
     icon: 'icon-settings',
     selectedIcon: 'icon-settings',
     defaultIcon: 'icon-settings',
-    access: 'canSeeAdmin',
     routes: [
       {
         path: '/settings',
-        redirect: '/settings/system'
+        component: './settings/entry'
       },
       {
         name: 'system',
@@ -30,9 +29,22 @@ const enterpriseRoutes: RouteLike[] = [
         icon: 'icon-settings',
         selectedIcon: 'icon-settings',
         defaultIcon: 'icon-settings',
-        access: 'canSeeAdmin',
+        access: 'canSeeIpAccess',
         component: './settings',
-        subMenu: ['/settings/branding', '/settings/ldap']
+        subMenu: [
+          '/settings/environment',
+          '/settings/branding',
+          '/settings/ldap',
+          '/settings/ip-access'
+        ]
+      },
+      {
+        name: 'system',
+        path: '/settings/environment',
+        key: 'environment',
+        hideInMenu: true,
+        access: 'canSeeAdmin',
+        component: './settings'
       },
       {
         name: 'system',
@@ -49,6 +61,23 @@ const enterpriseRoutes: RouteLike[] = [
         hideInMenu: true,
         access: 'canSeeAdmin',
         component: './settings'
+      },
+      {
+        name: 'system',
+        path: '/settings/ip-access',
+        key: 'ipAccess',
+        hideInMenu: true,
+        access: 'canSeeIpAccess',
+        component: './settings'
+      },
+      {
+        name: 'profile',
+        path: '/settings/profile',
+        key: 'profile',
+        icon: 'icon-preferences',
+        selectedIcon: 'icon-preferences',
+        defaultIcon: 'icon-preferences',
+        component: './profile'
       }
     ]
   }
@@ -68,6 +97,11 @@ const groupReplacements: Record<string, Record<string, Partial<RouteLike>>> = {
   '/access-control': {
     organizations: {
       component: './enterprise-organizations'
+    },
+    apikeys: {
+      hideInMenu: true,
+      redirect: '/usage/api-keys',
+      component: undefined
     }
   }
 };
@@ -83,6 +117,15 @@ const groupAdditions: Record<string, RouteLike[]> = {
       defaultIcon: 'icon-usage-outlined',
       access: 'canSeeQuotas',
       component: './quotas'
+    },
+    {
+      name: 'apikeys',
+      path: '/usage/api-keys',
+      key: 'apikeys',
+      icon: 'icon-key',
+      selectedIcon: 'icon-key-filled',
+      defaultIcon: 'icon-key',
+      component: './api-keys'
     }
   ],
   '/resources': [
@@ -119,22 +162,28 @@ const groupAdditions: Record<string, RouteLike[]> = {
       component: './roles'
     },
     {
-      name: 'ipAccessControl',
+      name: 'permissions',
+      path: '/access-control/permissions',
+      key: 'permissions',
+      icon: 'icon-license-outlined',
+      selectedIcon: 'icon-license-filled',
+      defaultIcon: 'icon-license-outlined',
+      access: 'canSeePermissions',
+      component: './permissions'
+    },
+    {
       path: '/access-control/ip-access',
-      key: 'ipAccessControl',
-      icon: 'icon-network',
-      selectedIcon: 'icon-network',
-      defaultIcon: 'icon-network',
+      hideInMenu: true,
       access: 'canSeeIpAccess',
-      component: './ip-access-control'
+      redirect: '/settings/ip-access'
     },
     {
       name: 'auditLogs',
       path: '/access-control/audit-logs',
       key: 'auditLogs',
-      icon: 'icon-list',
-      selectedIcon: 'icon-list',
-      defaultIcon: 'icon-list',
+      icon: 'icon-logs',
+      selectedIcon: 'icon-logs',
+      defaultIcon: 'icon-logs',
       // Platform admins and Org owners both read the trail. The backend
       // scopes rows to the caller's organization, so a wider predicate
       // here would not leak anything -- but `canSeeOrgAdmin` is the one
@@ -151,6 +200,30 @@ export const applyRouteExtensions = <T>(base: T): T => {
   }
 
   const routes = (base as RouteLike[]).map((route) => {
+    if (route?.path === '/api-keys') {
+      const { component: _apiKeysComponent, ...rest } = route;
+      return {
+        ...rest,
+        redirect: '/usage/api-keys',
+        hideInMenu: true
+      };
+    }
+    if (route?.path === '/preferences') {
+      const { component: _component, ...rest } = route;
+      return {
+        ...rest,
+        redirect: '/settings/profile',
+        hideInMenu: true
+      };
+    }
+    if (route?.path === '/api-keys') {
+      const { component: _component, ...rest } = route;
+      return {
+        ...rest,
+        redirect: '/usage/api-keys',
+        hideInMenu: true
+      };
+    }
     if (!route?.path || !Array.isArray(route.routes)) {
       return route;
     }

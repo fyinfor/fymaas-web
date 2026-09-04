@@ -106,7 +106,7 @@ git push origin main
 ### CI / 产物
 
 - UI 打包只接受手动触发：在 GitHub Actions 里跑本仓库的 `CI` workflow（选分支或 tag）。
-- 产物：GitHub Release `ui-<version>`（`main` 对应 `ui-latest`），以及镜像 `ghcr.io/fyinfor/fymaas-web:<version>`。不自动跑、也不触发后端。
+- 产物：GitHub Release `ui-<version>`（`main` 对应 `ui-dev`），以及镜像 `ghcr.io/fyinfor/fymaas-web:<version>`。`main` 不打 `:latest`；只有当前最高正式版本号 `vX.Y.Z` 才会额外打 `:latest`。不自动跑、也不触发后端。
 
 ### 注意
 

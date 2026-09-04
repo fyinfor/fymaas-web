@@ -1,6 +1,6 @@
 export default {
   'playground.system.tips': '在这里输入系统消息',
-  'playground.title': '试验场',
+  'playground.title': '操练场',
   'playground.system': '系统',
   'playground.systemMessage': '系统消息',
   'playground.user': '用户',
@@ -16,7 +16,7 @@ export default {
   'playground.timeToFirstToken': '输出首个 Token 时间',
   'playground.timePerOutputToken': '生成每个 Token 时间',
   'playground.tokenusage': 'Token 使用量',
-  'models.openinplayground': '打开试验场',
+  'models.openinplayground': '打开操练场',
   'playground.tokenoutput': '输出',
   'playground.params.temperature.tips':
     '控制随机性：降低温度会导致更少的随机完成。当温度接近零时，模型将变得确定性和重复性。',

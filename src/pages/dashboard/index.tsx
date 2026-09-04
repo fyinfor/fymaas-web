@@ -1,11 +1,13 @@
+import { ErrorState, PageHeader } from '@/components/console';
 import PageBox, {
   HeaderLeft,
   usePageSurface
 } from '@/pages/_components/page-box';
 import { useIntl } from '@umijs/max';
-import { Spin } from 'antd';
-import { useEffect } from 'react';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 import DashboardInner from './components/dahboard-inner';
+import DashboardSkeleton from './components/dashboard-skeleton';
 import DashboardContext from './config/dashboard-context';
 import useDashboardInfra from './hooks/use-dashboard-infra';
 import useQueryDashboard from './services/use-query-dashboard';
@@ -14,10 +16,22 @@ const Dashboard: React.FC = () => {
   const intl = useIntl();
   const { fetchData, loading, data, cancelRequest } = useQueryDashboard();
   const infra = useDashboardInfra(data);
+  const [loadError, setLoadError] = useState(false);
+  const [lastSuccess, setLastSuccess] = useState<string>();
   usePageSurface('canvas');
 
+  const reload = async () => {
+    try {
+      await fetchData({});
+      setLoadError(false);
+      setLastSuccess(dayjs().format('HH:mm:ss'));
+    } catch {
+      setLoadError(true);
+    }
+  };
+
   useEffect(() => {
-    fetchData({});
+    reload();
     return () => {
       cancelRequest();
     };
@@ -28,34 +42,19 @@ const Dashboard: React.FC = () => {
       value={{ ...data, ...infra, fetchData: fetchData }}
     >
       <HeaderLeft>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span
-            style={{
-              fontSize: 20,
-              fontWeight: 600,
-              letterSpacing: '-0.2px',
-              lineHeight: '24px',
-              color: 'var(--text-primary)'
-            }}
-          >
-            {intl.formatMessage({ id: 'menu.dashboard' })}
-          </span>
-          <span
-            style={{
-              fontSize: 13,
-              fontWeight: 400,
-              color: 'var(--text-muted)',
-              lineHeight: '18px'
-            }}
-          >
-            {intl.formatMessage({ id: 'dashboard.subtitle' })}
-          </span>
-        </div>
+        <PageHeader
+          title={intl.formatMessage({ id: 'menu.dashboard' })}
+          subtitle={intl.formatMessage({ id: 'page.subtitle.dashboard' })}
+        />
       </HeaderLeft>
       <PageBox>
-        <Spin spinning={loading} style={{ minHeight: 300 }} size="middle">
+        {loadError && !data?.resource_counts ? (
+          <ErrorState lastSuccess={lastSuccess} onRetry={reload} />
+        ) : loading && !data?.resource_counts ? (
+          <DashboardSkeleton />
+        ) : (
           <DashboardInner />
-        </Spin>
+        )}
       </PageBox>
     </DashboardContext.Provider>
   );

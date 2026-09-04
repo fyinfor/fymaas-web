@@ -1,3 +1,4 @@
+import { Tooltip } from 'antd';
 import { createStyles } from 'antd-style';
 import React from 'react';
 
@@ -60,12 +61,13 @@ const useStyles = createStyles(({ css }) => ({
 const StatusBadge: React.FC<{
   tone?: StatusTone;
   plain?: boolean;
+  title?: React.ReactNode;
   children: React.ReactNode;
-}> = ({ tone = 'neutral', plain, children }) => {
+}> = ({ tone = 'neutral', plain, title, children }) => {
   const { styles, cx } = useStyles();
   const vars = toneVar[tone];
 
-  return (
+  const badge = (
     <span
       className={cx(styles.badge, plain && styles.plain)}
       style={
@@ -79,6 +81,8 @@ const StatusBadge: React.FC<{
       {children}
     </span>
   );
+
+  return title ? <Tooltip title={title}>{badge}</Tooltip> : badge;
 };
 
 export default StatusBadge;

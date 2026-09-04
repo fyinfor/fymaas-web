@@ -1,13 +1,8 @@
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import useCreatorColumn from '@/pages/gpu-service/hooks/use-creator-column';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { FolderOutlined } from '@ant-design/icons';
-import {
-  AutoTooltip,
-  DropdownButtons,
-  IconFont,
-  StatusTag,
-  ThemeTag
-} from '@gpustack/core-ui';
+import { AutoTooltip, DropdownButtons, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import type { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
@@ -28,15 +23,15 @@ interface ColumnsHookProps {
 const getKindLabel = (record: ListItem) => {
   if (record.spec?.nfs)
     return (
-      <ThemeTag color="cyan" icon={<FolderOutlined />}>
+      <MetaChip icon={<FolderOutlined />}>
         {StorageTypeKindLabelMap.nfs}
-      </ThemeTag>
+      </MetaChip>
     );
   if (record.spec?.s3)
     return (
-      <ThemeTag color="green" icon={<IconFont type="icon-database" />}>
+      <MetaChip icon={<IconFont type="icon-database" />}>
         {StorageTypeKindLabelMap.s3}
-      </ThemeTag>
+      </MetaChip>
     );
   return '-';
 };
@@ -86,13 +81,13 @@ const useStorageTypeColumns = ({
         sorter: false,
         render: (value: string, record: ListItem) =>
           value ? (
-            <StatusTag
-              statusValue={{
-                status: status[value],
-                text: StorageTypePhaseLabelMap[value] || value,
-                message: record?.status?.phaseMessage || ''
-              }}
-            ></StatusTag>
+            <StatusBadge
+              tone={statusTone(status[value])}
+              plain
+              title={record?.status?.phaseMessage || undefined}
+            >
+              {StorageTypePhaseLabelMap[value] || value}
+            </StatusBadge>
           ) : (
             '-'
           )

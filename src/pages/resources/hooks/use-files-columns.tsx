@@ -1,4 +1,4 @@
-import { StatusBadge, statusTone } from '@/components/console';
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { modelSourceMap } from '@/pages/llmodels/config';
 import { modelFileActions } from '@/pages/llmodels/config/button-actions';
@@ -15,7 +15,7 @@ import {
   TooltipOverlayScroller
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag, Tooltip, Typography } from 'antd';
+import { Tooltip, Typography } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import _ from 'lodash';
@@ -64,15 +64,6 @@ const PathWrapper = styled.div`
       opacity: 1;
     }
   }
-`;
-
-const FilesTag = styled(Tag)`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  margin-inline: 4px 0;
-  height: 22px;
-  border-radius: var(--border-radius-base);
 `;
 
 const TypographyPara = styled(Paragraph)`
@@ -199,12 +190,13 @@ const RenderParts = (props: { record: ListItem }) => {
 
   return (
     <TooltipOverlayScroller title={renderItem()}>
-      <FilesTag color="purple" icon={<InfoCircleOutlined />} variant="outlined">
-        <span style={{ opacity: 1 }}>
-          {record.resolved_paths?.length}{' '}
-          {intl.formatMessage({ id: 'models.form.files' })}
-        </span>
-      </FilesTag>
+      <MetaChip
+        icon={<InfoCircleOutlined />}
+        style={{ cursor: 'pointer', marginInline: '4px 0' }}
+      >
+        {record.resolved_paths?.length}{' '}
+        {intl.formatMessage({ id: 'models.form.files' })}
+      </MetaChip>
     </TooltipOverlayScroller>
   );
 };
@@ -241,9 +233,7 @@ const ResolvedPathColumn = (props: { record: ListItem }) => {
           </AutoTooltip>
         </TextWrapper>
         {record.is_lora && (
-          <FilesTag color="purple" variant="outlined">
-            <span style={{ opacity: 1 }}>LoRA</span>
-          </FilesTag>
+          <MetaChip style={{ marginInline: '4px 0' }}>LoRA</MetaChip>
         )}
         <RenderParts record={record}></RenderParts>
       </PathWrapper>

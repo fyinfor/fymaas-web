@@ -1,4 +1,8 @@
-import { GPUDriverMap } from '@/pages/resources/config/gpu-driver';
+import {
+  DEFAULT_DATA_VOLUME,
+  DEFAULT_WORKER_CONTAINER_NAME,
+  GPUDriverMap
+} from '@/pages/resources/config/gpu-driver';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import {
   AlertBlockInfo as AlertInfoBlock,
@@ -107,12 +111,12 @@ const SpecifyArguments: React.FC<AddWorkerStepProps> = ({ disabled }) => {
 
   const containerNameConfig = summary.get('containerNameConfig') || {
     enable: true,
-    name: 'gpustack-worker'
+    name: DEFAULT_WORKER_CONTAINER_NAME
   };
 
   const gpustackDataVolumeConfig = summary.get('gpustackDataVolumeConfig') || {
     enable: true,
-    path: 'gpustack-data'
+    path: DEFAULT_DATA_VOLUME
   };
 
   const selectedGPUs = summary.get('selectedGPUs') || [];
@@ -208,12 +212,12 @@ const SpecifyArguments: React.FC<AddWorkerStepProps> = ({ disabled }) => {
 
     updateField('containerNameConfig', {
       enable: true,
-      name: 'gpustack-worker'
+      name: DEFAULT_WORKER_CONTAINER_NAME
     });
 
     updateField('gpustackDataVolumeConfig', {
       enable: true,
-      path: 'gpustack-data'
+      path: DEFAULT_DATA_VOLUME
     });
 
     updateField('externalWorkerIPConfig', {
@@ -457,7 +461,7 @@ const SpecifyArguments: React.FC<AddWorkerStepProps> = ({ disabled }) => {
             {
               id: 'common.help.default'
             },
-            { content: 'gpustack-data' }
+            { content: DEFAULT_DATA_VOLUME }
           )}
           checked={gpustackDataVolumeConfig.enable}
           value={gpustackDataVolumeConfig.path}
@@ -482,7 +486,7 @@ const SpecifyArguments: React.FC<AddWorkerStepProps> = ({ disabled }) => {
             {
               id: 'common.help.default'
             },
-            { content: 'gpustack-worker' }
+            { content: DEFAULT_WORKER_CONTAINER_NAME }
           )}
           checked={containerNameConfig.enable}
           value={containerNameConfig.name}

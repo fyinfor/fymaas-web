@@ -22,6 +22,7 @@ export type AccessPredicates = {
   canSeeRoles?: boolean;
   canSeeAudit?: boolean;
   canSeeIpAccess?: boolean;
+  canSeePermissions?: boolean;
   canSeeTopology?: boolean;
   canSeeRollouts?: boolean;
 };
@@ -84,6 +85,7 @@ export const applyAccessExtensions = <T extends AccessPredicates>(
     has(perms, 'quota:read') ||
     has(perms, 'billing:read') ||
     has(perms, 'role:read') ||
+    has(perms, 'ipacl:read') ||
     has(perms, 'audit:read') ||
     has(perms, 'cluster:read') ||
     has(perms, 'org:write');
@@ -101,8 +103,11 @@ export const applyAccessExtensions = <T extends AccessPredicates>(
     canSeeBilling:
       base.canSeeAdmin || has(perms, 'billing:read') || isOwnerHere,
     canSeeRoles: base.canSeeAdmin || has(perms, 'role:read') || isOwnerHere,
+    canSeePermissions:
+      base.canSeeAdmin || has(perms, 'role:read') || isOwnerHere,
     canSeeAudit: base.canSeeAdmin || has(perms, 'audit:read') || isOwnerHere,
-    canSeeIpAccess: base.canSeeAdmin || canManageByRole,
+    canSeeIpAccess:
+      base.canSeeAdmin || canManageByRole || has(perms, 'ipacl:read'),
     canSeeTopology:
       base.canSeeAdmin || has(perms, 'cluster:read') || isOwnerHere,
     canSeeRollouts: base.canSeeAdmin || has(perms, 'route:write') || isOwnerHere

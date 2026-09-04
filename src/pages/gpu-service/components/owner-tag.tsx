@@ -1,5 +1,5 @@
+import { MetaChip } from '@/components/console';
 import { getGPUStackPlugin } from '@/plugins';
-import { ThemeTag } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import useUserDirectory from '../hooks/use-user-directory';
 
@@ -22,9 +22,9 @@ const OwnerTag: React.FC<{ ownerId?: number | null }> = ({ ownerId }) => {
 
   if (ownerId == null) {
     return (
-      <ThemeTag color="gold" style={{ fontWeight: 400 }}>
+      <MetaChip>
         {intl.formatMessage({ id: 'gpuservice.owner.global' })}
-      </ThemeTag>
+      </MetaChip>
     );
   }
 
@@ -35,11 +35,7 @@ const OwnerTag: React.FC<{ ownerId?: number | null }> = ({ ownerId }) => {
     return null;
   }
 
-  return (
-    <ThemeTag color="blue" style={{ fontWeight: 400 }}>
-      {username}
-    </ThemeTag>
-  );
+  return <MetaChip>{username}</MetaChip>;
 };
 
 export default OwnerTag;

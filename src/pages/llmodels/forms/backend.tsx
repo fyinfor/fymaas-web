@@ -1,8 +1,8 @@
+import { MetaChip } from '@/components/console';
 import { isCustomSourceType } from '@/pages/_components/source-config/config';
 import { CaretDownOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import {
   Select as SealSelect,
-  ThemeTag,
   TooltipList,
   useAppUtils
 } from '@gpustack/core-ui';
@@ -180,14 +180,12 @@ const BackendFields: React.FC = () => {
   // content or a hand-added backend.
   const optionRender = (option: any) => {
     return (
-      // ThemeTag is display:flex, so it needs a flex row to sit beside the name
-      // instead of breaking onto a line of its own inside the option content.
       <span className="flex-center gap-8">
         {option.data.title}
         {isCustomSourceType(option.data?.source_type) && (
-          <ThemeTag color="purple" opacity={0.7} style={{ flex: 'none' }}>
+          <MetaChip style={{ flex: 'none' }}>
             {intl.formatMessage({ id: 'common.source.tag.custom' })}
-          </ThemeTag>
+          </MetaChip>
         )}
       </span>
     );

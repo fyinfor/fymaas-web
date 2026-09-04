@@ -25,7 +25,8 @@ const RightActions: React.FC<RightActionsProps> = ({
       {MonitorButton}
       <Button
         icon={<PlusOutlined />}
-        type="primary"
+        color="primary"
+        variant="outlined"
         onClick={handleClickPrimary}
       >
         {intl.formatMessage({ id: 'clusters.button.add' })}

@@ -1,10 +1,6 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import { ReloadOutlined } from '@ant-design/icons';
-import {
-  AlertBlockInfo,
-  AutoTooltip,
-  ScrollerModal,
-  StatusTag
-} from '@gpustack/core-ui';
+import { AlertBlockInfo, AutoTooltip, ScrollerModal } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Button, Table, Tabs, TabsProps } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
@@ -96,12 +92,12 @@ const ViewEventsModal: React.FC<ViewEventsModalProps> = (props) => {
         key: 'type',
         width: 110,
         render: (value: string) => (
-          <StatusTag
-            statusValue={{
-              status: eventTypeStatus[value] ?? 'inactive',
-              text: value || '-'
-            }}
-          />
+          <StatusBadge
+            tone={statusTone(eventTypeStatus[value] ?? 'inactive')}
+            plain
+          >
+            {value || '—'}
+          </StatusBadge>
         )
       },
       {

@@ -385,7 +385,8 @@ const GPUService: React.FC = () => {
               {hasK8sCluster && (
                 <Button
                   icon={<PlusOutlined />}
-                  type="primary"
+                  color="primary"
+                  variant="outlined"
                   onClick={openCreateInstanceModal}
                 >
                   {intl.formatMessage({ id: 'gpuservice.instance.add' })}

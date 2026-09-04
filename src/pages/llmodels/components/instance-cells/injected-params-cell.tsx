@@ -1,5 +1,6 @@
+import { MetaChip } from '@/components/console';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { OverlayScroller, ThemeTag } from '@gpustack/core-ui';
+import { OverlayScroller } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Divider, Flex, Tooltip } from 'antd';
 import React from 'react';
@@ -133,25 +134,18 @@ const InjectedParamsCell: React.FC<InjectedParamsCellProps> = ({
       }
     >
       <span>
-        <ThemeTag
-          opacity={0.75}
-          color="cyan"
+        <MetaChip
+          icon={<InfoCircleOutlined />}
           style={{
-            display: 'flex',
-            alignItems: 'center',
             maxWidth: '100%',
             minWidth: 50,
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            borderRadius: 12
+            overflow: 'hidden'
           }}
         >
-          <InfoCircleOutlined className="m-r-5" />
           {intl.formatMessage({
             id: 'models.form.backend_parameters'
           })}
-        </ThemeTag>
+        </MetaChip>
       </span>
     </Tooltip>
   );

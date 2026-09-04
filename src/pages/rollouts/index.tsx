@@ -1,3 +1,4 @@
+import { StatusBadge } from '@/components/console';
 import { queryModelRoutes, queryRouteTargets } from '@/pages/model-routes/apis';
 import { request, useIntl } from '@umijs/max';
 import {
@@ -10,7 +11,6 @@ import {
   Select,
   Space,
   Table,
-  Tag,
   message
 } from 'antd';
 import React from 'react';
@@ -87,12 +87,12 @@ const Rollouts: React.FC = () => {
     load();
   };
 
-  const statusColor = (status: string) => {
-    if (status === 'running') return 'processing';
+  const statusTone = (status: string) => {
+    if (status === 'running') return 'info';
     if (status === 'completed') return 'success';
     if (status === 'paused') return 'warning';
-    if (status === 'aborted' || status === 'failed') return 'error';
-    return 'default';
+    if (status === 'aborted' || status === 'failed') return 'danger';
+    return 'neutral';
   };
 
   const act = async (id: number, action: string) => {
@@ -147,12 +147,12 @@ const Rollouts: React.FC = () => {
             title: intl.formatMessage({ id: 'rollouts.status' }),
             dataIndex: 'status',
             render: (status: string) => (
-              <Tag color={statusColor(status)}>
+              <StatusBadge tone={statusTone(status)}>
                 {intl.formatMessage({
                   id: `rollouts.status.${status}`,
                   defaultMessage: status
                 })}
-              </Tag>
+              </StatusBadge>
             )
           },
           {

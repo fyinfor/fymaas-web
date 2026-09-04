@@ -1,6 +1,5 @@
-import { RankList, SectionCard } from '@/components/console';
+import { MetricSkeleton, RankList, SectionCard } from '@/components/console';
 import { history, useIntl } from '@umijs/max';
-import { Spin } from 'antd';
 import { useMemo } from 'react';
 import type useTopTokenUsageByUser from '../../hooks/use-top-token-usage-by-user';
 import { formatCompactNumber } from '../../utils/format';
@@ -50,16 +49,7 @@ const TopTokenUsageByUser: React.FC<TopTokenUsageByUserProps> = ({
       }
     >
       {loading && !rows.length ? (
-        <div
-          style={{
-            minHeight: 220,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Spin />
-        </div>
+        <MetricSkeleton rows={5} style={{ minHeight: 220, paddingTop: 8 }} />
       ) : (
         <RankList items={rows} color="var(--console-chart-vram)" />
       )}

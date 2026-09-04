@@ -1,19 +1,13 @@
-import {
-  AutoTooltip,
-  BaseSelect,
-  CopyButton,
-  ThemeTag
-} from '@gpustack/core-ui';
+import { EmptyState, MetaChip, StatusBadge } from '@/components/console';
+import { AutoTooltip, BaseSelect, CopyButton } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Empty, Typography } from 'antd';
+import { Typography } from 'antd';
 import { useState } from 'react';
 import styled from 'styled-components';
 import {
   BackendSourceLabelMap,
   BackendSourceValueMap,
-  frameworks,
-  getGpuColor,
-  TagColorMap
+  frameworks
 } from '../config';
 import { VersionListItem } from '../config/types';
 const ItemWrapper = styled.div`
@@ -87,7 +81,6 @@ export const VersionItem: React.FC<VersionItemProps> = ({ data }) => {
   const intl = useIntl();
 
   const renderSource = () => {
-    console.log('data.is_built_in', data.is_built_in);
     const source = data.is_built_in
       ? BackendSourceLabelMap[BackendSourceValueMap.BUILTIN] || ''
       : BackendSourceLabelMap[data.backend_source || ''] || '';
@@ -95,26 +88,11 @@ export const VersionItem: React.FC<VersionItemProps> = ({ data }) => {
       return null;
     }
     return (
-      <ThemeTag
-        color={
-          TagColorMap[
-            data.is_built_in
-              ? BackendSourceValueMap.BUILTIN
-              : data.backend_source || ''
-          ]
-        }
-        className="font-400"
-        variant="outlined"
-        style={{
-          borderRadius: 'var(--ant-border-radius)',
-          margin: 0,
-          width: 'max-content'
-        }}
-      >
+      <MetaChip>
         {intl.formatMessage({
           id: source
         })}
-      </ThemeTag>
+      </MetaChip>
     );
   };
   return (
@@ -123,13 +101,9 @@ export const VersionItem: React.FC<VersionItemProps> = ({ data }) => {
         <span>{data.version_no}</span>
         {renderSource()}
         {!data.is_built_in && data.is_default && (
-          <ThemeTag
-            color="geekblue"
-            className="font-400"
-            style={{ marginRight: 0 }}
-          >
+          <StatusBadge tone="info" plain>
             {intl.formatMessage({ id: 'backend.isDefault' })}
-          </ThemeTag>
+          </StatusBadge>
         )}
       </div>
       <RowWrapper>
@@ -171,15 +145,7 @@ export const VersionItem: React.FC<VersionItemProps> = ({ data }) => {
           </span>
           <span className="text drivers">
             {data.availableFrameworks?.map((item) => {
-              return (
-                <ThemeTag
-                  key={item}
-                  style={{ marginRight: 0 }}
-                  color={getGpuColor(item)}
-                >
-                  {item}
-                </ThemeTag>
-              );
+              return <MetaChip key={item}>{item}</MetaChip>;
             })}
           </span>
         </InfoItem>
@@ -239,10 +205,9 @@ const VersionList: React.FC<{ versionConfigs: VersionListItem[] }> = ({
             return <VersionItem key={index} data={version} />;
           })
         ) : (
-          <Empty
-            style={{ width: '100%' }}
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={intl.formatMessage({ id: 'backend.noVersion' })}
+          <EmptyState
+            style={{ width: '100%', minHeight: 160 }}
+            title={intl.formatMessage({ id: 'backend.noVersion' })}
           />
         )}
       </ListWrapper>

@@ -1,11 +1,11 @@
 import { enabledBackendsAtom } from '@/atoms/backend';
+import { StatusBadge } from '@/components/console';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { SearchOutlined } from '@ant-design/icons';
 import {
   IconFont,
   InfiniteScrollerProvider,
-  NoResult,
-  ThemeTag
+  NoResult
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Input, Tooltip } from 'antd';
@@ -100,13 +100,9 @@ const CommunityBackends: React.FC<{
       >
         <>
           {data.enabled && (
-            <ThemeTag
-              style={{ margin: 0, fontWeight: 400 }}
-              color="geekblue"
-              variant="filled"
-            >
+            <StatusBadge tone="success" plain>
               {intl.formatMessage({ id: 'common.status.enabled' })}
-            </ThemeTag>
+            </StatusBadge>
           )}
         </>
       </Tooltip>

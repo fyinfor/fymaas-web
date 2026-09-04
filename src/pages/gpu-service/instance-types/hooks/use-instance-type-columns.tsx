@@ -1,10 +1,10 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import { ClusterListItem } from '@/pages/cluster-management/config/types';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
   AutoTooltip,
   DropdownButtons,
   icons,
-  StatusTag,
   type TableColumnProps
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
@@ -256,13 +256,13 @@ const useInstanceTypeColumns = ({
         render: (_text: any, record: ListItem) => {
           const phase = record.status?.phase;
           return phase ? (
-            <StatusTag
-              statusValue={{
-                status: phaseStatusMap[phase],
-                text: InstanceTypePhaseLabelMap[phase] || phase,
-                message: record.status?.phaseMessage || ''
-              }}
-            />
+            <StatusBadge
+              tone={statusTone(phaseStatusMap[phase])}
+              plain
+              title={record.status?.phaseMessage || undefined}
+            >
+              {InstanceTypePhaseLabelMap[phase] || phase}
+            </StatusBadge>
           ) : (
             '-'
           );

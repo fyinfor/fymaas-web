@@ -1,13 +1,8 @@
 // columns.ts
 import { systemConfigAtom } from '@/atoms/system';
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import { tableSorter } from '@/config/settings';
-import {
-  AutoTooltip,
-  DropdownButtons,
-  IconFont,
-  StatusTag,
-  ThemeTag
-} from '@gpustack/core-ui';
+import { AutoTooltip, DropdownButtons, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Typography } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
@@ -16,7 +11,6 @@ import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import {
   rowActionList,
-  ServiceModeColorMap,
   ServiceModeMap,
   ServiceStateLabelMap,
   ServiceStatus
@@ -95,9 +89,9 @@ const useServiceColumns = (
         dataIndex: 'mode',
         minWidth: serviceColumnMinWidths.mode,
         render: (value: ServiceMode) => (
-          <ThemeTag color={ServiceModeColorMap[value] || 'blue'} opacity={0.7}>
+          <MetaChip>
             {intl.formatMessage({ id: ServiceModeMap[value] })}
-          </ThemeTag>
+          </MetaChip>
         )
       },
       {
@@ -115,13 +109,13 @@ const useServiceColumns = (
         dataIndex: 'state',
         minWidth: serviceColumnMinWidths.status,
         render: (value: string, record: ListItem) => (
-          <StatusTag
-            statusValue={{
-              status: ServiceStatus[value],
-              text: ServiceStateLabelMap[value],
-              message: record.state_message || undefined
-            }}
-          />
+          <StatusBadge
+            tone={statusTone(ServiceStatus[value])}
+            plain
+            title={record.state_message || undefined}
+          >
+            {ServiceStateLabelMap[value]}
+          </StatusBadge>
         )
       },
       {

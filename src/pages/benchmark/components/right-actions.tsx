@@ -53,7 +53,8 @@ const RightActions: React.FC<RightActionsProps> = ({
       {settingButton}
       <Button
         icon={<PlusOutlined></PlusOutlined>}
-        type="primary"
+        color="primary"
+        variant="outlined"
         onClick={handleClickPrimary}
       >
         {buttonText}

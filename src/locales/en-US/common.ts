@@ -357,6 +357,10 @@ export default {
     'Save first — Save writes the new URL and fetches it. Update Now only re-pulls the URL already saved.',
   'common.source.load.failed':
     'Could not read the stored configuration, so there is nothing here to save. Close and reopen to try again.',
+  'common.error.load': 'Unable to load data',
+  'common.error.load.hint':
+    'Try again, or check the network and service status.',
+  'common.error.lastSuccess': 'Last successful update: {time}',
   'common.command.placeholder': 'Search models, deployments, GPUs, docs...',
   'common.command.empty': 'No matching results',
   'common.command.hint': 'Search'

@@ -1,10 +1,5 @@
-import {
-  AutoTooltip,
-  CardWrapper,
-  IconFont,
-  StatusTag,
-  ThemeTag
-} from '@gpustack/core-ui';
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
+import { AutoTooltip, CardWrapper, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import type { DescriptionsProps } from 'antd';
 import { Button, Descriptions, Space } from 'antd';
@@ -12,7 +7,6 @@ import dayjs from 'dayjs';
 import React from 'react';
 import styled from 'styled-components';
 import {
-  ServiceModeColorMap,
   ServiceModeMap,
   ServiceModeValueMap,
   ServiceStateLabelMap,
@@ -211,13 +205,13 @@ const ServiceOverview: React.FC<ServiceOverviewProps> = ({
             )}
           </div>
           <div className="status">
-            <StatusTag
-              statusValue={{
-                status: ServiceStatus[data.state],
-                text: ServiceStateLabelMap[data.state],
-                message: data.state_message || undefined
-              }}
-            />
+            <StatusBadge
+              tone={statusTone(ServiceStatus[data.state])}
+              plain
+              title={data.state_message || undefined}
+            >
+              {ServiceStateLabelMap[data.state]}
+            </StatusBadge>
           </div>
         </div>
         <div className="right">
@@ -226,12 +220,9 @@ const ServiceOverview: React.FC<ServiceOverviewProps> = ({
             title={
               <Title>
                 <span>{data.name}</span>
-                <ThemeTag
-                  color={ServiceModeColorMap[data.mode] || 'blue'}
-                  opacity={0.7}
-                >
+                <MetaChip>
                   {intl.formatMessage({ id: ServiceModeMap[data.mode] })}
-                </ThemeTag>
+                </MetaChip>
               </Title>
             }
             extra={

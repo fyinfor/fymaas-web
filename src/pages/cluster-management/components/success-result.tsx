@@ -46,7 +46,12 @@ const SuccessResult: React.FC<{
           <Button key="skip" onClick={onSkip}>
             {intl.formatMessage({ id: 'clusters.create.skipfornow' })}
           </Button>
-          <Button type="primary" key="add" onClick={onAddWorker}>
+          <Button
+            color="primary"
+            variant="outlined"
+            key="add"
+            onClick={onAddWorker}
+          >
             {provider === ProviderValueMap.Kubernetes
               ? intl.formatMessage({ id: 'clusters.button.register' })
               : intl.formatMessage({ id: 'resources.button.create' })}

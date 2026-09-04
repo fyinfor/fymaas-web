@@ -1,7 +1,6 @@
-import { RankList, SectionCard } from '@/components/console';
+import { MetricSkeleton, RankList, SectionCard } from '@/components/console';
 import useQueryTimeSeriesData from '@/pages/usage/services/use-query-timeseries-data';
 import { useIntl } from '@umijs/max';
-import { Spin } from 'antd';
 import { useEffect, useMemo } from 'react';
 import {
   DashboardUsageCommonParams,
@@ -48,16 +47,7 @@ const UsageByModel: React.FC<UsageByModelProps> = ({ commonParams }) => {
   return (
     <SectionCard title={intl.formatMessage({ id: 'dashboard.modelUsage' })}>
       {apiQuery.loading && !apiData.length ? (
-        <div
-          style={{
-            minHeight: 220,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Spin />
-        </div>
+        <MetricSkeleton rows={5} style={{ minHeight: 220, paddingTop: 8 }} />
       ) : (
         <RankList items={items} color="var(--console-chart-request)" />
       )}

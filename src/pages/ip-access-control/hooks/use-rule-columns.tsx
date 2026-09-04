@@ -1,6 +1,7 @@
+import { StatusBadge } from '@/components/console';
 import { AutoTooltip, DropdownButtons, icons } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Switch, Tag } from 'antd';
+import { Switch } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
@@ -72,14 +73,14 @@ const useRuleColumns = ({
         key: 'action',
         width: 120,
         render: (text: string) => (
-          <Tag color={text === 'allow' ? 'success' : 'error'}>
+          <StatusBadge tone={text === 'allow' ? 'success' : 'danger'} plain>
             {intl.formatMessage({
               id:
                 text === 'allow'
                   ? 'ipAccess.action.allow'
                   : 'ipAccess.action.deny'
             })}
-          </Tag>
+          </StatusBadge>
         )
       },
       {

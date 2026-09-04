@@ -9,6 +9,7 @@ import {
   useOverlayScroller,
   type HeaderSlotContextValue
 } from '@gpustack/core-ui';
+import { useIntl, useLocation } from '@umijs/max';
 import { Divider } from 'antd';
 import classNames from 'classnames';
 import {
@@ -20,6 +21,7 @@ import {
   useRef,
   useState
 } from 'react';
+import { getPageSubtitleId } from './page-subtitles';
 import pageBoxCss from './styles/page-box.less';
 
 type PageSurface = 'card' | 'canvas';
@@ -63,6 +65,12 @@ export const PageContainerInner: React.FC<
     defer: false
   });
   const pageContext = useContext(RouteContext);
+  const intl = useIntl();
+  const location = useLocation();
+  const subtitleId = getPageSubtitleId(location.pathname);
+  const subtitle = subtitleId
+    ? intl.formatMessage({ id: subtitleId })
+    : undefined;
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const [leftEl, setLeftEl] = useState<HTMLDivElement | null>(null);
   const [rightEl, setRightEl] = useState<HTMLDivElement | null>(null);
@@ -127,7 +135,12 @@ export const PageContainerInner: React.FC<
             <div className={pageBoxCss.left}>
               <div ref={setLeftEl} className={pageBoxCss.leftSlot} />
               <span className={pageBoxCss.defaultTitle}>
-                {pageContext.title}
+                <span className={pageBoxCss.defaultTitleText}>
+                  {pageContext.title}
+                </span>
+                {subtitle && (
+                  <span className={pageBoxCss.defaultSubtitle}>{subtitle}</span>
+                )}
               </span>
             </div>
             <div className={pageBoxCss.right}>

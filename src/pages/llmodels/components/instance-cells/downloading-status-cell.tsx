@@ -1,5 +1,6 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import { ListItem as WorkerListItem } from '@/pages/resources/config/types';
-import { SimpleTable, StatusTag, type ColumnProps } from '@gpustack/core-ui';
+import { SimpleTable, type ColumnProps } from '@gpustack/core-ui';
 import { Progress, Tooltip } from 'antd';
 import _ from 'lodash';
 import { InstanceStatusMap, status } from '../../config';
@@ -25,18 +26,18 @@ const statusColumn: ColumnProps[] = [
     key: 'download_progress',
     render: ({ row }) => {
       return (
-        <StatusTag
-          download={{
-            percent: row.download_progress
-          }}
-          statusValue={{
-            status: row.download_progress
+        <StatusBadge
+          tone={statusTone(
+            row.download_progress
               ? status[InstanceStatusMap.Running]
-              : status[InstanceStatusMap.Initializing],
-            text: row.download_progress,
-            message: ''
-          }}
-        />
+              : status[InstanceStatusMap.Initializing]
+          )}
+          plain
+        >
+          {row.download_progress != null
+            ? `${Math.round(row.download_progress)}%`
+            : '—'}
+        </StatusBadge>
       );
     }
   }

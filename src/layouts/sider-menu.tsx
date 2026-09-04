@@ -144,6 +144,9 @@ const useStyles = createStyles(
         transition:
           color ${motion},
           background-color ${motion};
+        &.menu-item-top {
+          font-weight: 600;
+        }
         &:hover {
           background-color: var(--bg-hover);
           color: var(--text-primary);
@@ -152,6 +155,10 @@ const useStyles = createStyles(
           background-color: var(--primary-soft);
           color: var(--primary-hover);
           font-weight: 500;
+
+          &.menu-item-top {
+            font-weight: 600;
+          }
 
           &::before {
             content: '';
@@ -300,7 +307,8 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
             target={menuItem.target}
             className={cx(styles.menuItemWrapper, 'menu-item', {
               'menu-item-selected': selected,
-              'menu-item-nested': nested
+              'menu-item-nested': nested,
+              'menu-item-top': !nested
             })}
             onMouseEnter={() => schedulePreload(to)}
             onMouseLeave={cancelPreload}
@@ -350,9 +358,7 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
                         this outright rather than relying on the clip. */}
                     <IconFont
                       className="group-title-icon"
-                      type={
-                        item.defaultIcon || item.icon || 'icon-cube'
-                      }
+                      type={item.defaultIcon || item.icon || 'icon-cube'}
                     />
                     <span className="group-title-text">{item.name}</span>
                     <CaretDownOutlined

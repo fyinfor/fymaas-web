@@ -71,14 +71,26 @@ jobs:
         run: scripts/build
       - name: Determine Version
         id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           EXTRA_TAGS=""
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            VERSION="latest"
+            VERSION="dev"
           elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF#refs/tags/}"
             if [[ "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-              EXTRA_TAGS="latest"
+              LATEST_VERSION="$(
+                {
+                  gh api "repos/${GITHUB_REPOSITORY}/git/matching-refs/tags/v" --paginate --jq '.[].ref' \
+                    | sed 's|^refs/tags/||'
+                  echo "${VERSION}"
+                } | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1
+              )"
+              if [[ "${VERSION}" == "${LATEST_VERSION}" ]]; then
+                EXTRA_TAGS="latest"
+              fi
+              echo "Stable tag ${VERSION}; highest=${LATEST_VERSION}"
             fi
           elif [[ "${GITHUB_REF}" == refs/heads/v*-dev ]]; then
             VERSION="${GITHUB_REF#refs/heads/}"
@@ -119,7 +131,7 @@ jobs:
         with:
           tag_name: ui-${{ steps.version.outputs.version }}
           name: fymaas-web ${{ steps.version.outputs.version }}
-          prerelease: ${{ steps.version.outputs.version == 'latest' || contains(steps.version.outputs.version, '-dev') }}
+          prerelease: ${{ steps.version.outputs.version == 'dev' || contains(steps.version.outputs.version, '-dev') }}
           make_latest: false
           files: dist/${{ steps.version.outputs.version }}.tar.gz
       - name: Check Tencent COS secrets

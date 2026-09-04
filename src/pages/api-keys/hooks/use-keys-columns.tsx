@@ -1,4 +1,5 @@
 // columns.ts
+import { MetaChip } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { usePluginListColumns } from '@/plugins/list-extra-columns';
 import { DashboardOutlined } from '@ant-design/icons';
@@ -7,8 +8,7 @@ import {
   DropdownButtons,
   IconFont,
   icons,
-  TextAttribute,
-  ThemeTag
+  TextAttribute
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { MenuProps, Tooltip } from 'antd';
@@ -196,13 +196,13 @@ const useModelsColumns = ({
             )}
             {(record.scope?.includes('inference') ||
               record.scope?.includes('*')) && (
-              <ThemeTag>
+              <MetaChip>
                 <AutoTooltip ghost>
                   {record.allowed_model_names?.length
                     ? record.allowed_model_names.join(', ')
                     : intl.formatMessage({ id: 'apikeys.models.all' })}
                 </AutoTooltip>
-              </ThemeTag>
+              </MetaChip>
             )}
           </div>
         )

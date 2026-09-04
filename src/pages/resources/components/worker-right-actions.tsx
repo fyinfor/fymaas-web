@@ -25,7 +25,8 @@ const WorkerRightActions: React.FC<WorkerRightActionsProps> = ({
       {MonitorButton}
       <Button
         icon={<PlusOutlined />}
-        type="primary"
+        color="primary"
+        variant="outlined"
         onClick={handleClickPrimary}
       >
         {intl.formatMessage({ id: 'resources.button.create' })}

@@ -1,3 +1,4 @@
+import { StatusBadge, statusTone } from '@/components/console';
 import {
   HddFilled,
   InfoCircleOutlined,
@@ -7,8 +8,7 @@ import {
 import {
   AutoTooltip,
   DropdownButtons,
-  ExpandedRowGrid,
-  StatusTag
+  ExpandedRowGrid
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Spin, Tooltip } from 'antd';
@@ -216,13 +216,13 @@ const InstanceRows: React.FC<InstanceRowsProps> = ({
             <ExpandedRowGrid.Cell span={NAME_TO_STATUS_SPAN} />
           )}
           <ExpandedRowGrid.Cell>
-            <StatusTag
-              statusValue={{
-                status: ServiceStatus[item.state],
-                text: ServiceStateLabelMap[item.state],
-                message: item.state_message || undefined
-              }}
-            />
+            <StatusBadge
+              tone={statusTone(ServiceStatus[item.state])}
+              plain
+              title={item.state_message || undefined}
+            >
+              {ServiceStateLabelMap[item.state]}
+            </StatusBadge>
           </ExpandedRowGrid.Cell>
           {STATUS_TO_CREATED_SPAN > 0 && (
             <ExpandedRowGrid.Cell span={STATUS_TO_CREATED_SPAN} />

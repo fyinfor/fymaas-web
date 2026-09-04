@@ -340,6 +340,9 @@ export default {
     '请先保存——保存会写入新 URL 并拉取它。立即更新只会重新拉取已保存的 URL。',
   'common.source.load.failed':
     '无法读取已保存的配置，因此这里没有可保存的内容。请关闭后重新打开重试。',
+  'common.error.load': '无法加载数据',
+  'common.error.load.hint': '请稍后重试，或检查网络与服务状态。',
+  'common.error.lastSuccess': '上次成功更新：{time}',
   'common.command.placeholder': '搜索模型、部署、GPU、文档...',
   'common.command.empty': '无匹配结果',
   'common.command.hint': '搜索'

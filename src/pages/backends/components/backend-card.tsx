@@ -1,11 +1,11 @@
+import { MetaChip } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import {
   AutoTooltip,
   DropdownActions,
   IconFont,
   TagsWrapper,
-  TemplateCard,
-  ThemeTag
+  TemplateCard
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Button, Tag } from 'antd';
@@ -19,10 +19,7 @@ import {
   BackendSourceLabelMap,
   BackendSourceValueMap,
   builtInBackendLogos,
-  customColors,
-  customIcons,
-  getGpuColor,
-  TagColorMap
+  customIcons
 } from '../config';
 import { ListItem } from '../config/types';
 const StyledCard = styled(TemplateCard)`
@@ -142,11 +139,19 @@ export const generateIcon = (data: ListItem, height?: number) => {
   if (data.icon) {
     return <img src={data.icon} height={innHeight} />;
   }
-  const color = customColors[data.id % customColors.length];
   const icon = customIcons[data.id % customIcons.length];
 
   return (
-    <TagInner color={color} variant="filled" height={height || 28}>
+    <TagInner
+      color="default"
+      variant="filled"
+      height={height || 28}
+      style={{
+        background: 'var(--console-bg-muted)',
+        color: 'var(--console-text-secondary)',
+        border: 'none'
+      }}
+    >
       {icon}
     </TagInner>
   );
@@ -211,13 +216,7 @@ const BackendCard: React.FC<BackendCardProps> = ({
           false
         }
       >
-        <ThemeTag
-          key={item}
-          style={{ marginRight: 0 }}
-          color={getGpuColor(item)}
-        >
-          {item}
-        </ThemeTag>
+        <MetaChip>{item}</MetaChip>
       </AutoTooltip>
     );
   };
@@ -260,26 +259,11 @@ const BackendCard: React.FC<BackendCardProps> = ({
     }
     return (
       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-        <Tag
-          color={
-            TagColorMap[
-              data.is_built_in
-                ? BackendSourceValueMap.BUILTIN
-                : data.backend_source
-            ]
-          }
-          className="font-400"
-          variant="filled"
-          style={{
-            borderRadius: 'var(--ant-border-radius)',
-            margin: 0,
-            width: 'max-content'
-          }}
-        >
+        <MetaChip>
           {intl.formatMessage({
             id: source
           })}
-        </Tag>
+        </MetaChip>
         {ownerTag}
       </div>
     );

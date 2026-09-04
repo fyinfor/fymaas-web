@@ -356,6 +356,10 @@ export default {
     'Save first — Save writes the new URL and fetches it. Update Now only re-pulls the URL already saved.',
   'common.source.load.failed':
     'Could not read the stored configuration, so there is nothing here to save. Close and reopen to try again.',
+  'common.error.load': 'Не удалось загрузить данные',
+  'common.error.load.hint':
+    'Повторите попытку или проверьте сеть и состояние сервиса.',
+  'common.error.lastSuccess': 'Последнее успешное обновление: {time}',
   'common.command.placeholder':
     'Поиск моделей, развёртываний, GPU, документов...',
   'common.command.empty': 'Нет совпадений',

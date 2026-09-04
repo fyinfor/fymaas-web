@@ -1,4 +1,5 @@
 // columns.ts
+import { StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
 import { getGPUStackPlugin } from '@/plugins';
 import {
@@ -9,7 +10,6 @@ import {
 } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
-import { Tag } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
@@ -206,40 +206,13 @@ const useUsersColumns = ({
         },
         render: (text: string, record: ListItem) => {
           return (
-            <>
-              {record.is_active ? (
-                <Tag
-                  style={{
-                    marginRight: 0,
-                    paddingInline: 12,
-                    borderRadius: 12,
-                    background: 'unset',
-                    borderColor: 'var(--ant-color-success)'
-                  }}
-                  color="success"
-                >
-                  {intl.formatMessage({
-                    id: 'users.status.active'
-                  })}
-                </Tag>
-              ) : (
-                <Tag
-                  style={{
-                    marginRight: 0,
-                    paddingInline: 12,
-                    borderRadius: 12,
-                    background: 'unset',
-                    color: 'var(--ant-color-text-description)'
-                  }}
-                  variant="outlined"
-                  color="default"
-                >
-                  {intl.formatMessage({
-                    id: 'users.status.inactive'
-                  })}
-                </Tag>
-              )}
-            </>
+            <StatusBadge tone={record.is_active ? 'success' : 'neutral'} plain>
+              {intl.formatMessage({
+                id: record.is_active
+                  ? 'users.status.active'
+                  : 'users.status.inactive'
+              })}
+            </StatusBadge>
           );
         }
       },

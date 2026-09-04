@@ -862,3 +862,29 @@ body {
 .ant-select-multiple .ant-select-content {
   height: 100%;
 }
+
+// Empty-state「立即添加」and list-page add buttons: outline, no teal fill.
+.ant-empty-footer .ant-btn,
+[class*='page-tools'] [class*='right'] .ant-btn-primary,
+[class*='page-tools'] [class*='right'] .ant-btn-color-primary {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+
+  .anticon {
+    color: inherit;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--primary-soft) !important;
+    color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+  }
+
+  &:active {
+    color: var(--primary-active) !important;
+    border-color: var(--primary-active) !important;
+  }
+}

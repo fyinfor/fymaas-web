@@ -1,10 +1,10 @@
+import { MetaChip } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import {
   IconFont,
   StatusDot,
   TagsWrapper,
-  TemplateCard,
-  ThemeTag
+  TemplateCard
 } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { Button, Tooltip } from 'antd';
@@ -124,11 +124,7 @@ const sourceIconMap = {
 };
 
 const renderTag = (item: any, index = 0) => {
-  return (
-    <ThemeTag key={item} className="tag-item" color="purple">
-      {item}
-    </ThemeTag>
-  );
+  return <MetaChip key={item}>{item}</MetaChip>;
 };
 
 const ModelItem: React.FC<{
@@ -264,25 +260,17 @@ const ModelItem: React.FC<{
                 {model.categories?.length > 0 &&
                   model.categories.map((sItem: string) => {
                     return (
-                      <ThemeTag
-                        icon={categoryConfig[sItem]?.icon}
-                        key={sItem}
-                        className="tag-item"
-                        color="default"
-                        opacity={1}
-                      >
+                      <MetaChip key={sItem} icon={categoryConfig[sItem]?.icon}>
                         {_.find(modelCategories, { value: sItem })?.label ||
                           sItem}
-                      </ThemeTag>
+                      </MetaChip>
                     );
                   })}
 
                 {maxToken > 0 && (
                   <>
                     <Dot></Dot>
-                    <ThemeTag className="tag-item" color="default">
-                      {maxToken}K context
-                    </ThemeTag>
+                    <MetaChip>{maxToken}K context</MetaChip>
                   </>
                 )}
                 {model.meta?.voices?.length > 0 && (

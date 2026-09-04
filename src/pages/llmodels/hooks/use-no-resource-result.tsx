@@ -1,7 +1,9 @@
 import { clusterSessionAtom } from '@/atoms/clusters';
-import { IconFont, NoResult } from '@gpustack/core-ui';
+import { EmptyState } from '@/components/console';
+import { IconFont } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
+import { Button } from 'antd';
 import { useAtom } from 'jotai';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
@@ -35,9 +37,6 @@ const useNoResourceResult = (props: {
     noClusters,
     noWorkers,
     defaultContent,
-    loading,
-    loadend,
-    dataSource,
     queryParams,
     iconType,
     title,
@@ -93,20 +92,28 @@ const useNoResourceResult = (props: {
     };
   }, [noClusters, noWorkers, intl]);
 
+  const filtered = Object.entries(
+    _.omit(queryParams, ['sort_by', 'page', 'perPage'])
+  ).some(([, value]) => value !== undefined && value !== '' && value !== null);
+
   const noResourceResult = (
-    <NoResult
-      minHeight="calc(100vh - 300px)"
-      loading={loading}
-      loadend={loadend}
-      dataSource={dataSource}
-      image={<IconFont type={iconType} />}
-      filters={_.omit(queryParams, ['sort_by'])}
-      noFoundText={statusContent.noFoundText}
-      title={title}
-      subTitle={statusContent.subTitle}
-      onClick={statusContent.onClick}
-      buttonText={statusContent.buttonText}
-    ></NoResult>
+    <EmptyState
+      icon={<IconFont type={iconType} />}
+      title={
+        filtered && statusContent.noFoundText
+          ? statusContent.noFoundText
+          : title
+      }
+      description={filtered ? undefined : statusContent.subTitle}
+      action={
+        statusContent.onClick && statusContent.buttonText ? (
+          <Button type="primary" onClick={statusContent.onClick}>
+            {statusContent.buttonText}
+          </Button>
+        ) : undefined
+      }
+      style={{ minHeight: 'calc(100vh - 300px)' }}
+    />
   );
   return {
     noResourceResult,

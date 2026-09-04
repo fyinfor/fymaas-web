@@ -1,3 +1,4 @@
+import { StatusBadge } from '@/components/console';
 import {
   queryLdapSettings,
   testLdapSettings,
@@ -6,7 +7,7 @@ import {
 import PageBox from '@/pages/_components/page-box';
 import SettingsSection from '@/pages/profile/components/settings-section';
 import { useIntl } from '@umijs/max';
-import { Button, Form, Input, Space, Spin, Tag, message } from 'antd';
+import { Button, Form, Input, Space, Spin, message } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useEffect, useState } from 'react';
 
@@ -103,11 +104,11 @@ const LdapSettings: React.FC = () => {
           <p className={styles.description}>
             {intl.formatMessage({ id: 'ldap.page.description' })}
           </p>
-          <Tag color={configured ? 'success' : 'default'}>
+          <StatusBadge tone={configured ? 'success' : 'neutral'} plain>
             {intl.formatMessage({
               id: configured ? 'ldap.status.enabled' : 'ldap.status.disabled'
             })}
-          </Tag>
+          </StatusBadge>
           <Form form={form} layout="vertical" requiredMark={false}>
             <SettingsSection
               title={intl.formatMessage({ id: 'ldap.section.server' })}

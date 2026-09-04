@@ -138,7 +138,8 @@ const Roles: React.FC = () => {
               <>
                 <Space style={{ margin: '8px 0 16px' }}>
                   <Button
-                    type="primary"
+                    color="primary"
+                    variant="outlined"
                     onClick={() => {
                       setEditing(null);
                       form.resetFields();
@@ -230,7 +231,11 @@ const Roles: React.FC = () => {
             children: (
               <>
                 <Space style={{ margin: '8px 0 16px' }}>
-                  <Button type="primary" onClick={() => setBindOpen(true)}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => setBindOpen(true)}
+                  >
                     {intl.formatMessage({ id: 'roles.binding.add' })}
                   </Button>
                 </Space>

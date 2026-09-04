@@ -1,3 +1,4 @@
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import {
   InstanceStatusMap,
   InstanceStatusMapValue,
@@ -14,8 +15,6 @@ import {
   AutoTooltip,
   InfoColumn,
   SimpleTable,
-  StatusTag,
-  ThemeTag,
   TooltipOverlayScroller,
   type ColumnProps
 } from '@gpustack/core-ui';
@@ -170,26 +169,11 @@ const DistributionInfo: React.FC<{
       }}
       title={renderDistributedServer(severList, instanceData)}
     >
-      <ThemeTag
-        opacity={0.75}
-        color="processing"
-        style={{
-          marginRight: 0,
-          display: 'flex',
-          alignItems: 'center',
-          maxWidth: '100%',
-          minWidth: 50,
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          borderRadius: 12
-        }}
-      >
-        <InfoCircleOutlined className="m-r-5" />
+      <MetaChip icon={<InfoCircleOutlined />}>
         {intl.formatMessage({
           id: 'models.table.acrossworker'
         })}
-      </ThemeTag>
+      </MetaChip>
     </TooltipOverlayScroller>
   );
 };
@@ -229,25 +213,11 @@ const OffloadInfo: React.FC<{
       }}
       title={<InfoColumn fieldList={fieldList} data={offloadData}></InfoColumn>}
     >
-      <ThemeTag
-        opacity={0.75}
-        color="cyan"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          maxWidth: '100%',
-          minWidth: 50,
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          borderRadius: 12
-        }}
-      >
-        <InfoCircleOutlined className="m-r-5" />
+      <MetaChip icon={<InfoCircleOutlined />}>
         {intl.formatMessage({
           id: 'models.table.cpuoffload'
         })}
-      </ThemeTag>
+      </MetaChip>
     </Tooltip>
   );
 };
@@ -262,34 +232,33 @@ const InstanceStatusTag: React.FC<{
   }
   return (
     <>
-      <StatusTag
-        download={
-          instanceData.state === InstanceStatusMap.Downloading
-            ? { percent: instanceData.download_progress }
-            : undefined
-        }
-        extra={
-          instanceData.state === InstanceStatusMap.Error &&
-          instanceData.worker_id ? (
-            <Button type="link" size="small" style={{ paddingLeft: 0 }}>
-              {intl.formatMessage({ id: 'models.list.more.logs' })}
-            </Button>
-          ) : null
-        }
-        statusValue={{
-          status:
-            instanceData.state === InstanceStatusMap.Downloading &&
+      <StatusBadge
+        tone={statusTone(
+          instanceData.state === InstanceStatusMap.Downloading &&
             instanceData.download_progress === 100
-              ? status[InstanceStatusMap.Running]
-              : status[instanceData.state],
-          text: InstanceStatusMapValue[instanceData.state],
-          message:
-            instanceData.state === InstanceStatusMap.Downloading &&
-            instanceData.download_progress === 100
-              ? ''
-              : instanceData.state_message
-        }}
-      />
+            ? status[InstanceStatusMap.Running]
+            : status[instanceData.state]
+        )}
+        plain
+        title={
+          instanceData.state === InstanceStatusMap.Downloading &&
+          instanceData.download_progress === 100
+            ? undefined
+            : instanceData.state_message
+        }
+      >
+        {InstanceStatusMapValue[instanceData.state]}
+        {instanceData.state === InstanceStatusMap.Downloading &&
+        instanceData.download_progress !== 100
+          ? ` ${Math.round(instanceData.download_progress || 0)}%`
+          : ''}
+      </StatusBadge>
+      {instanceData.state === InstanceStatusMap.Error &&
+      instanceData.worker_id ? (
+        <Button type="link" size="small" style={{ paddingLeft: 0 }}>
+          {intl.formatMessage({ id: 'models.list.more.logs' })}
+        </Button>
+      ) : null}
     </>
   );
 };

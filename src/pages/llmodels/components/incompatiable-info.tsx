@@ -1,7 +1,7 @@
+import { StatusBadge } from '@/components/console';
 import { LoadingOutlined, WarningOutlined } from '@ant-design/icons';
 import { TooltipOverlayScroller } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Tag, Tooltip } from 'antd';
 import React from 'react';
 import styled from 'styled-components';
 import { EvaluateResult } from '../config/types';
@@ -10,14 +10,6 @@ interface IncompatiableInfoProps {
   data?: EvaluateResult;
   isEvaluating?: boolean;
 }
-
-const CompatibleTag = styled(Tag)`
-  border-radius: 4px;
-  margin-right: 0;
-  font-size: var(--font-size-base);
-  background: transparent !important;
-  padding-inline: 0;
-`;
 
 const IncompatibleInfo = styled.div`
   display: flex;
@@ -82,11 +74,12 @@ const IncompatiableInfo: React.FC<IncompatiableInfoProps> = (props) => {
 
   if (isEvaluating) {
     return (
-      <CompatibleTag color="blue" variant="filled">
-        <Tooltip title={intl.formatMessage({ id: 'models.form.evaluating' })}>
-          <LoadingOutlined />
-        </Tooltip>
-      </CompatibleTag>
+      <StatusBadge
+        tone="info"
+        title={intl.formatMessage({ id: 'models.form.evaluating' })}
+      >
+        <LoadingOutlined />
+      </StatusBadge>
     );
   }
   if (!data || data?.compatible) {
@@ -111,11 +104,9 @@ const IncompatiableInfo: React.FC<IncompatiableInfoProps> = (props) => {
         </IncompatibleInfo>
       }
     >
-      <CompatibleTag
-        icon={<WarningOutlined />}
-        color={error ? 'error' : 'warning'}
-        variant="filled"
-      ></CompatibleTag>
+      <StatusBadge tone={error ? 'danger' : 'warning'}>
+        <WarningOutlined />
+      </StatusBadge>
     </TooltipOverlayScroller>
   );
 };

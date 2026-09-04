@@ -1,16 +1,14 @@
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import {
   AutoTooltip,
   DropdownActions,
   IconFont,
-  StatusTag,
-  TemplateCard,
-  ThemeTag
+  TemplateCard
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Button } from 'antd';
 import _ from 'lodash';
 import { formatMemoryDisplay, isSliceableDetail } from '../../instances/config';
-import { manufactureColorMap } from '../../templates/config';
 import { ceilMilliToCore, parseQuantityToGi } from '../../utils';
 import {
   InstanceTypePhaseLabelMap,
@@ -37,7 +35,6 @@ const InstanceTypeCard: React.FC<InstanceTypeCardProps> = ({
   const unit = spec.unitResources || {};
   const phase = data.status?.phase || '';
   const manufacturer = detail.manufacturer || '';
-  const manufacturerColor = manufactureColorMap[manufacturer] ?? 'purple';
   const sliceable = isSliceableDetail(detail.slicedDetail);
 
   const memoryText = formatMemoryDisplay(detail.memory ?? undefined);
@@ -105,19 +102,15 @@ const InstanceTypeCard: React.FC<InstanceTypeCardProps> = ({
         </div>
 
         <div className={styles.subline}>
-          {manufacturer && (
-            <ThemeTag color={manufacturerColor} style={{ fontWeight: 400 }}>
-              {manufacturer.toUpperCase()}
-            </ThemeTag>
-          )}
+          {manufacturer && <MetaChip>{manufacturer.toUpperCase()}</MetaChip>}
           {phase ? (
-            <StatusTag
-              statusValue={{
-                status: phaseStatusMap[phase],
-                text: InstanceTypePhaseLabelMap[phase] || phase,
-                message: data.status?.phaseMessage || ''
-              }}
-            />
+            <StatusBadge
+              tone={statusTone(phaseStatusMap[phase])}
+              plain
+              title={data.status?.phaseMessage || undefined}
+            >
+              {InstanceTypePhaseLabelMap[phase] || phase}
+            </StatusBadge>
           ) : null}
           {detail.clockSpeed ? <span>{detail.clockSpeed}</span> : null}
           <span

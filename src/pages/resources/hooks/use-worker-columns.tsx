@@ -24,7 +24,7 @@ import { useIntl } from '@umijs/max';
 import { Flex, Tooltip } from 'antd';
 import { useAtom, useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import semverCoerce from 'semver/functions/coerce';
 import semverGt from 'semver/functions/gt';
 import { status, WorkerStatusMap, WorkerStatusMapValue } from '../config';
@@ -122,18 +122,53 @@ const calcStorage = (files: Filesystem[]) => {
   return mountRoot ? formateUtilization(mountRoot.used, mountRoot.total) : 0;
 };
 
+const deviceIndexStyle: CSSProperties = {
+  display: 'inline-block',
+  minWidth: 28,
+  marginRight: 8,
+  paddingTop: 1,
+  lineHeight: 1.2,
+  whiteSpace: 'nowrap',
+  flexShrink: 0,
+  letterSpacing: '0.04em',
+  fontVariantNumeric: 'tabular-nums',
+  fontFamily: 'var(--console-font-numeric, ui-monospace, monospace)'
+};
+
+const DeviceIndex = ({
+  index,
+  underline
+}: {
+  index: number;
+  underline?: boolean;
+}) => (
+  <span style={deviceIndexStyle}>
+    <span
+      style={
+        underline
+          ? {
+              paddingBottom: 3,
+              borderBottom: '1px dashed var(--text-muted)'
+            }
+          : undefined
+      }
+    >
+      [{index}]
+    </span>
+  </span>
+);
+
 const GPUCell = ({ devices }: { devices: GPUDeviceItem[] }) => (
   <Flex orientation="vertical" gap={4} style={{ width: '100%' }}>
     {_.map(
       _.sortBy(devices || [], ['index']),
       (item: GPUDeviceItem, index: number) => (
-        <span className="flex-center" key={index}>
-          <span
-            className="m-r-5"
-            style={{ display: 'flex', width: 25, lineHeight: 1 }}
-          >
-            [{item.index}]
-          </span>
+        <span
+          className="flex-center"
+          key={index}
+          style={{ alignItems: 'flex-start' }}
+        >
+          <DeviceIndex index={item.index} />
           {item.core ? (
             <ResourceBar
               percent={_.round(item.core?.utilization_rate, 0)}
@@ -172,20 +207,11 @@ const VRAMItem = ({
       open={open}
       onOpenChange={setOpen}
     >
-      <span className="flex-center" style={{ cursor: 'pointer' }}>
-        <span
-          className="m-r-5"
-          style={{ display: 'flex', width: 25, lineHeight: 1 }}
-        >
-          <span
-            style={{
-              paddingBottom: 3,
-              borderBottom: '1px dashed var(--text-muted)'
-            }}
-          >
-            [{item.index}]
-          </span>
-        </span>
+      <span
+        className="flex-center"
+        style={{ cursor: 'pointer', alignItems: 'flex-start' }}
+      >
+        <DeviceIndex index={item.index} underline />
         <ResourceBar percent={percent} color="var(--vram)" />
       </span>
     </Tooltip>
@@ -565,7 +591,7 @@ const useWorkerColumns = ({
       {
         title: 'GPU',
         dataIndex: 'gpu',
-        minWidth: 100,
+        minWidth: 140,
         render: (_text: any, record: ListItem) =>
           statusAvailable(record) ? (
             <GPUCell devices={record?.status?.gpu_devices} />
@@ -576,7 +602,7 @@ const useWorkerColumns = ({
       {
         title: intl.formatMessage({ id: 'resources.table.vram' }),
         dataIndex: 'vram',
-        minWidth: 100,
+        minWidth: 140,
         render: (_text: any, record: ListItem & { rowIndex?: number }) =>
           statusAvailable(record) ? (
             <VRAMCell

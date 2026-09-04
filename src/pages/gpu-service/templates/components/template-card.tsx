@@ -14,6 +14,7 @@ import theadLogoZH from '@/assets/logo/t-head-zh.png';
 import tensorflowkLogo from '@/assets/logo/tensorflow.svg';
 import ubuntuLogo from '@/assets/logo/ubuntu_logo.png';
 import vllmLogo from '@/assets/logo/vllm.png';
+import { MetaChip } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import useUserSettings from '@/hooks/use-user-settings';
 import OwnerTag from '@/pages/gpu-service/components/owner-tag';
@@ -25,14 +26,13 @@ import {
   AutoTooltip,
   DropdownActions,
   IconFont,
-  TemplateCard,
-  ThemeTag
+  TemplateCard
 } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
-import { Button, Tag } from 'antd';
+import { Button } from 'antd';
 import { useMemo } from 'react';
 import styled from 'styled-components';
-import { manufactureColorMap, templateActions } from '../config';
+import { templateActions } from '../config';
 import { ListItem } from '../config/types';
 
 // Light theme logos
@@ -226,12 +226,12 @@ const TemplateCardItem: React.FC<TemplateCardProps> = ({ data, onSelect }) => {
         );
       case 'cpu':
         return (
-          <Tag color="geekblue" style={{ paddingBlock: 2 }}>
+          <MetaChip>
             <IconFont
               type="icon-cpu"
               style={{ fontSize: 22, display: 'flex' }}
             />
-          </Tag>
+          </MetaChip>
         );
       default:
         return null;
@@ -243,12 +243,7 @@ const TemplateCardItem: React.FC<TemplateCardProps> = ({ data, onSelect }) => {
     const label =
       manufacturerLabelMap[data.manufacturer] ??
       data.manufacturer.toUpperCase();
-    const color = manufactureColorMap[data.manufacturer] ?? 'purple';
-    return (
-      <ThemeTag color={color} style={{ fontWeight: 400 }}>
-        {label}
-      </ThemeTag>
-    );
+    return <MetaChip>{label}</MetaChip>;
   };
 
   const renderActions = () => {

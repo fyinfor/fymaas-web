@@ -20,7 +20,7 @@ on:
       tag:
         description: 源 / 目标 tag
         type: string
-        default: latest
+        default: dev
       extra_tags:
         description: 额外同步的 tag（空格分隔，例如 latest）
         type: string
@@ -49,7 +49,7 @@ on:
       tag:
         description: 源 / 目标 tag
         type: string
-        default: latest
+        default: dev
       extra_tags:
         description: 额外同步的 tag（空格分隔，例如 latest）
         type: string

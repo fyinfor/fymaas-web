@@ -87,12 +87,14 @@ export default function useTableFetch<T>(
     dataList: T[];
     loading: boolean;
     loadend: boolean;
+    error: boolean;
     total: number;
     totalPage: number;
   }>({
     dataList: [...defaultData],
     loading: false,
     loadend: false,
+    error: false,
     total: 0,
     totalPage: 0
   });
@@ -162,6 +164,7 @@ export default function useTableFetch<T>(
             : newRes.items || [],
           loading: false,
           loadend: true,
+          error: false,
           total: newRes.pagination.total,
           totalPage: newRes.pagination.totalPage
         });
@@ -178,6 +181,7 @@ export default function useTableFetch<T>(
           : res.items || [],
         loading: false,
         loadend: true,
+        error: false,
         total: res.pagination.total,
         totalPage: res.pagination.totalPage
       });
@@ -194,6 +198,7 @@ export default function useTableFetch<T>(
           dataList: [],
           loading: false,
           loadend: true,
+          error: true,
           total: dataSource.total,
           totalPage: dataSource.totalPage
         });
@@ -236,6 +241,7 @@ export default function useTableFetch<T>(
           totalPage: pre.totalPage,
           loading: false,
           loadend: true,
+          error: false,
           dataList: list,
           deletedIds: opts?.deletedIds || []
         };

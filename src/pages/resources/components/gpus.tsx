@@ -1,8 +1,9 @@
+import { EmptyState, ErrorState, TableSkeleton } from '@/components/console';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import PageBox from '@/pages/_components/page-box';
 import { useQueryClusterList } from '@/pages/cluster-management/services/use-query-cluster-list';
-import { FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl, useSearchParams } from '@umijs/max';
 import { ConfigProvider, Table } from 'antd';
 import _ from 'lodash';
@@ -30,7 +31,8 @@ const GPUList: React.FC<GPUListProps> = ({ clusterId, source }) => {
     handleTableChange,
     handleQueryChange,
     handleSearch,
-    handleNameChange
+    handleNameChange,
+    fetchData
   } = useTableFetch<GPUDeviceItem>({
     key: PaginationKey.GPUs,
     fetchAPI: queryGpuDevicesList,
@@ -70,20 +72,29 @@ const GPUList: React.FC<GPUListProps> = ({ clusterId, source }) => {
 
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
+    const filtered = Object.entries(
+      _.omit(queryParams, ['sort_by', 'page', 'perPage'])
+    ).some(
+      ([, value]) => value !== undefined && value !== '' && value !== null
+    );
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-gpu1" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({ id: 'noresult.gpus.nofound' })}
-        title={intl.formatMessage({ id: 'noresult.gpus.title' })}
-        subTitle={intl.formatMessage({ id: 'noresult.gpus.subTitle' })}
-      ></NoResult>
+      <EmptyState
+        icon={<IconFont type="icon-gpu1" />}
+        title={intl.formatMessage({
+          id: filtered ? 'noresult.gpus.nofound' : 'noresult.gpus.title'
+        })}
+        description={
+          filtered
+            ? undefined
+            : intl.formatMessage({ id: 'noresult.gpus.subTitle' })
+        }
+        style={{ minHeight: 'calc(100vh - 300px)' }}
+      />
     );
   };
+
+  const firstLoad = dataSource.loading && !dataSource.loadend;
+  const loadFailed = dataSource.error && !dataSource.dataList.length;
 
   const columns = useGPUColumns({
     clusterList,
@@ -118,30 +129,36 @@ const GPUList: React.FC<GPUListProps> = ({ clusterId, source }) => {
               : { input: 300 }
           }
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            columns={columns}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            scroll={{ x: 'max-content' }}
-            className={'scroll-table'}
-            dataSource={dataSource.dataList}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            rowKey="id"
-            onChange={handleTableChange}
-            pagination={{
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        {firstLoad ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : loadFailed ? (
+          <ErrorState
+            onRetry={() => fetchData()}
+            style={{ minHeight: 'calc(100vh - 300px)' }}
+          />
+        ) : (
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              columns={columns}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              scroll={{ x: 'max-content' }}
+              className={'scroll-table'}
+              dataSource={dataSource.dataList}
+              loading={false}
+              rowKey="id"
+              onChange={handleTableChange}
+              pagination={{
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        )}
       </PageBox>
     </>
   );

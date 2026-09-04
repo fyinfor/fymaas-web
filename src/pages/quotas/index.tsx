@@ -1,3 +1,4 @@
+import { StatusBadge } from '@/components/console';
 import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
@@ -25,7 +26,6 @@ import {
   Switch,
   Table,
   Tabs,
-  Tag,
   message
 } from 'antd';
 import _ from 'lodash';
@@ -187,8 +187,8 @@ const Quotas: React.FC = () => {
         let extra = '';
         if (row.subject_type === 'user' || row.subject_type === 'group') {
           extra =
-            people.find((item) => item.id === row.subject_principal_id)
-              ?.name || '';
+            people.find((item) => item.id === row.subject_principal_id)?.name ||
+            '';
         } else if (row.subject_type === 'api_key') {
           extra =
             apiKeys.find((item) => item.id === row.api_key_id)?.name || '';
@@ -209,11 +209,9 @@ const Quotas: React.FC = () => {
         });
         let extra = '';
         if (row.target_type === 'model') {
-          extra =
-            models.find((item) => item.id === row.target_id)?.name || '';
+          extra = models.find((item) => item.id === row.target_id)?.name || '';
         } else if (row.target_type === 'model_route') {
-          extra =
-            routes.find((item) => item.id === row.target_id)?.name || '';
+          extra = routes.find((item) => item.id === row.target_id)?.name || '';
         }
         return extra ? `${typeLabel} · ${extra}` : typeLabel;
       }
@@ -235,11 +233,11 @@ const Quotas: React.FC = () => {
       title: intl.formatMessage({ id: 'quotas.form.enabled' }),
       dataIndex: 'enabled',
       render: (v: boolean) => (
-        <Tag color={v ? 'success' : 'default'}>
+        <StatusBadge tone={v ? 'success' : 'neutral'} plain>
           {v
             ? intl.formatMessage({ id: 'common.button.enable' })
             : intl.formatMessage({ id: 'common.button.disable' })}
-        </Tag>
+        </StatusBadge>
       )
     },
     {

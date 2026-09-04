@@ -357,6 +357,10 @@ export default {
     'Save first — Save writes the new URL and fetches it. Update Now only re-pulls the URL already saved.',
   'common.source.load.failed':
     'Could not read the stored configuration, so there is nothing here to save. Close and reopen to try again.',
+  'common.error.load': 'データを読み込めません',
+  'common.error.load.hint':
+    '再試行するか、ネットワークとサービスの状態を確認してください。',
+  'common.error.lastSuccess': '最後に成功した更新: {time}',
   'common.command.placeholder': 'モデル、デプロイ、GPU、ドキュメントを検索...',
   'common.command.empty': '一致する結果がありません',
   'common.command.hint': '検索'

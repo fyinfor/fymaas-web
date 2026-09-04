@@ -1,10 +1,10 @@
+import { MetaChip } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
-import { AutoTooltip, IconFont, ThemeTag } from '@gpustack/core-ui';
+import { AutoTooltip, IconFont } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Flex, Tag, Tooltip } from 'antd';
+import { Flex, Tooltip } from 'antd';
 import _ from 'lodash';
 import styled from 'styled-components';
-import { manufactureColorMap } from '../../templates/config';
 import { formatManufacturer } from '../../utils';
 import { formatMemoryDisplay } from '../config';
 import {
@@ -122,28 +122,6 @@ const MetaItem: React.FC<{
       <span className="meta-label">{label}</span>
       <span className="meta-value">{value || '-'}</span>
     </>
-  );
-};
-
-const CPUManufacturerTag: React.FC<{ manufacturer?: string }> = ({
-  manufacturer
-}) => {
-  return (
-    <Tag
-      color="blue"
-      disabled={false}
-      style={{
-        fontWeight: 400,
-        margin: 0,
-        marginLeft: 0,
-        display: 'flex',
-        alignItems: 'center',
-        lineHeight: 1.5
-      }}
-      variant="outlined"
-    >
-      {manufacturer}
-    </Tag>
   );
 };
 
@@ -308,7 +286,6 @@ const InstanceTypeItem: React.FC<InstanceTypeItemProps> = ({
   const { acceleratable, manufacturer, displayName, cpuManufacturer } =
     getInstanceDerived(specData, item.name);
 
-  const manufacturerColor = manufactureColorMap[manufacturer] ?? 'purple';
   const showManufacturerTag = acceleratable && !!manufacturer;
   const showCpuManufacturerTag = !acceleratable && !!cpuManufacturer;
 
@@ -333,22 +310,12 @@ const InstanceTypeItem: React.FC<InstanceTypeItemProps> = ({
           </div>
 
           {showManufacturerTag && (
-            <ThemeTag
-              color={manufacturerColor}
-              disabled={false}
-              style={{ fontWeight: 400 }}
-            >
+            <MetaChip style={{ fontWeight: 400 }}>
               {formatManufacturer(manufacturer)}
-            </ThemeTag>
+            </MetaChip>
           )}
           {showCpuManufacturerTag && (
-            <ThemeTag
-              color={manufacturerColor}
-              disabled={false}
-              style={{ fontWeight: 400 }}
-            >
-              {cpuManufacturer}
-            </ThemeTag>
+            <MetaChip style={{ fontWeight: 400 }}>{cpuManufacturer}</MetaChip>
           )}
           <PluginExtraFields
             name="InstanceTypeBillingBadge"

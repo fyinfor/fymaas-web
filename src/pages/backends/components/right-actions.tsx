@@ -35,7 +35,12 @@ const RightActions: React.FC<RightActionsProps> = ({
         styles={{ root: { minWidth: '140px' } }}
         menu={{ items: actionItems, onClick: handleClickPrimary }}
       >
-        <Button icon={<DownOutlined />} type="primary" iconPlacement="end">
+        <Button
+          icon={<DownOutlined />}
+          color="primary"
+          variant="outlined"
+          iconPlacement="end"
+        >
           {intl.formatMessage({ id: 'backend.button.add' })}
         </Button>
       </DropdownActions>
