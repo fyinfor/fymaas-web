@@ -386,6 +386,17 @@ export default {
 
   'roles.add': 'Добавить роль',
   'roles.edit': 'Изменить роль',
+  'roles.page.description':
+    'Администратор и обычный пользователь встроены и не удаляются. Добавляйте роли по необходимости и назначайте их при создании пользователя.',
+  'roles.form.name': 'Название роли',
+  'roles.form.name.placeholder': 'Введите название роли',
+  'roles.form.code': 'Идентификатор',
+  'roles.form.code.placeholder': 'Введите идентификатор',
+  'roles.form.code.rule': 'Начинается с буквы, только буквы, цифры, _ и -',
+  'roles.form.active': 'Статус',
+  'roles.form.active.placeholder': 'Выберите статус',
+  'roles.form.active.on': 'Вкл.',
+  'roles.form.active.off': 'Выкл.',
   'roles.form.scope': 'Область',
   'roles.scope': 'Область',
   'roles.scope.org': 'Организация',

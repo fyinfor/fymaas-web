@@ -384,6 +384,17 @@ export default {
 
   'roles.add': 'ロールを追加',
   'roles.edit': 'ロールを編集',
+  'roles.page.description':
+    '管理者と一般ユーザーは組み込みロールで削除できません。必要に応じてロールを追加し、ユーザー作成時に割り当てます。',
+  'roles.form.name': 'ロール名',
+  'roles.form.name.placeholder': 'ロール名を入力',
+  'roles.form.code': 'ロール識別子',
+  'roles.form.code.placeholder': 'ロール識別子を入力',
+  'roles.form.code.rule': '先頭は英字、英数字・アンダースコア・ハイフンのみ',
+  'roles.form.active': '状態',
+  'roles.form.active.placeholder': '状態を選択',
+  'roles.form.active.on': '有効',
+  'roles.form.active.off': '無効',
   'roles.form.scope': 'スコープ',
   'roles.scope': 'スコープ',
   'roles.scope.org': '組織',

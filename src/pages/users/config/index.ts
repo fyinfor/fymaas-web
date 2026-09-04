@@ -15,12 +15,48 @@ export const AuthSources = {
   CAS: 'CAS'
 };
 
-// ``locale: true`` on Local only — the IdP names (OIDC / SAML / CAS)
-// are protocol acronyms and stay unchanged across locales, so they
-// render verbatim and don't get a translation key.
-export const AuthSourceOptions = [
-  { label: 'users.form.source.local', value: AuthSources.LOCAL, locale: true },
-  { label: AuthSources.OIDC, value: AuthSources.OIDC },
-  { label: AuthSources.SAML, value: AuthSources.SAML },
-  { label: AuthSources.CAS, value: AuthSources.CAS }
-];
+const pickChars = (alphabet: string, count: number): string[] => {
+  const out: string[] = [];
+  const bytes = new Uint32Array(count);
+  crypto.getRandomValues(bytes);
+  for (let i = 0; i < count; i += 1) {
+    out.push(alphabet[bytes[i] % alphabet.length]);
+  }
+  return out;
+};
+
+const shuffleChars = (items: string[]): string[] => {
+  const bytes = new Uint32Array(items.length);
+  crypto.getRandomValues(bytes);
+  for (let i = items.length - 1; i > 0; i -= 1) {
+    const j = bytes[i] % (i + 1);
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+};
+
+/** 12-char local password that satisfies `PasswordReg`. */
+export const generateLocalPassword = (length = 12): string => {
+  const lower = 'abcdefghijkmnopqrstuvwxyz';
+  const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  const digit = '23456789';
+  const special = '!@#$%^&*_+.';
+  const all = `${lower}${upper}${digit}${special}`;
+  return shuffleChars([
+    ...pickChars(lower, 1),
+    ...pickChars(upper, 1),
+    ...pickChars(digit, 1),
+    ...pickChars(special, 1),
+    ...pickChars(all, Math.max(0, length - 4))
+  ]).join('');
+};
+
+export const formatAuthSourceLabel = (
+  source: string | undefined,
+  formatMessage: (desc: { id: string }) => string
+): string => {
+  if (!source || source === AuthSources.LOCAL) {
+    return formatMessage({ id: 'users.form.source.local' });
+  }
+  return source;
+};

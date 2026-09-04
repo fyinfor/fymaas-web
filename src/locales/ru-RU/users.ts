@@ -12,8 +12,16 @@ export default {
   'users.form.active.description':
     'Включить или отключить эту учетную запись пользователя',
   'users.form.fullname': 'Полное имя',
-  'users.form.source': 'Источник',
-  'users.form.source.local': 'Локальный',
+  'users.form.email': 'Эл. почта',
+  'users.form.department': 'Организация',
+  'users.form.organization': 'Организация',
+  'users.form.phone': 'Телефон',
+  'users.form.rule.email': 'Введите действительный адрес эл. почты',
+  'users.form.rule.phone': 'Введите действительный номер телефона',
+  'users.form.source': 'Источник аутентификации',
+  'users.form.source.local': 'Локальная учётная запись',
+  'users.form.source.readonly':
+    'Источник аутентификации задаётся способом входа. Внешние пользователи создаются при первом входе через SSO и не выбираются здесь.',
   'users.form.source.tip.switchToLocal':
     'Переключение на «Локальный» требует ввода нового пароля. После этого пользователь будет входить через стандартную форму входа.',
   'users.form.source.tip.switchToExternal':
@@ -24,6 +32,7 @@ export default {
   'users.form.newpassword': 'Новый пароль',
   'users.form.currentpassword': 'Текущий пароль',
   'users.form.updatepassword': 'Изменить пароль',
+  'users.form.password.generate': 'Сгенерировать пароль из 12 символов',
   'users.form.rule.password':
     'Должен содержать заглавные и строчные буквы, цифры и спецсимволы (!@#$%^&*_+.), длина 6-64 символов, без пробелов.',
   'users.password.uppcase': 'Минимум одна заглавная буква',

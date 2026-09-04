@@ -45,7 +45,10 @@ export const installTenantFetch = (): void => {
     input: RequestInfo | URL,
     init?: RequestInit
   ): Promise<Response> => {
-    const headers = getTenantHeaders(methodOf(input, init));
+    const headers = getTenantHeaders({
+      url: urlOf(input),
+      method: methodOf(input, init)
+    });
     if (Object.keys(headers).length === 0 || !isSameOrigin(urlOf(input))) {
       return nativeFetch(input, init);
     }

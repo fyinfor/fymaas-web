@@ -12,8 +12,16 @@ export default {
   'users.form.active.description':
     'Bu kullanıcı hesabını etkinleştir veya devre dışı bırak',
   'users.form.fullname': 'Tam Ad',
-  'users.form.source': 'Kaynak',
-  'users.form.source.local': 'Yerel',
+  'users.form.email': 'E-posta',
+  'users.form.department': 'Organizasyon',
+  'users.form.organization': 'Organizasyon',
+  'users.form.phone': 'Telefon',
+  'users.form.rule.email': 'Geçerli bir e-posta adresi girin',
+  'users.form.rule.phone': 'Geçerli bir telefon numarası girin',
+  'users.form.source': 'Kimlik doğrulama kaynağı',
+  'users.form.source.local': 'Yerel hesap',
+  'users.form.source.readonly':
+    'Kimlik doğrulama kaynağı kullanıcının giriş yöntemine göre belirlenir. Harici kullanıcılar ilk SSO girişinde otomatik oluşur ve burada seçilemez.',
   'users.form.source.tip.switchToLocal':
     'Yerel kaynağa geçmek yeni bir parola gerektirir. Kullanıcı bundan sonra standart oturum açma formunu kullanır.',
   'users.form.source.tip.switchToExternal':
@@ -24,6 +32,7 @@ export default {
   'users.form.newpassword': 'Yeni Şifre',
   'users.form.currentpassword': 'Mevcut Şifre',
   'users.form.updatepassword': 'Şifreyi Değiştir',
+  'users.form.password.generate': '12 karakterlik parola oluştur',
   'users.form.rule.password':
     'Büyük ve küçük harf, rakam ve özel karakter(!@#$%^&*_+.) içermelidir, 6 ile 64 karakter arasında olmalıdır, boşluk kullanılamaz.',
   'users.password.uppcase': 'En az bir büyük harf',

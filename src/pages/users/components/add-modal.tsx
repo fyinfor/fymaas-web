@@ -1,6 +1,13 @@
 import { PageAction, PasswordReg } from '@/config';
 import { PageActionType } from '@/config/types';
 import {
+  catalogRoleLabel,
+  PLATFORM_ADMIN_ROLE,
+  PLATFORM_USER_ROLE,
+  sortCatalogRoles,
+  type CatalogRole
+} from '@/enterprise/role-labels';
+import {
   Input as CInput,
   FormDrawer,
   IconFont,
@@ -8,14 +15,13 @@ import {
   Switch as SealSwitch,
   useSubmitLock
 } from '@gpustack/core-ui';
-import { useIntl, useModel } from '@umijs/max';
+import { request, useIntl, useModel } from '@umijs/max';
 import { Form, Select } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  AuthSourceOptions,
   AuthSources,
-  UserRoles,
-  UserRolesOptions
+  formatAuthSourceLabel,
+  generateLocalPassword
 } from '../config';
 import { FormData, ListItem } from '../config/types';
 
@@ -39,45 +45,47 @@ const AddModal: React.FC<AddModalProps> = ({
   const [form] = Form.useForm();
   const intl = useIntl();
   const { loading, guard, run, release } = useSubmitLock();
-  const selectedSource = Form.useWatch('source', form) ?? AuthSources.LOCAL;
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [roles, setRoles] = useState<CatalogRole[]>([]);
+  const [orgs, setOrgs] = useState<{ id: number; name: string }[]>([]);
   const existingSource = data?.source ?? AuthSources.LOCAL;
-  // Local is the only source that uses a local password row. For an
-  // existing SSO user (or a brand-new SSO row at create time) the
-  // password field is hidden entirely.
-  const showPassword = selectedSource === AuthSources.LOCAL;
-  // Password is required when there's no usable credential after
-  // submit: create-Local always, or edit-Local that is *switching*
-  // from an SSO source (the backend rejects SSO → Local without a
-  // fresh password to avoid locking the user out of /login). Editing
-  // a user who was already Local can leave it blank.
-  const passwordRequired =
-    showPassword &&
-    (action === PageAction.CREATE || existingSource !== AuthSources.LOCAL);
-  // Switching the source is a sensitive operation — surface the
-  // consequence to the admin so they're not surprised that flipping
-  // to an IdP silently invalidates the user's local password.
-  const sourceSwitchTipId =
-    action === PageAction.EDIT && selectedSource !== existingSource
-      ? selectedSource === AuthSources.LOCAL
-        ? 'users.form.source.tip.switchToLocal'
-        : 'users.form.source.tip.switchToExternal'
-      : null;
+  // Add User only creates a local account. External (OIDC / SAML / CAS)
+  // rows are provisioned on first SSO login, so the source picker is
+  // gone from create. Edit shows the stored source read-only.
+  const isLocalUser =
+    action === PageAction.CREATE || existingSource === AuthSources.LOCAL;
 
-  const initFormValue = () => {
+  const initFormValue = (catalog: CatalogRole[]) => {
+    const adminRole = catalog.find(
+      (item) =>
+        item.code === PLATFORM_ADMIN_ROLE || item.name === PLATFORM_ADMIN_ROLE
+    );
+    const userRole = catalog.find(
+      (item) =>
+        item.code === PLATFORM_USER_ROLE || item.name === PLATFORM_USER_ROLE
+    );
     if (action === PageAction.EDIT && open) {
+      const fallback = data?.is_admin ? adminRole?.id : userRole?.id;
       form.setFieldsValue({
         ...data,
-        is_admin: data?.is_admin ? UserRoles.ADMIN : UserRoles.USER,
+        role_id: data?.role_id || fallback,
+        organization_id: data?.organization_id ?? undefined,
         is_active: !!data?.is_active,
         source: data?.source || AuthSources.LOCAL
       });
     } else if (action === PageAction.CREATE && open) {
       form.setFieldsValue({
-        is_admin: UserRoles.USER,
+        role_id: userRole?.id,
         is_active: true,
-        source: AuthSources.LOCAL
+        source: AuthSources.LOCAL,
+        password: generateLocalPassword()
       });
     }
+  };
+
+  const fillRandomPassword = () => {
+    form.setFieldValue('password', generateLocalPassword());
+    setPasswordVisible(true);
   };
 
   const handleSubmit = () => {
@@ -89,7 +97,32 @@ const AddModal: React.FC<AddModalProps> = ({
   };
 
   useEffect(() => {
-    initFormValue();
+    if (!open) {
+      return;
+    }
+    setPasswordVisible(action === PageAction.CREATE);
+    Promise.all([
+      request('/roles', {
+        params: { page: 1, perPage: 200, is_active: true }
+      }),
+      request('/organizations', { params: { page: 1, perPage: 200 } })
+    ])
+      .then(([rolePage, orgPage]) => {
+        const catalog = sortCatalogRoles(rolePage.items || []);
+        setRoles(catalog);
+        setOrgs(
+          (orgPage.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.display_name || item.name
+          }))
+        );
+        initFormValue(catalog);
+      })
+      .catch(() => {
+        setRoles([]);
+        setOrgs([]);
+        initFormValue([]);
+      });
   }, [open]);
 
   return (
@@ -133,9 +166,66 @@ const AddModal: React.FC<AddModalProps> = ({
             label={intl.formatMessage({ id: 'users.form.fullname' })}
           ></CInput.Input>
         </Form.Item>
+        <Form.Item<FormData>
+          name="email"
+          rules={[
+            {
+              type: 'email',
+              message: intl.formatMessage({ id: 'users.form.rule.email' })
+            }
+          ]}
+        >
+          <CInput.Input
+            label={intl.formatMessage({ id: 'users.form.email' })}
+          ></CInput.Input>
+        </Form.Item>
         <div style={{ display: 'flex', gap: '16px' }}>
           <div style={{ flex: 1 }}>
-            <Form.Item<FormData> name="is_admin" rules={[{ required: false }]}>
+            <Form.Item<FormData>
+              name="phone"
+              rules={[
+                {
+                  pattern: /^\+?[\d\s\-()]{6,20}$/,
+                  message: intl.formatMessage({ id: 'users.form.rule.phone' })
+                }
+              ]}
+            >
+              <CInput.Input
+                label={intl.formatMessage({ id: 'users.form.phone' })}
+              ></CInput.Input>
+            </Form.Item>
+          </div>
+          <div style={{ flex: 1 }}>
+            <Form.Item<FormData> name="organization_id">
+              <SealSelect
+                allowClear
+                label={intl.formatMessage({ id: 'users.form.organization' })}
+              >
+                {orgs.map((item) => (
+                  <Select.Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Select.Option>
+                ))}
+              </SealSelect>
+            </Form.Item>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ flex: 1 }}>
+            <Form.Item<FormData>
+              name="role_id"
+              rules={[
+                {
+                  required: true,
+                  message: intl.formatMessage(
+                    { id: 'common.form.rule.select' },
+                    {
+                      name: intl.formatMessage({ id: 'users.table.role' })
+                    }
+                  )
+                }
+              ]}
+            >
               <SealSelect
                 label={intl.formatMessage({ id: 'users.table.role' })}
                 disabled={
@@ -143,10 +233,11 @@ const AddModal: React.FC<AddModalProps> = ({
                   action === PageAction.EDIT
                 }
               >
-                {UserRolesOptions.map((item) => {
+                {roles.map((item) => {
                   return (
-                    <Select.Option value={item.value} key={item.value}>
-                      {item.value === UserRoles.ADMIN ? (
+                    <Select.Option value={item.id} key={item.id}>
+                      {item.code === PLATFORM_ADMIN_ROLE ||
+                      item.name === PLATFORM_ADMIN_ROLE ? (
                         <IconFont
                           type="icon-manage_user"
                           className="size-16"
@@ -158,7 +249,7 @@ const AddModal: React.FC<AddModalProps> = ({
                         ></IconFont>
                       )}
                       <span className="m-l-5">
-                        {intl.formatMessage({ id: item.label })}
+                        {catalogRoleLabel(item.name, intl.formatMessage)}
                       </span>
                     </Select.Option>
                   );
@@ -185,50 +276,56 @@ const AddModal: React.FC<AddModalProps> = ({
           )}
         </div>
 
-        <Form.Item<FormData>
-          name="source"
-          rules={[{ required: false }]}
-          // The select always carries a value (initialised to the
-          // user's current source), so the dropdown alone doesn't
-          // signal intent — ``sourceSwitchTipId`` adds an inline
-          // explanation of the side effect whenever the selected
-          // value diverges from the stored one.
-          extra={
-            sourceSwitchTipId
-              ? intl.formatMessage({ id: sourceSwitchTipId })
-              : undefined
-          }
-        >
-          <SealSelect
-            label={intl.formatMessage({ id: 'users.form.source' })}
-            // Self-edit guard: flipping your own row to an external
-            // source clears your own local password — if SSO is
-            // misconfigured or the IdP can't reach you, that locks
-            // you out of /login with no recovery path.
-            disabled={
-              !!data?.id &&
-              data.id === initialState?.currentUser?.id &&
-              action === PageAction.EDIT
-            }
-            options={AuthSourceOptions}
-          ></SealSelect>
-        </Form.Item>
+        {action === PageAction.EDIT && (
+          <>
+            <Form.Item<FormData> name="source" hidden>
+              <input type="hidden" />
+            </Form.Item>
+            <Form.Item
+              extra={intl.formatMessage({ id: 'users.form.source.readonly' })}
+            >
+              <CInput.Input
+                disabled
+                label={intl.formatMessage({ id: 'users.form.source' })}
+                value={formatAuthSourceLabel(
+                  existingSource,
+                  intl.formatMessage
+                )}
+              />
+            </Form.Item>
+          </>
+        )}
 
-        {showPassword && (
+        {isLocalUser && (
           <Form.Item<FormData>
             name="password"
             rules={[
               {
-                required: passwordRequired,
+                required: action === PageAction.CREATE,
                 pattern: PasswordReg,
                 message: intl.formatMessage({ id: 'users.form.rule.password' })
               }
             ]}
+            extra={
+              <a
+                href="#generate-password"
+                onClick={(event) => {
+                  event.preventDefault();
+                  fillRandomPassword();
+                }}
+              >
+                {intl.formatMessage({ id: 'users.form.password.generate' })}
+              </a>
+            }
           >
             <CInput.Password
               autoComplete={'new-password'}
               label={intl.formatMessage({ id: 'common.form.password' })}
-              required={passwordRequired}
+              required={action === PageAction.CREATE}
+              visibilityToggle={{
+                visible: passwordVisible,
+                onVisibleChange: setPasswordVisible
+              }}
               onPressEnter={handleSubmit}
             ></CInput.Password>
           </Form.Item>

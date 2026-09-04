@@ -381,6 +381,18 @@ export default {
 
   'roles.add': 'Add Role',
   'roles.edit': 'Edit Role',
+  'roles.page.description':
+    'Administrator and General User are built-in and cannot be deleted. Add more roles as needed and assign them when creating users.',
+  'roles.form.name': 'Role name',
+  'roles.form.name.placeholder': 'Enter a role name',
+  'roles.form.code': 'Role key',
+  'roles.form.code.placeholder': 'Enter a role key',
+  'roles.form.code.rule':
+    'Must start with a letter and contain only letters, digits, underscores or hyphens',
+  'roles.form.active': 'Status',
+  'roles.form.active.placeholder': 'Select a status',
+  'roles.form.active.on': 'Enabled',
+  'roles.form.active.off': 'Disabled',
   'roles.form.scope': 'Scope',
   'roles.scope': 'Scope',
   'roles.scope.org': 'Organization',

@@ -101,6 +101,18 @@ export async function getInitialState(): Promise<{
       // reader and the access seam — break out instead and let the
       // caller treat the request as failed.
       if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+        // Fire `onUserFetched` so plugins can seed identity-scoped
+        // caches (workspace list / default selection) before this user
+        // is committed. The login page navigates as soon as `userAtom`
+        // updates; doing that first used to race the workspace fix and
+        // send a vanished X-Workspace-Id on the first paint.
+        try {
+          await getGPUStackPlugin()?.login?.onUserFetched?.(data, {
+            request: umiRequest
+          });
+        } catch (err) {
+          console.error('onUserFetched plugin hook error:', err);
+        }
         // Commit the identity to atom storage (and so to localStorage)
         // before returning. The access function — memoized on
         // `initialState` and run once per commit — reads identity from
@@ -112,17 +124,6 @@ export async function getInitialState(): Promise<{
           setAtomStorage(userAtom, data);
         } catch (err) {
           console.error('userAtom commit error:', err);
-        }
-        // Fire `onUserFetched` so plugins maintaining identity-scoped
-        // caches can seed them under the new identity before any
-        // caller commits this user to `initialState`. Errors here are
-        // swallowed and logged — fetchUserInfo must still return.
-        try {
-          await getGPUStackPlugin()?.login?.onUserFetched?.(data, {
-            request: umiRequest
-          });
-        } catch (err) {
-          console.error('onUserFetched plugin hook error:', err);
         }
       }
       return data;

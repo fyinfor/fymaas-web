@@ -1,12 +1,15 @@
 import { userAtom } from '@/atoms/user';
 import { clearAtomStorage } from '@/atoms/utils';
+import { clearTenantContextStorage } from '@/enterprise/workspace-storage';
 import { history, RequestConfig } from '@umijs/max';
 import { message } from 'antd';
 import { DEFAULT_ENTER_PAGE } from './config/settings';
 import ErrorMessageContent from './pages/_components/error-message-content';
 import {
   extraRequestInterceptors,
-  extraResponseInterceptors
+  extraResponseInterceptors,
+  isMissingWorkspaceError,
+  recoverMissingWorkspace
 } from './request.extensions';
 
 //  these APIs do not via the GPUSTACK_API_BASE_URL
@@ -24,6 +27,11 @@ export const requestConfig: RequestConfig = {
         response?.data?.message ||
         errorMessage;
 
+      if (isMissingWorkspaceError(error)) {
+        recoverMissingWorkspace(error);
+        return;
+      }
+
       if (!opts?.skipErrorHandler && response?.status) {
         message.error({
           content: <ErrorMessageContent errMsg={errMsg}></ErrorMessageContent>
@@ -31,6 +39,7 @@ export const requestConfig: RequestConfig = {
       }
       if (response?.status === 401) {
         clearAtomStorage(userAtom);
+        clearTenantContextStorage();
 
         history.push(DEFAULT_ENTER_PAGE.login, { replace: true });
       }

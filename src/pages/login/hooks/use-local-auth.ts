@@ -1,5 +1,6 @@
 import { initialPasswordAtom } from '@/atoms/user';
 import { clearStorageUserSettings } from '@/atoms/utils';
+import { clearTenantContextStorage } from '@/enterprise/workspace-storage';
 import {
   CRYPT_TEXT,
   REMEMBER_ME_KEY,
@@ -44,6 +45,12 @@ export const useLocalAuth = ({
         username: values.username,
         password: values.password
       });
+
+      // Previous session may have left a workspace id that no longer
+      // exists. Drop it before `fetchUserInfo` seeds membership and
+      // before the login page navigates — otherwise the first paint
+      // still sends X-Workspace-Id for the vanished workspace.
+      clearTenantContextStorage();
 
       // Stash the credential BEFORE `fetchUserInfo`, not after: that call
       // commits the identity — `require_password_change` included — to

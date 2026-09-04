@@ -11,6 +11,17 @@ import { Dropdown, Tooltip } from 'antd';
 import React from 'react';
 import CreateWorkspaceModal from './create-workspace-modal';
 import { subscribeWorkspaceListChanged } from './workspace-events';
+import {
+  persistWorkspaceSelection,
+  readCurrentWorkspaceId
+} from './workspace-storage';
+
+export { notifyWorkspaceListChanged } from './workspace-events';
+export {
+  clearTenantContextStorage,
+  persistWorkspaceSelection,
+  readCurrentWorkspaceId
+} from './workspace-storage';
 
 export type MyWorkspaceItem = {
   workspace: {
@@ -27,29 +38,6 @@ export type MyWorkspaceItem = {
 };
 
 export const WORKSPACES_PATH = '/workspaces';
-export { notifyWorkspaceListChanged } from './workspace-events';
-
-export const persistWorkspaceSelection = (id: number | null) => {
-  if (id == null) {
-    nsLocal.remove('currentWorkspaceId');
-    nsLocal.remove('currentOrganizationId');
-    return;
-  }
-  nsLocal.set('currentWorkspaceId', JSON.stringify(id));
-  nsLocal.set('currentOrganizationId', JSON.stringify(id));
-};
-
-export const readCurrentWorkspaceId = (): number | null => {
-  try {
-    const raw =
-      nsLocal.get('currentWorkspaceId') || nsLocal.get('currentOrganizationId');
-    if (!raw) return null;
-    const value = JSON.parse(raw);
-    return typeof value === 'number' ? value : null;
-  } catch {
-    return null;
-  }
-};
 
 export const cacheWorkspaces = (rows: MyWorkspaceItem[]) => {
   nsLocal.set(

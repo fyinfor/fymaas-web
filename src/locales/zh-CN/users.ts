@@ -11,8 +11,16 @@ export default {
   'users.form.active': '启用账户',
   'users.form.active.description': '启用或禁用此用户账户',
   'users.form.fullname': '全名',
-  'users.form.source': '来源',
-  'users.form.source.local': '本地',
+  'users.form.email': '邮箱',
+  'users.form.department': '组织',
+  'users.form.organization': '组织',
+  'users.form.phone': '手机号',
+  'users.form.rule.email': '请输入有效的邮箱地址',
+  'users.form.rule.phone': '请输入有效的手机号',
+  'users.form.source': '认证来源',
+  'users.form.source.local': '本地账户',
+  'users.form.source.readonly':
+    '认证来源由登录方式决定。外部用户在首次 SSO 登录时自动创建，不可在此手工指定。',
   'users.form.source.tip.switchToLocal':
     '切换到本地需要设置新密码,之后用户将通过标准登录表单登录。',
   'users.form.source.tip.switchToExternal':
@@ -23,6 +31,7 @@ export default {
   'users.form.newpassword': '新密码',
   'users.form.currentpassword': '当前密码',
   'users.form.updatepassword': '修改密码',
+  'users.form.password.generate': '随机生成 12 位密码',
   'users.form.rule.password':
     '包含大小写字母、数字和特殊字符（!@#$%^&*_+.），6至64个字符，不允许有空格',
   'users.password.uppcase': '至少包含一个大写字母',

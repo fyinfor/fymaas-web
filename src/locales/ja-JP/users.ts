@@ -12,8 +12,16 @@ export default {
   'users.form.active.description':
     'このユーザーアカウントを有効または無効にする',
   'users.form.fullname': 'フルネーム',
-  'users.form.source': 'ソース',
-  'users.form.source.local': 'ローカル',
+  'users.form.email': 'メール',
+  'users.form.department': '組織',
+  'users.form.organization': '組織',
+  'users.form.phone': '電話番号',
+  'users.form.rule.email': '有効なメールアドレスを入力してください',
+  'users.form.rule.phone': '有効な電話番号を入力してください',
+  'users.form.source': '認証ソース',
+  'users.form.source.local': 'ローカルアカウント',
+  'users.form.source.readonly':
+    '認証ソースはログイン方法で決まります。外部ユーザーは初回 SSO ログイン時に自動作成され、ここでは指定できません。',
   'users.form.source.tip.switchToLocal':
     'ローカルに切り替えるには新しいパスワードが必要です。以後、ユーザーは標準のログインフォームからサインインします。',
   'users.form.source.tip.switchToExternal':
@@ -24,6 +32,7 @@ export default {
   'users.form.newpassword': '新しいパスワード',
   'users.form.currentpassword': '現在のパスワード',
   'users.form.updatepassword': 'パスワードを変更',
+  'users.form.password.generate': '12 文字のパスワードを生成',
   'users.form.rule.password':
     '大文字と小文字、数字、特殊文字(!@#$%^&*_+.)を含む6〜64文字で、スペースは使用できません。',
   'users.password.uppcase': '少なくとも1つの大文字を含む',

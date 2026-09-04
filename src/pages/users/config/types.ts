@@ -2,7 +2,14 @@ export interface FormData {
   username: string;
   id?: number;
   is_admin: boolean | string;
+  role_id?: number;
+  role_name?: string;
   full_name: string;
+  email?: string;
+  department?: string;
+  organization_id?: number | null;
+  organization_name?: string;
+  phone?: string;
   password: string;
   is_active?: boolean;
   source?: string;

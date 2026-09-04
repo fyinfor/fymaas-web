@@ -1,6 +1,10 @@
 // columns.ts
 import { StatusBadge } from '@/components/console';
 import { tableSorter } from '@/config/settings';
+import {
+  catalogRoleLabel,
+  PLATFORM_ADMIN_ROLE
+} from '@/enterprise/role-labels';
 import { getGPUStackPlugin } from '@/plugins';
 import {
   AutoTooltip,
@@ -13,6 +17,7 @@ import { useMemoizedFn } from 'ahooks';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import { formatAuthSourceLabel } from '../config';
 import { ListItem } from '../config/types';
 
 // Plugin slot: an enterprise plugin can contribute additional entries
@@ -145,25 +150,23 @@ const useUsersColumns = ({
       },
       {
         title: intl.formatMessage({ id: 'users.table.role' }),
-        dataIndex: 'is_admin',
-        key: 'is_admin',
+        dataIndex: 'role_name',
+        key: 'role_name',
         sorter: tableSorter(6),
         ellipsis: {
           showTitle: false
         },
-        render: (text: string, record: ListItem) => {
-          return record.is_admin ? (
+        render: (_text: string, record: ListItem) => {
+          const name = record.role_name;
+          const isAdmin = record.is_admin || name === PLATFORM_ADMIN_ROLE;
+          return (
             <AutoTooltip ghost minWidth={50}>
-              <IconFont type="icon-manage_user" className="size-16"></IconFont>
+              <IconFont
+                type={isAdmin ? 'icon-manage_user' : 'icon-user'}
+                className="size-16"
+              ></IconFont>
               <span className="m-l-5">
-                {intl.formatMessage({ id: 'users.form.admin' })}
-              </span>
-            </AutoTooltip>
-          ) : (
-            <AutoTooltip ghost minWidth={50}>
-              <IconFont type="icon-user" className="size-16"></IconFont>
-              <span className="m-l-5">
-                {intl.formatMessage({ id: 'users.form.user' })}
+                {catalogRoleLabel(name, intl.formatMessage)}
               </span>
             </AutoTooltip>
           );
@@ -183,6 +186,45 @@ const useUsersColumns = ({
         )
       },
       {
+        title: intl.formatMessage({ id: 'users.form.email' }),
+        dataIndex: 'email',
+        key: 'email',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text: string) => (
+          <AutoTooltip ghost minWidth={20}>
+            {text}
+          </AutoTooltip>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'users.form.organization' }),
+        dataIndex: 'organization_name',
+        key: 'organization_name',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (_text: string, record: ListItem) => (
+          <AutoTooltip ghost minWidth={20}>
+            {record.organization_name || record.department}
+          </AutoTooltip>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'users.form.phone' }),
+        dataIndex: 'phone',
+        key: 'phone',
+        ellipsis: {
+          showTitle: false
+        },
+        render: (text: string) => (
+          <AutoTooltip ghost minWidth={20}>
+            {text}
+          </AutoTooltip>
+        )
+      },
+      {
         title: intl.formatMessage({ id: 'users.form.source' }),
         dataIndex: 'source',
         key: 'source',
@@ -190,9 +232,9 @@ const useUsersColumns = ({
         ellipsis: {
           showTitle: false
         },
-        render: (text: string[], record: ListItem) => (
+        render: (text: string, record: ListItem) => (
           <AutoTooltip ghost minWidth={20}>
-            {text}
+            {formatAuthSourceLabel(record.source || text, intl.formatMessage)}
           </AutoTooltip>
         )
       },

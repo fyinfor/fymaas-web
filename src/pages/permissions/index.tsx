@@ -1,3 +1,4 @@
+import { catalogRoleLabel } from '@/enterprise/role-labels';
 import { useAccess, useIntl } from '@umijs/max';
 import { Checkbox, Input, Space, Table, Tag, Typography, message } from 'antd';
 import { createStyles } from 'antd-style';
@@ -208,7 +209,7 @@ const Permissions: React.FC = () => {
           ...roles.map((role) => ({
             title: (
               <span>
-                {role.name}
+                {catalogRoleLabel(role.code || role.name, intl.formatMessage)}
                 {role.builtin ? (
                   <Tag style={{ marginLeft: 6 }}>
                     {intl.formatMessage({ id: 'roles.builtin' })}

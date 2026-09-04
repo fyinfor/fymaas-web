@@ -6,6 +6,7 @@ import {
   clearStorageUserSettings,
   setAtomStorage
 } from '@/atoms/utils';
+import { clearTenantContextStorage } from '@/enterprise/workspace-storage';
 import { request } from '@umijs/max';
 import qs from 'query-string';
 
@@ -40,6 +41,7 @@ export const logout = async (userInfo?: any) => {
     // has already surfaced whatever the server said.
   }
   clearStorageUserSettings();
+  clearTenantContextStorage();
   clearAtomStorage(userAtom);
   clearAtomStorage(hideModalTemporarilyAtom);
   clearAtomStorage(systemConfigAtom);

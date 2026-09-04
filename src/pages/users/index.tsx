@@ -18,6 +18,7 @@ import {
   updateUserStatus
 } from './apis';
 import AddModal from './components/add-modal';
+import { AuthSources } from './config';
 import { FormData, ListItem } from './config/types';
 import useUsersColumns from './hooks/use-users-columns';
 
@@ -69,8 +70,10 @@ const Users: React.FC = () => {
     const params = {
       ...openAddModalStatus.currentData,
       ...data,
-      is_admin: data.is_admin === 'admin'
+      role_id: data.role_id,
+      organization_id: data.organization_id ?? null
     };
+    delete params.department;
     try {
       if (openAddModalStatus.action === PageAction.EDIT) {
         await updateUser({
@@ -80,7 +83,12 @@ const Users: React.FC = () => {
           }
         });
       } else {
-        await createUser({ data: params });
+        await createUser({
+          data: {
+            ...params,
+            source: AuthSources.LOCAL
+          }
+        });
       }
       fetchData();
       setOpenAddModalStatus({

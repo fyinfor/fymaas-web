@@ -1,42 +1,43 @@
 import {
-  loadEnterprisePeople,
-  readCurrentOrgId,
-  type PersonOption
-} from '@/enterprise/people';
-import { request, useIntl } from '@umijs/max';
+  catalogRoleLabel,
+  roleKey,
+  sortCatalogRoles
+} from '@/enterprise/role-labels';
+import { request, useIntl, useModel } from '@umijs/max';
 import {
   Button,
   Checkbox,
   Drawer,
   Form,
   Input,
+  Modal,
   Select,
   Space,
+  Switch,
   Table,
-  Tabs,
   Tag,
   Typography,
   message
 } from 'antd';
+import dayjs from 'dayjs';
 import React from 'react';
 import PageBox from '../_components/page-box';
 
 const Roles: React.FC = () => {
   const intl = useIntl();
+  const { initialState } = useModel('@@initialState') || {};
+  const isPlatformAdmin = !!initialState?.currentUser?.is_admin;
   const [roles, setRoles] = React.useState<any[]>([]);
   const [catalog, setCatalog] = React.useState<any[]>([]);
-  const [bindings, setBindings] = React.useState<any[]>([]);
   const [open, setOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<any>(null);
-  const [bindOpen, setBindOpen] = React.useState(false);
   const [form] = Form.useForm();
-  const [bindForm] = Form.useForm();
-  const [people, setPeople] = React.useState<PersonOption[]>([]);
-  const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
-  const [clusters, setClusters] = React.useState<
-    { id: number; name: string }[]
-  >([]);
-  const bindScopeType = Form.useWatch('scope_type', bindForm);
+  const [filterForm] = Form.useForm();
+  const [filters, setFilters] = React.useState<{
+    name?: string;
+    code?: string;
+    is_active?: boolean;
+  }>({});
 
   const groupedCatalog = React.useMemo(() => {
     const groups = new Map<string, any[]>();
@@ -50,49 +51,36 @@ const Roles: React.FC = () => {
   }, [catalog]);
 
   const load = async () => {
-    const [r, p, b] = await Promise.all([
-      request('/roles', { params: { page: 1, perPage: 100 } }),
-      request('/roles/permissions'),
-      request('/roles/bindings', { params: { page: 1, perPage: 100 } })
+    const [r, p] = await Promise.all([
+      request('/roles', {
+        params: { page: 1, perPage: 100, ...filters }
+      }),
+      request('/roles/permissions')
     ]);
-    setRoles(r.items || []);
+    setRoles(sortCatalogRoles(r.items || []));
     setCatalog(p || []);
-    setBindings(b.items || []);
   };
 
   React.useEffect(() => {
     load().catch(() => undefined);
-    loadEnterprisePeople()
-      .then(setPeople)
-      .catch(() => undefined);
-    request('/organization-directory', { params: { page: 1, perPage: 100 } })
-      .then((page) =>
-        setOrgs(
-          (page.items || []).map((item: any) => ({
-            id: item.id,
-            name: item.display_name || item.name
-          }))
-        )
-      )
-      .catch(() => undefined);
-    request('/clusters', { params: { page: 1, perPage: 100 } })
-      .then((page) =>
-        setClusters(
-          (page.items || []).map((item: any) => ({
-            id: item.id,
-            name: item.name
-          }))
-        )
-      )
-      .catch(() => undefined);
-  }, []);
+  }, [filters]);
 
   const save = async () => {
     const values = await form.validateFields();
+    const payload = {
+      ...values,
+      is_active: values.is_active !== false
+    };
     if (editing) {
-      await request(`/roles/${editing.id}`, { method: 'PUT', data: values });
+      await request(`/roles/${editing.id}`, { method: 'PUT', data: payload });
     } else {
-      await request('/roles', { method: 'POST', data: values });
+      await request('/roles', {
+        method: 'POST',
+        data: {
+          ...payload,
+          scope: isPlatformAdmin ? 'platform' : 'org'
+        }
+      });
     }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     setOpen(false);
@@ -102,180 +90,201 @@ const Roles: React.FC = () => {
   };
 
   const remove = async (id: number) => {
-    await request(`/roles/${id}`, { method: 'DELETE' });
-    load();
-  };
-
-  const saveBinding = async () => {
-    const values = await bindForm.validateFields();
-    await request('/roles/bindings', {
-      method: 'POST',
-      data: {
-        ...values,
-        scope_type: values.scope_type || 'org',
-        scope_id: values.scope_id || 0
+    Modal.confirm({
+      title: intl.formatMessage({ id: 'common.button.delete' }),
+      onOk: async () => {
+        await request(`/roles/${id}`, { method: 'DELETE' });
+        load();
       }
     });
-    message.success(intl.formatMessage({ id: 'common.message.success' }));
-    setBindOpen(false);
-    bindForm.resetFields();
-    load();
   };
 
-  const removeBinding = async (id: number) => {
-    await request(`/roles/bindings/${id}`, { method: 'DELETE' });
+  const toggleActive = async (row: any, is_active: boolean) => {
+    await request(`/roles/${row.id}`, { method: 'PUT', data: { is_active } });
     load();
   };
 
   return (
     <PageBox>
-      <Tabs
-        items={[
+      <Typography.Paragraph type="secondary" style={{ marginTop: 8 }}>
+        {intl.formatMessage({ id: 'roles.page.description' })}
+      </Typography.Paragraph>
+      <Form
+        form={filterForm}
+        layout="inline"
+        style={{ margin: '8px 0 16px', rowGap: 12 }}
+        onFinish={(values) =>
+          setFilters({
+            name: values.name || undefined,
+            code: values.code || undefined,
+            is_active:
+              values.is_active === undefined || values.is_active === ''
+                ? undefined
+                : values.is_active
+          })
+        }
+      >
+        <Form.Item name="name">
+          <Input
+            allowClear
+            style={{ width: 180 }}
+            placeholder={intl.formatMessage({
+              id: 'roles.form.name.placeholder'
+            })}
+          />
+        </Form.Item>
+        <Form.Item name="code">
+          <Input
+            allowClear
+            style={{ width: 180 }}
+            placeholder={intl.formatMessage({
+              id: 'roles.form.code.placeholder'
+            })}
+          />
+        </Form.Item>
+        <Form.Item name="is_active">
+          <Select
+            allowClear
+            style={{ width: 160 }}
+            placeholder={intl.formatMessage({
+              id: 'roles.form.active.placeholder'
+            })}
+            options={[
+              {
+                label: intl.formatMessage({
+                  id: 'roles.form.active.on'
+                }),
+                value: true
+              },
+              {
+                label: intl.formatMessage({
+                  id: 'roles.form.active.off'
+                }),
+                value: false
+              }
+            ]}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Space>
+            <Button
+              onClick={() => {
+                filterForm.resetFields();
+                setFilters({});
+              }}
+            >
+              {intl.formatMessage({ id: 'common.button.reset' })}
+            </Button>
+            <Button type="primary" htmlType="submit">
+              {intl.formatMessage({ id: 'common.button.search' })}
+            </Button>
+          </Space>
+        </Form.Item>
+      </Form>
+      <Space style={{ margin: '0 0 16px' }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            setEditing(null);
+            form.resetFields();
+            form.setFieldsValue({ is_active: true, permissions: [] });
+            setOpen(true);
+          }}
+        >
+          {intl.formatMessage({ id: 'roles.add' })}
+        </Button>
+      </Space>
+      <Table
+        rowKey="id"
+        dataSource={roles}
+        columns={[
           {
-            key: 'roles',
-            label: intl.formatMessage({ id: 'roles.tab.roles' }),
-            children: (
-              <>
-                <Space style={{ margin: '8px 0 16px' }}>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    onClick={() => {
-                      setEditing(null);
-                      form.resetFields();
-                      setOpen(true);
-                    }}
-                  >
-                    {intl.formatMessage({ id: 'roles.add' })}
-                  </Button>
-                </Space>
-                <Table
-                  rowKey="id"
-                  dataSource={roles}
-                  columns={[
-                    {
-                      title: intl.formatMessage({ id: 'common.table.name' }),
-                      dataIndex: 'name',
-                      render: (name: string, row: any) => (
-                        <Space>
-                          <span>{name}</span>
-                          {row.builtin ? (
-                            <Tag>
-                              {intl.formatMessage({ id: 'roles.builtin' })}
-                            </Tag>
-                          ) : null}
-                        </Space>
-                      )
-                    },
-                    {
-                      title: intl.formatMessage({ id: 'roles.scope' }),
-                      dataIndex: 'scope',
-                      render: (scope: string) =>
-                        intl.formatMessage({
-                          id: `roles.scope.${scope}`,
-                          defaultMessage: scope
-                        })
-                    },
-                    {
-                      title: intl.formatMessage({ id: 'roles.permissions' }),
-                      dataIndex: 'permissions',
-                      render: (v: string[]) => {
-                        const keys = v || [];
-                        const shown = keys.slice(0, 3);
-                        return (
-                          <Space size={[4, 4]} wrap>
-                            {shown.map((key) => (
-                              <Tag key={key}>{key}</Tag>
-                            ))}
-                            {keys.length > 3 ? (
-                              <Tag>+{keys.length - 3}</Tag>
-                            ) : null}
-                          </Space>
-                        );
-                      }
-                    },
-                    {
-                      title: intl.formatMessage({
-                        id: 'common.table.operation'
-                      }),
-                      render: (_: any, row: any) =>
-                        row.builtin ? null : (
-                          <Space>
-                            <a
-                              onClick={() => {
-                                setEditing(row);
-                                form.setFieldsValue(row);
-                                setOpen(true);
-                              }}
-                            >
-                              {intl.formatMessage({
-                                id: 'common.button.edit'
-                              })}
-                            </a>
-                            <a onClick={() => remove(row.id)}>
-                              {intl.formatMessage({
-                                id: 'common.button.delete'
-                              })}
-                            </a>
-                          </Space>
-                        )
-                    }
-                  ]}
-                />
-              </>
+            title: 'ID',
+            dataIndex: 'id',
+            width: 80
+          },
+          {
+            title: intl.formatMessage({ id: 'roles.form.name' }),
+            dataIndex: 'name',
+            render: (_name: string, row: any) => (
+              <Space>
+                <span>
+                  {catalogRoleLabel(roleKey(row), intl.formatMessage)}
+                </span>
+                {row.builtin ? (
+                  <Tag>{intl.formatMessage({ id: 'roles.builtin' })}</Tag>
+                ) : null}
+              </Space>
             )
           },
           {
-            key: 'bindings',
-            label: intl.formatMessage({ id: 'roles.tab.bindings' }),
-            children: (
-              <>
-                <Space style={{ margin: '8px 0 16px' }}>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    onClick={() => setBindOpen(true)}
-                  >
-                    {intl.formatMessage({ id: 'roles.binding.add' })}
-                  </Button>
-                </Space>
-                <Table
-                  rowKey="id"
-                  dataSource={bindings}
-                  columns={[
-                    {
-                      title: intl.formatMessage({
-                        id: 'roles.binding.principal'
-                      }),
-                      dataIndex: 'principal_name'
-                    },
-                    {
-                      title: intl.formatMessage({ id: 'roles.binding.role' }),
-                      dataIndex: 'role_name'
-                    },
-                    {
-                      title: intl.formatMessage({ id: 'roles.scope' }),
-                      dataIndex: 'scope_type',
-                      render: (scope: string) =>
-                        intl.formatMessage({
-                          id: `roles.scope.${scope}`,
-                          defaultMessage: scope
-                        })
-                    },
-                    {
-                      title: intl.formatMessage({
-                        id: 'common.table.operation'
-                      }),
-                      render: (_: any, row: any) => (
-                        <a onClick={() => removeBinding(row.id)}>
-                          {intl.formatMessage({ id: 'common.button.delete' })}
-                        </a>
-                      )
-                    }
-                  ]}
-                />
-              </>
+            title: intl.formatMessage({ id: 'roles.form.code' }),
+            dataIndex: 'code',
+            render: (_: string, row: any) => roleKey(row)
+          },
+          {
+            title: intl.formatMessage({ id: 'roles.form.active' }),
+            dataIndex: 'is_active',
+            width: 120,
+            render: (active: boolean, row: any) => (
+              <Switch
+                checked={active !== false}
+                disabled={row.builtin}
+                checkedChildren={intl.formatMessage({
+                  id: 'roles.form.active.on'
+                })}
+                unCheckedChildren={intl.formatMessage({
+                  id: 'roles.form.active.off'
+                })}
+                onChange={(checked) => toggleActive(row, checked)}
+              />
             )
+          },
+          {
+            title: intl.formatMessage({
+              id: 'common.table.description'
+            }),
+            dataIndex: 'description',
+            ellipsis: true
+          },
+          {
+            title: intl.formatMessage({
+              id: 'common.table.updateTime'
+            }),
+            dataIndex: 'updated_at',
+            width: 180,
+            render: (value: string) =>
+              value ? dayjs(value).format('YYYY-MM-DD HH:mm:ss') : ''
+          },
+          {
+            title: intl.formatMessage({
+              id: 'common.table.operation'
+            }),
+            width: 140,
+            render: (_: any, row: any) =>
+              row.builtin ? null : (
+                <Space>
+                  <a
+                    onClick={() => {
+                      setEditing(row);
+                      form.setFieldsValue({
+                        ...row,
+                        is_active: row.is_active !== false
+                      });
+                      setOpen(true);
+                    }}
+                  >
+                    {intl.formatMessage({
+                      id: 'common.button.edit'
+                    })}
+                  </a>
+                  <a onClick={() => remove(row.id)}>
+                    {intl.formatMessage({
+                      id: 'common.button.delete'
+                    })}
+                  </a>
+                </Space>
+              )
           }
         ]}
       />
@@ -298,37 +307,55 @@ const Roles: React.FC = () => {
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ scope: 'org', permissions: [] }}
+          initialValues={{ permissions: [], is_active: true }}
         >
           <Form.Item
             name="name"
-            label={intl.formatMessage({ id: 'common.table.name' })}
+            label={intl.formatMessage({ id: 'roles.form.name' })}
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input
+              placeholder={intl.formatMessage({
+                id: 'roles.form.name.placeholder'
+              })}
+            />
+          </Form.Item>
+          <Form.Item
+            name="code"
+            label={intl.formatMessage({ id: 'roles.form.code' })}
+            rules={[
+              { required: true },
+              {
+                pattern: /^[A-Za-z][A-Za-z0-9_-]{0,62}$/,
+                message: intl.formatMessage({ id: 'roles.form.code.rule' })
+              }
+            ]}
+          >
+            <Input
+              placeholder={intl.formatMessage({
+                id: 'roles.form.code.placeholder'
+              })}
+            />
+          </Form.Item>
+          <Form.Item
+            name="is_active"
+            label={intl.formatMessage({ id: 'roles.form.active' })}
+            valuePropName="checked"
+          >
+            <Switch
+              checkedChildren={intl.formatMessage({
+                id: 'roles.form.active.on'
+              })}
+              unCheckedChildren={intl.formatMessage({
+                id: 'roles.form.active.off'
+              })}
+            />
           </Form.Item>
           <Form.Item
             name="description"
             label={intl.formatMessage({ id: 'common.table.description' })}
           >
             <Input.TextArea rows={2} />
-          </Form.Item>
-          <Form.Item
-            name="scope"
-            label={intl.formatMessage({ id: 'roles.form.scope' })}
-          >
-            <Select
-              options={[
-                {
-                  label: intl.formatMessage({ id: 'roles.scope.org' }),
-                  value: 'org'
-                },
-                {
-                  label: intl.formatMessage({ id: 'roles.scope.platform' }),
-                  value: 'platform'
-                }
-              ]}
-            />
           </Form.Item>
           <Form.Item
             name="permissions"
@@ -355,94 +382,6 @@ const Roles: React.FC = () => {
               </Space>
             </Checkbox.Group>
           </Form.Item>
-        </Form>
-      </Drawer>
-      <Drawer
-        open={bindOpen}
-        width={480}
-        onClose={() => setBindOpen(false)}
-        title={intl.formatMessage({ id: 'roles.binding.add' })}
-        extra={
-          <Button type="primary" onClick={saveBinding}>
-            {intl.formatMessage({ id: 'common.button.save' })}
-          </Button>
-        }
-      >
-        <Form
-          form={bindForm}
-          layout="vertical"
-          initialValues={{
-            scope_type: 'org',
-            scope_id: readCurrentOrgId() || 0
-          }}
-        >
-          <Form.Item
-            name="role_id"
-            label={intl.formatMessage({ id: 'roles.binding.role' })}
-            rules={[{ required: true }]}
-          >
-            <Select
-              options={roles.map((r) => ({ label: r.name, value: r.id }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="principal_id"
-            label={intl.formatMessage({ id: 'roles.binding.principal' })}
-            rules={[{ required: true }]}
-          >
-            <Select
-              showSearch
-              optionFilterProp="label"
-              options={people.map((item) => ({
-                label: item.name,
-                value: item.id
-              }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="scope_type"
-            label={intl.formatMessage({ id: 'roles.scope' })}
-          >
-            <Select
-              options={[
-                {
-                  label: intl.formatMessage({ id: 'roles.scope.org' }),
-                  value: 'org'
-                },
-                {
-                  label: intl.formatMessage({ id: 'roles.scope.platform' }),
-                  value: 'platform'
-                },
-                {
-                  label: intl.formatMessage({ id: 'roles.scope.cluster' }),
-                  value: 'cluster'
-                }
-              ]}
-            />
-          </Form.Item>
-          {bindScopeType === 'platform' ? null : (
-            <Form.Item
-              name="scope_id"
-              label={intl.formatMessage({
-                id:
-                  bindScopeType === 'cluster'
-                    ? 'roles.scope.cluster'
-                    : 'roles.scope.org'
-              })}
-              rules={[{ required: true }]}
-            >
-              <Select
-                showSearch
-                optionFilterProp="label"
-                options={(bindScopeType === 'cluster' ? clusters : orgs).map(
-                  (item) => ({
-                    label: item.name,
-                    value: item.id
-                  })
-                )}
-              />
-            </Form.Item>
-          )}
         </Form>
       </Drawer>
     </PageBox>

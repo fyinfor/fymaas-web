@@ -27,7 +27,8 @@ export default {
   'page.subtitle.settings': 'Site, branding, and directory settings',
   'page.subtitle.users': 'Manage user accounts and access',
   'page.subtitle.apikeys': 'Create and manage inference API keys',
-  'page.subtitle.roles': 'Configure roles and their permissions',
+  'page.subtitle.roles':
+    'Built-in Administrator and General User cannot be deleted; add more roles as needed',
   'page.subtitle.permissions': 'Review system permission definitions',
   'page.subtitle.audit': 'Audit key operations and access events',
   'page.subtitle.playground': 'Try chat, embedding, and generation online'

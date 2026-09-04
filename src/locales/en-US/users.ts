@@ -11,8 +11,16 @@ export default {
   'users.form.active': 'Active Account',
   'users.form.active.description': 'Enable or disable this user account',
   'users.form.fullname': 'Full Name',
-  'users.form.source': 'Source',
-  'users.form.source.local': 'Local',
+  'users.form.email': 'Email',
+  'users.form.department': 'Organization',
+  'users.form.organization': 'Organization',
+  'users.form.phone': 'Phone',
+  'users.form.rule.email': 'Enter a valid email address',
+  'users.form.rule.phone': 'Enter a valid phone number',
+  'users.form.source': 'Authentication Source',
+  'users.form.source.local': 'Local account',
+  'users.form.source.readonly':
+    'The authentication source is set by how the user signs in. External users are created on first SSO login and cannot be picked here.',
   'users.form.source.tip.switchToLocal':
     'Switching to Local requires a new password. The user will sign in via the standard login form.',
   'users.form.source.tip.switchToExternal':
@@ -23,6 +31,7 @@ export default {
   'users.form.newpassword': 'New Password',
   'users.form.currentpassword': 'Current Password',
   'users.form.updatepassword': 'Modify Password',
+  'users.form.password.generate': 'Generate a 12-character password',
   'users.form.rule.password':
     'Contains uppercase and lowercase letters, numbers, and special characters(!@#$%^&*_+.), 6 to 64 characters in length, no spaces allowed.',
   'users.password.uppcase': 'At least one uppercase letter',

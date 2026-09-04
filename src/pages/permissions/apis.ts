@@ -9,7 +9,9 @@ export type PermissionItem = {
 export type RoleItem = {
   id: number;
   name: string;
+  code?: string;
   builtin?: boolean;
+  is_active?: boolean;
   scope?: string;
   permissions?: string[];
 };

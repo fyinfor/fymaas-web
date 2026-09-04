@@ -387,6 +387,17 @@ export default {
 
   'roles.add': 'Rol Ekle',
   'roles.edit': 'Rolü Düzenle',
+  'roles.page.description':
+    'Yönetici ve Genel Kullanıcı yerleşiktir, silinemez. Gerektiğinde yeni roller ekleyip kullanıcı oluştururken atayın.',
+  'roles.form.name': 'Rol adı',
+  'roles.form.name.placeholder': 'Rol adı girin',
+  'roles.form.code': 'Rol anahtarı',
+  'roles.form.code.placeholder': 'Rol anahtarı girin',
+  'roles.form.code.rule': 'Harfle başlamalı; yalnızca harf, rakam, _ ve -',
+  'roles.form.active': 'Durum',
+  'roles.form.active.placeholder': 'Durum seçin',
+  'roles.form.active.on': 'Etkin',
+  'roles.form.active.off': 'Devre dışı',
   'roles.form.scope': 'Kapsam',
   'roles.scope': 'Kapsam',
   'roles.scope.org': 'Organizasyon',
