@@ -62,7 +62,7 @@ const StatusBadge: React.FC<{
   tone?: StatusTone;
   plain?: boolean;
   title?: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }> = ({ tone = 'neutral', plain, title, children }) => {
   const { styles, cx } = useStyles();
   const vars = toneVar[tone];
@@ -78,7 +78,7 @@ const StatusBadge: React.FC<{
       }
     >
       <span className={styles.dot} />
-      {children}
+      {children || null}
     </span>
   );
 

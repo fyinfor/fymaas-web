@@ -8,9 +8,9 @@
  * tab (date range + "filter by user" for managers); the resource-type /
  * event-type selects ride in the bar's ``extra`` slot.
  */
-import { ListEmpty, TableLoadGate } from '@/components/console';
+import { ListEmpty, StatusBadge, TableLoadGate, statusTone } from '@/components/console';
 import { type StatusType } from '@/config/types';
-import { SimpleSelect, StatusDot } from '@gpustack/core-ui';
+import { SimpleSelect } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ConfigProvider, Input, Select, Table } from 'antd';
@@ -194,12 +194,9 @@ const ResourceEvents: React.FC = () => {
         dataIndex: 'event_type',
         key: 'event_type',
         render: (v: string) => (
-          <StatusDot
-            statusValue={{
-              status: EVENT_STATUS[v] ?? 'inactive',
-              text: EVENT_LABEL[v] ?? v
-            }}
-          />
+          <StatusBadge tone={statusTone(EVENT_STATUS[v] ?? 'inactive')}>
+            {EVENT_LABEL[v] ?? v}
+          </StatusBadge>
         ),
         width: 180
       },

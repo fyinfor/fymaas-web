@@ -23,6 +23,10 @@ const useStyles = createStyles(({ css }) => ({
     @media (max-width: 1280px) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
+    @media (max-width: 1023px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   `,
   card: css`
     height: 108px;

@@ -224,6 +224,10 @@ export default (props: any) => {
 
   const handleToggleCollapse = (e: any) => {
     e.stopPropagation();
+    if (compactViewport) {
+      setForceExpanded((open) => !open);
+      return;
+    }
     setUserSettings({
       ...userSettings,
       collapsed: !userSettings.collapsed
@@ -248,21 +252,30 @@ export default (props: any) => {
     [location.pathname]
   );
 
-  const collapsed = useMemo(() => {
-    return userSettings.collapsed || false;
-  }, [userSettings.collapsed]);
-
   // Chinese labels are 2–5 characters; 224px leaves a wide empty band.
   // Latin menus keep the wider rail so "Inference Backends" still fits,
   // then step down to 200px at 1280 so the content grid stays usable.
-  const [narrowViewport, setNarrowViewport] = useState(
-    typeof window !== 'undefined' ? window.innerWidth <= 1280 : false
+  // Below 1024 the spec collapses the rail automatically — that is a
+  // viewport rule, not a persisted preference.
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1440
   );
+  const [forceExpanded, setForceExpanded] = useState(false);
   useEffect(() => {
-    const onResize = () => setNarrowViewport(window.innerWidth <= 1280);
+    const onResize = () => setViewportWidth(window.innerWidth);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
+  const compactViewport = viewportWidth < 1024;
+  const narrowViewport = viewportWidth <= 1280;
+  useEffect(() => {
+    if (!compactViewport) {
+      setForceExpanded(false);
+    }
+  }, [compactViewport]);
+  const collapsed = compactViewport
+    ? !forceExpanded
+    : !!userSettings.collapsed;
   const siderWidth = intl.locale.startsWith('zh')
     ? 176
     : narrowViewport
@@ -329,8 +342,9 @@ export default (props: any) => {
   };
 
   const onCollapse = (value: boolean) => {
-    // only trigger by window resize
-    if (!value) {
+    // ProLayout also fires this on its own breakpoint. Auto-collapse
+    // below 1024 must not be written back as a user preference.
+    if (window.innerWidth < 1024 || !value) {
       return;
     }
     setUserSettings({
@@ -448,7 +462,7 @@ export default (props: any) => {
             )}
             onCollapse={onCollapse}
             onMenuHeaderClick={onMenuHeaderClick}
-            collapsed={userSettings.collapsed}
+            collapsed={collapsed}
             onPageChange={onPageChange}
             formatMessage={formatMessage}
             menu={{

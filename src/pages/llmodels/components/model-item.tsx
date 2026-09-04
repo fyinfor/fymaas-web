@@ -1,13 +1,8 @@
-import { MetaChip } from '@/components/console';
+import { MetaChip, StatusBadge, statusTone } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
-import {
-  IconFont,
-  StatusDot,
-  TagsWrapper,
-  TemplateCard
-} from '@gpustack/core-ui';
+import { IconFont, TagsWrapper, TemplateCard } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
-import { Button, Tooltip } from 'antd';
+import { Button } from 'antd';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
@@ -191,19 +186,21 @@ const ModelItem: React.FC<{
 
   // Ready is the normal state — show just the dot (no label); other states
   // (Not Ready / Stopped) keep their label so the problem is legible.
+  const statusLabel =
+    model.status === MyModelsStatusValueMap.Ready ||
+    !MyModelsStatusLabelMap[model.status]
+      ? ''
+      : intl.formatMessage({
+          id: MyModelsStatusLabelMap[model.status]
+        });
   const statusNode = (
-    <StatusDot
-      statusValue={{
-        status: MyModelsStatusMap[model.status],
-        text:
-          model.status === MyModelsStatusValueMap.Ready ||
-          !MyModelsStatusLabelMap[model.status]
-            ? ''
-            : intl.formatMessage({
-                id: MyModelsStatusLabelMap[model.status]
-              })
-      }}
-    />
+    <StatusBadge
+      tone={statusTone(MyModelsStatusMap[model.status])}
+      plain
+      title={model.state_message}
+    >
+      {statusLabel}
+    </StatusBadge>
   );
 
   return (
@@ -226,24 +223,14 @@ const ModelItem: React.FC<{
               )}
               <span className="flex-center" style={{ gap: 8, minWidth: 0 }}>
                 <span>{model.name}</span>
-                {/* Status moved to a compact dot right after the name, freeing
-                    the header's right side for the price summary. The dot keeps
-                    the state message on hover (StatusDot has no built-in one). */}
                 <span
                   style={{
                     fontWeight: 400,
-                    fontSize: 'var(--font-size-small)'
+                    fontSize: 'var(--font-size-small)',
+                    display: 'inline-flex'
                   }}
                 >
-                  {model.state_message ? (
-                    <Tooltip title={model.state_message}>
-                      <span style={{ display: 'inline-flex' }}>
-                        {statusNode}
-                      </span>
-                    </Tooltip>
-                  ) : (
-                    statusNode
-                  )}
+                  {statusNode}
                 </span>
               </span>
             </span>

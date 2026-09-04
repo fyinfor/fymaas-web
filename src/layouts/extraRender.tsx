@@ -103,6 +103,34 @@ const SearchTrigger = styled.button`
     color: var(--console-text-tertiary);
     font-family: inherit;
   }
+
+  @media (max-width: 1023px) {
+    min-width: 32px;
+    width: 32px;
+    padding: 0;
+    justify-content: center;
+    border-color: transparent;
+    background: transparent;
+
+    span,
+    kbd {
+      display: none;
+    }
+  }
+`;
+
+const UserName = styled.span`
+  max-width: 88px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--console-text);
+
+  @media (max-width: 1023px) {
+    display: none;
+  }
 `;
 
 const DropdownWrapper = styled.div`
@@ -360,19 +388,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
             src={initialState?.currentUser?.avatar_url}
             icon={<IconFont type="icon-user-filled" className="font-size-20" />}
           />
-          <span
-            style={{
-              maxWidth: 88,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              fontSize: 13,
-              fontWeight: 500,
-              color: 'var(--console-text)'
-            }}
-          >
-            {initialState?.currentUser?.username}
-          </span>
+          <UserName>{initialState?.currentUser?.username}</UserName>
         </IconWrapper>
       </DropdownActions>
     </Wrapper>

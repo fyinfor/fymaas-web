@@ -105,10 +105,20 @@ html {
   --color-border-container: var(--border-default);
   --color-text-table-header: var(--text-muted);
   --seal-table-row-min-height: 44px;
+  --table-header-height: 38px;
+  --table-header-bg: var(--bg-sidebar);
+  --table-row-hover: #f7faf9;
   --border-radius-base: var(--radius-md);
   --border-radius-lg: var(--radius-lg);
   --layout-content-blockpadding: 24px;
   --layout-content-inlinepadding: 24px;
+}
+
+@media (max-width: 1023px) {
+  html {
+    --layout-content-blockpadding: 16px;
+    --layout-content-inlinepadding: 16px;
+  }
 }
 
 html[data-theme='realDark'] {
@@ -141,4 +151,5 @@ html[data-theme='realDark'] {
   --color-fill-sider: var(--bg-sidebar);
   --color-bg-1: var(--bg-page);
   --color-border-container: var(--border-default);
+  --table-row-hover: var(--bg-hover);
 }

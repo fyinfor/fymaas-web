@@ -180,17 +180,18 @@ body {
 
     .ant-table-thead {
       tr {
-        background-color: var(--ant-color-fill-tertiary);
+        background-color: var(--table-header-bg);
 
         > th {
           border: none;
           padding-block: 0;
-          height: 44px;
+          height: var(--table-header-height, 38px);
           background-color: transparent;
           color: var(--color-text-table-header);
           font-weight: 500;
 
           &::before {
+            display: none;
             transition: none !important;
           }
         }
@@ -273,7 +274,12 @@ body {
       border-radius: var(--table-td-radius);
 
       > td {
-        border-bottom: 1px solid var(--ant-color-split);
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      &:hover > td {
+        background: var(--table-row-hover) !important;
       }
     }
   }
