@@ -459,6 +459,17 @@ export default {
   'workspaces.form.scopePlaceholder': 'Текущее рабочее пространство',
   'workspaces.org': 'Организация',
   'workspaces.default': 'По умолчанию',
+  'workspaces.name.default': 'Рабочее пространство по умолчанию',
+  'workspaces.delete.defaultDisabled':
+    'Рабочее пространство по умолчанию нельзя удалить. Сначала назначьте другое пространство пространством по умолчанию.',
+  'workspaces.delete.lastDisabled':
+    'В организации должно оставаться хотя бы одно рабочее пространство.',
+  'workspaces.delete.title': 'Удалить рабочее пространство',
+  'workspaces.delete.confirmHint':
+    'Это действие нельзя отменить. Введите название рабочего пространства ниже для подтверждения.',
+  'workspaces.delete.namePlaceholder': 'Название рабочего пространства',
+  'workspaces.delete.oneByOne':
+    'Удаляйте рабочие пространства по одному и вводите их название.',
   'workspaces.setDefault': 'Сделать по умолчанию',
   'workspaces.members': 'Участники',
   'workspaces.members.title': 'Участники {name}',

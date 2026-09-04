@@ -457,6 +457,17 @@ export default {
   'workspaces.form.scopePlaceholder': '現在のワークスペース',
   'workspaces.org': '所属組織',
   'workspaces.default': 'デフォルト',
+  'workspaces.name.default': 'デフォルトワークスペース',
+  'workspaces.delete.defaultDisabled':
+    'デフォルトのワークスペースは削除できません。先に別のワークスペースをデフォルトに設定してください。',
+  'workspaces.delete.lastDisabled':
+    '組織には少なくとも 1 つのワークスペースが必要です。',
+  'workspaces.delete.title': 'ワークスペースを削除',
+  'workspaces.delete.confirmHint':
+    'この操作は元に戻せません。確認のため、下にワークスペース名を入力してください。',
+  'workspaces.delete.namePlaceholder': 'ワークスペース名',
+  'workspaces.delete.oneByOne':
+    'ワークスペースは一度に 1 つずつ、名前を入力して削除してください。',
   'workspaces.setDefault': 'デフォルトに設定',
   'workspaces.members': 'メンバー',
   'workspaces.members.title': '{name} のメンバー',

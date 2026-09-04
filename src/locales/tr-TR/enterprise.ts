@@ -459,6 +459,17 @@ export default {
   'workspaces.form.scopePlaceholder': 'Geçerli çalışma alanı',
   'workspaces.org': 'Organizasyon',
   'workspaces.default': 'Varsayılan',
+  'workspaces.name.default': 'Varsayılan çalışma alanı',
+  'workspaces.delete.defaultDisabled':
+    'Varsayılan çalışma alanı silinemez. Önce başka bir çalışma alanını varsayılan yapın.',
+  'workspaces.delete.lastDisabled':
+    'Bir organizasyonda en az bir çalışma alanı kalmalıdır.',
+  'workspaces.delete.title': 'Çalışma alanını sil',
+  'workspaces.delete.confirmHint':
+    'Bu işlem geri alınamaz. Onaylamak için aşağıya çalışma alanı adını yazın.',
+  'workspaces.delete.namePlaceholder': 'Çalışma alanı adı',
+  'workspaces.delete.oneByOne':
+    'Çalışma alanlarını tek tek silin ve adını yazın.',
   'workspaces.setDefault': 'Varsayılan yap',
   'workspaces.members': 'Üyeler',
   'workspaces.members.title': '{name} üyeleri',
