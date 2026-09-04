@@ -40,6 +40,19 @@ export const catalogRoleLabel = (
   });
 };
 
+export const roleDisplayName = (
+  role: Pick<CatalogRole, 'name' | 'code' | 'builtin'> | undefined,
+  formatMessage: (desc: { id: string; defaultMessage?: string }) => string
+) => {
+  if (!role) {
+    return formatMessage({ id: 'users.form.user' });
+  }
+  if (role.builtin) {
+    return catalogRoleLabel(roleKey(role), formatMessage);
+  }
+  return role.name || catalogRoleLabel(roleKey(role), formatMessage);
+};
+
 export const sortCatalogRoles = <T extends CatalogRole>(roles: T[]): T[] => {
   const order: Record<string, number> = {
     [PLATFORM_ADMIN_ROLE]: 0,

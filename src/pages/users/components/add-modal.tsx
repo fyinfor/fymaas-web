@@ -1,9 +1,9 @@
 import { PageAction, PasswordReg } from '@/config';
 import { PageActionType } from '@/config/types';
 import {
-  catalogRoleLabel,
   PLATFORM_ADMIN_ROLE,
   PLATFORM_USER_ROLE,
+  roleDisplayName,
   sortCatalogRoles,
   type CatalogRole
 } from '@/enterprise/role-labels';
@@ -249,7 +249,7 @@ const AddModal: React.FC<AddModalProps> = ({
                         ></IconFont>
                       )}
                       <span className="m-l-5">
-                        {catalogRoleLabel(item.name, intl.formatMessage)}
+                        {roleDisplayName(item, intl.formatMessage)}
                       </span>
                     </Select.Option>
                   );

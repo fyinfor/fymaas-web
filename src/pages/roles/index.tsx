@@ -1,5 +1,5 @@
 import {
-  catalogRoleLabel,
+  roleDisplayName,
   roleKey,
   sortCatalogRoles
 } from '@/enterprise/role-labels';
@@ -283,9 +283,7 @@ const Roles: React.FC = () => {
             dataIndex: 'name',
             render: (_name: string, row: any) => (
               <Space>
-                <span>
-                  {catalogRoleLabel(roleKey(row), intl.formatMessage)}
-                </span>
+                <span>{roleDisplayName(row, intl.formatMessage)}</span>
                 {row.builtin ? (
                   <Tag>{intl.formatMessage({ id: 'roles.builtin' })}</Tag>
                 ) : null}
@@ -443,9 +441,7 @@ const Roles: React.FC = () => {
         title={intl.formatMessage(
           { id: 'roles.permissions.title' },
           {
-            name: permRole
-              ? catalogRoleLabel(roleKey(permRole), intl.formatMessage)
-              : ''
+            name: permRole ? roleDisplayName(permRole, intl.formatMessage) : ''
           }
         )}
       >
