@@ -3,9 +3,10 @@ import {
   roleKey,
   sortCatalogRoles
 } from '@/enterprise/role-labels';
-import { request, useIntl, useModel } from '@umijs/max';
+import { request, useAccess, useIntl, useModel } from '@umijs/max';
 import {
   Button,
+  Checkbox,
   Drawer,
   Form,
   Input,
@@ -21,14 +22,25 @@ import {
 import dayjs from 'dayjs';
 import React from 'react';
 import PageBox from '../_components/page-box';
+import {
+  patchRolePermission,
+  queryPermissionCatalog,
+  type PermissionItem
+} from '../permissions/apis';
 
 const Roles: React.FC = () => {
   const intl = useIntl();
+  const access = useAccess();
   const { initialState } = useModel('@@initialState') || {};
   const isPlatformAdmin = !!initialState?.currentUser?.is_admin;
+  const canWrite = !!(access.canSeeAdmin || access.canManageCurrentOrg);
   const [roles, setRoles] = React.useState<any[]>([]);
+  const [catalog, setCatalog] = React.useState<PermissionItem[]>([]);
   const [open, setOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<any>(null);
+  const [permRole, setPermRole] = React.useState<any>(null);
+  const [permSearch, setPermSearch] = React.useState('');
+  const [pending, setPending] = React.useState<string | null>(null);
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [filters, setFilters] = React.useState<{
@@ -36,6 +48,39 @@ const Roles: React.FC = () => {
     code?: string;
     is_active?: boolean;
   }>({});
+
+  const groupedCatalog = React.useMemo(() => {
+    const q = permSearch.trim().toLowerCase();
+    const groups = new Map<string, PermissionItem[]>();
+    for (const item of catalog) {
+      if (q) {
+        const group = intl
+          .formatMessage({
+            id: `permissions.group.${item.group}`,
+            defaultMessage: item.group
+          })
+          .toLowerCase();
+        const desc = intl
+          .formatMessage({
+            id: `permissions.desc.${item.key}`,
+            defaultMessage: item.description
+          })
+          .toLowerCase();
+        if (
+          !item.key.toLowerCase().includes(q) &&
+          !item.description.toLowerCase().includes(q) &&
+          !group.includes(q) &&
+          !desc.includes(q)
+        ) {
+          continue;
+        }
+      }
+      const list = groups.get(item.group) || [];
+      list.push(item);
+      groups.set(item.group, list);
+    }
+    return [...groups.entries()];
+  }, [catalog, intl, permSearch]);
 
   const load = async () => {
     const page = await request('/roles', {
@@ -47,6 +92,41 @@ const Roles: React.FC = () => {
   React.useEffect(() => {
     load().catch(() => undefined);
   }, [filters]);
+
+  React.useEffect(() => {
+    queryPermissionCatalog()
+      .then((items) => setCatalog(items || []))
+      .catch(() => undefined);
+  }, []);
+
+  const openPermissions = (row: any) => {
+    setPermRole(row);
+    setPermSearch('');
+  };
+
+  const togglePermission = async (permission: string, granted: boolean) => {
+    if (!permRole || permRole.builtin || !canWrite) {
+      return;
+    }
+    setPending(permission);
+    try {
+      const updated = await patchRolePermission(
+        permRole.id,
+        permission,
+        granted
+      );
+      setPermRole((prev: any) => (prev ? { ...prev, ...updated } : prev));
+      setRoles((prev) =>
+        prev.map((item) =>
+          item.id === permRole.id ? { ...item, ...updated } : item
+        )
+      );
+    } catch {
+      message.error(intl.formatMessage({ id: 'permissions.toggle.failed' }));
+    } finally {
+      setPending(null);
+    }
+  };
 
   const save = async () => {
     const values = await form.validateFields();
@@ -182,6 +262,16 @@ const Roles: React.FC = () => {
       <Table
         rowKey="id"
         dataSource={roles}
+        onRow={(row) => ({
+          style: { cursor: 'pointer' },
+          onClick: (event) => {
+            const target = event.target as HTMLElement;
+            if (target.closest('a, button, .ant-switch')) {
+              return;
+            }
+            openPermissions(row);
+          }
+        })}
         columns={[
           {
             title: 'ID',
@@ -245,31 +335,37 @@ const Roles: React.FC = () => {
             title: intl.formatMessage({
               id: 'common.table.operation'
             }),
-            width: 140,
-            render: (_: any, row: any) =>
-              row.builtin ? null : (
-                <Space>
-                  <a
-                    onClick={() => {
-                      setEditing(row);
-                      form.setFieldsValue({
-                        ...row,
-                        is_active: row.is_active !== false
-                      });
-                      setOpen(true);
-                    }}
-                  >
-                    {intl.formatMessage({
-                      id: 'common.button.edit'
-                    })}
-                  </a>
-                  <a onClick={() => remove(row.id)}>
-                    {intl.formatMessage({
-                      id: 'common.button.delete'
-                    })}
-                  </a>
-                </Space>
-              )
+            width: 180,
+            render: (_: any, row: any) => (
+              <Space>
+                <a onClick={() => openPermissions(row)}>
+                  {intl.formatMessage({ id: 'roles.permissions.action' })}
+                </a>
+                {row.builtin ? null : (
+                  <>
+                    <a
+                      onClick={() => {
+                        setEditing(row);
+                        form.setFieldsValue({
+                          ...row,
+                          is_active: row.is_active !== false
+                        });
+                        setOpen(true);
+                      }}
+                    >
+                      {intl.formatMessage({
+                        id: 'common.button.edit'
+                      })}
+                    </a>
+                    <a onClick={() => remove(row.id)}>
+                      {intl.formatMessage({
+                        id: 'common.button.delete'
+                      })}
+                    </a>
+                  </>
+                )}
+              </Space>
+            )
           }
         ]}
       />
@@ -339,6 +435,75 @@ const Roles: React.FC = () => {
             <Input.TextArea rows={2} />
           </Form.Item>
         </Form>
+      </Drawer>
+      <Drawer
+        open={!!permRole}
+        width={560}
+        onClose={() => setPermRole(null)}
+        title={intl.formatMessage(
+          { id: 'roles.permissions.title' },
+          {
+            name: permRole
+              ? catalogRoleLabel(roleKey(permRole), intl.formatMessage)
+              : ''
+          }
+        )}
+      >
+        <Typography.Paragraph type="secondary">
+          {intl.formatMessage({
+            id: permRole?.builtin
+              ? 'roles.permissions.builtinHint'
+              : 'roles.permissions.hint'
+          })}
+        </Typography.Paragraph>
+        <Input.Search
+          allowClear
+          style={{ marginBottom: 16 }}
+          value={permSearch}
+          onChange={(event) => setPermSearch(event.target.value)}
+          placeholder={intl.formatMessage({ id: 'permissions.search' })}
+        />
+        <Checkbox.Group
+          style={{ width: '100%' }}
+          value={permRole?.permissions || []}
+        >
+          <Space direction="vertical" size={16} style={{ width: '100%' }}>
+            {groupedCatalog.map(([group, items]) => (
+              <div key={group}>
+                <Typography.Text type="secondary">
+                  {intl.formatMessage({
+                    id: `permissions.group.${group}`,
+                    defaultMessage: group
+                  })}
+                </Typography.Text>
+                <Space
+                  direction="vertical"
+                  size={4}
+                  style={{ display: 'flex', marginTop: 8 }}
+                >
+                  {items.map((item) => (
+                    <Checkbox
+                      key={item.key}
+                      value={item.key}
+                      disabled={
+                        !!permRole?.builtin || !canWrite || pending === item.key
+                      }
+                      onChange={(event) =>
+                        togglePermission(item.key, event.target.checked)
+                      }
+                    >
+                      {item.key} —{' '}
+                      {intl.formatMessage({
+                        id: `permissions.desc.${item.key}`,
+                        defaultMessage: item.description
+                      })}
+                    </Checkbox>
+                  ))}
+                </Space>
+              </div>
+            ))}
+          </Space>
+        </Checkbox.Group>
       </Drawer>
     </PageBox>
   );

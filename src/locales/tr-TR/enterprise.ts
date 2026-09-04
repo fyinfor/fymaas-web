@@ -404,6 +404,12 @@ export default {
   'roles.scope.platform': 'Platform',
   'roles.scope.cluster': 'Küme',
   'roles.permissions': 'İzinler',
+  'roles.permissions.action': 'İzinler',
+  'roles.permissions.title': '{name} izinleri',
+  'roles.permissions.hint':
+    'Değişiklikler hemen uygulanır. Rol oluşturduktan sonra burada atayın.',
+  'roles.permissions.builtinHint':
+    'Yerleşik rol izinleri sistem tarafından belirlenir, salt okunur.',
   'roles.tab.roles': 'Roller',
   'roles.builtin': 'Yerleşik',
   'roles.tab.bindings': 'Atamalar',

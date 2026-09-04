@@ -403,6 +403,12 @@ export default {
   'roles.scope.platform': 'Платформа',
   'roles.scope.cluster': 'Кластер',
   'roles.permissions': 'Права',
+  'roles.permissions.action': 'Права',
+  'roles.permissions.title': 'Права роли {name}',
+  'roles.permissions.hint':
+    'Изменения применяются сразу. Назначайте права после создания роли.',
+  'roles.permissions.builtinHint':
+    'Права встроенных ролей задаёт система, только просмотр.',
   'roles.tab.roles': 'Роли',
   'roles.builtin': 'Встроенная',
   'roles.tab.bindings': 'Назначения',

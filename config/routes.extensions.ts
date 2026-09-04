@@ -162,14 +162,10 @@ const groupAdditions: Record<string, RouteLike[]> = {
       component: './roles'
     },
     {
-      name: 'permissions',
       path: '/access-control/permissions',
-      key: 'permissions',
-      icon: 'icon-license-outlined',
-      selectedIcon: 'icon-license-filled',
-      defaultIcon: 'icon-license-outlined',
-      access: 'canSeePermissions',
-      component: './permissions'
+      hideInMenu: true,
+      access: 'canSeeRoles',
+      redirect: '/access-control/roles'
     },
     {
       path: '/access-control/ip-access',

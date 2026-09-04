@@ -399,6 +399,12 @@ export default {
   'roles.scope.platform': 'Platform',
   'roles.scope.cluster': 'Cluster',
   'roles.permissions': 'Permissions',
+  'roles.permissions.action': 'Permissions',
+  'roles.permissions.title': 'Permissions for {name}',
+  'roles.permissions.hint':
+    'Changes apply immediately. Assign permissions after creating a role.',
+  'roles.permissions.builtinHint':
+    'Built-in role permissions are set by the system and are read-only.',
   'roles.tab.roles': 'Roles',
   'roles.builtin': 'Built-in',
   'roles.tab.bindings': 'Bindings',

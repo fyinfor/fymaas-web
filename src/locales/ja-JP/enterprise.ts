@@ -401,6 +401,12 @@ export default {
   'roles.scope.platform': 'プラットフォーム',
   'roles.scope.cluster': 'クラスタ',
   'roles.permissions': '権限',
+  'roles.permissions.action': '権限',
+  'roles.permissions.title': '{name} の権限',
+  'roles.permissions.hint':
+    '変更はすぐに反映されます。ロール作成後にここで割り当てます。',
+  'roles.permissions.builtinHint':
+    '組み込みロールの権限はシステムが決めるため参照のみです。',
   'roles.tab.roles': 'ロール',
   'roles.builtin': '組み込み',
   'roles.tab.bindings': '付与',

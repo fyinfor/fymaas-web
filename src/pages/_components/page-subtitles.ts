@@ -28,7 +28,7 @@ const PAGE_SUBTITLES: Array<{ prefix: string; id: string }> = [
   { prefix: '/access-control/users', id: 'page.subtitle.users' },
   { prefix: '/access-control/api-keys', id: 'page.subtitle.apikeys' },
   { prefix: '/access-control/roles', id: 'page.subtitle.roles' },
-  { prefix: '/access-control/permissions', id: 'page.subtitle.permissions' },
+  { prefix: '/access-control/permissions', id: 'page.subtitle.roles' },
   { prefix: '/access-control/audit-logs', id: 'page.subtitle.audit' },
   { prefix: '/playground', id: 'page.subtitle.playground' }
 ];

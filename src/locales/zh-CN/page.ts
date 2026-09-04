@@ -27,7 +27,7 @@ export default {
   'page.subtitle.settings': '配置站点、品牌与目录认证',
   'page.subtitle.users': '管理用户账号与访问权限',
   'page.subtitle.apikeys': '创建和管理推理 API 密钥',
-  'page.subtitle.roles': '内置管理员与普通用户不可删除，可按需添加新角色',
+  'page.subtitle.roles': '内置管理员与普通用户不可删除；选中角色可调整权限',
   'page.subtitle.permissions': '查看系统权限定义',
   'page.subtitle.audit': '审计关键操作与访问记录',
   'page.subtitle.playground': '在线调试对话、嵌入与生成能力'
