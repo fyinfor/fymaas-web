@@ -113,9 +113,22 @@ const EnterpriseOrganizations: React.FC = () => {
   const handleOk = async () => {
     const values = await form.validateFields();
     if (editing) {
-      await request(`${API}/${editing.id}`, { method: 'PUT', data: values });
+      await request(`${API}/${editing.id}`, {
+        method: 'PUT',
+        data: {
+          display_name: values.display_name,
+          description: values.description
+        }
+      });
     } else {
-      await request(API, { method: 'POST', data: values });
+      await request(API, {
+        method: 'POST',
+        data: {
+          name: values.name,
+          display_name: values.display_name,
+          description: values.description
+        }
+      });
     }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     setOpen(false);
@@ -170,12 +183,13 @@ const EnterpriseOrganizations: React.FC = () => {
               onChange={handleTableChange}
               columns={[
                 {
-                  title: intl.formatMessage({ id: 'common.table.name' }),
-                  dataIndex: 'name'
+                  title: intl.formatMessage({ id: 'orgs.form.displayName' }),
+                  dataIndex: 'display_name',
+                  render: (value: string, row: OrgItem) => value || row.name
                 },
                 {
-                  title: intl.formatMessage({ id: 'common.table.displayName' }),
-                  dataIndex: 'display_name'
+                  title: intl.formatMessage({ id: 'orgs.form.name' }),
+                  dataIndex: 'name'
                 },
                 {
                   title: intl.formatMessage({ id: 'common.table.description' }),
@@ -238,17 +252,42 @@ const EnterpriseOrganizations: React.FC = () => {
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="name"
-            label={intl.formatMessage({ id: 'orgs.form.name' })}
+            name="display_name"
+            label={intl.formatMessage({ id: 'orgs.form.displayName' })}
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input
+              placeholder={intl.formatMessage({
+                id: 'orgs.form.displayName.placeholder'
+              })}
+            />
           </Form.Item>
           <Form.Item
-            name="display_name"
-            label={intl.formatMessage({ id: 'common.table.displayName' })}
+            name="name"
+            label={intl.formatMessage({ id: 'orgs.form.name' })}
+            extra={
+              editing
+                ? intl.formatMessage({ id: 'orgs.form.name.readonly' })
+                : undefined
+            }
+            rules={
+              editing
+                ? []
+                : [
+                    { required: true },
+                    {
+                      pattern: /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
+                      message: intl.formatMessage({ id: 'orgs.form.name.rule' })
+                    }
+                  ]
+            }
           >
-            <Input />
+            <Input
+              disabled={!!editing}
+              placeholder={intl.formatMessage({
+                id: 'orgs.form.name.placeholder'
+              })}
+            />
           </Form.Item>
           <Form.Item
             name="description"

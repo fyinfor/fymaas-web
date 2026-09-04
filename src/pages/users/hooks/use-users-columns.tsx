@@ -6,14 +6,10 @@ import {
   PLATFORM_ADMIN_ROLE
 } from '@/enterprise/role-labels';
 import { getGPUStackPlugin } from '@/plugins';
-import {
-  AutoTooltip,
-  DropdownButtons,
-  IconFont,
-  icons
-} from '@gpustack/core-ui';
+import { AutoTooltip, IconFont, icons } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
+import { Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
@@ -277,11 +273,17 @@ const useUsersColumns = ({
         key: 'operation',
         dataIndex: 'operation',
         span: 3,
-        render: (text, record) => (
-          <DropdownButtons
-            items={setActions(record)}
-            onSelect={(val) => onSelectAction(val, record)}
-          />
+        render: (_text, record) => (
+          <Space>
+            {setActions(record).map((action) => (
+              <a
+                key={String(action.key)}
+                onClick={() => onSelectAction(String(action.key), record)}
+              >
+                {intl.formatMessage({ id: String(action.label) })}
+              </a>
+            ))}
+          </Space>
         )
       }
     ];

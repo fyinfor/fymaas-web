@@ -3,6 +3,7 @@ import {
   roleKey,
   sortCatalogRoles
 } from '@/enterprise/role-labels';
+import { DeleteModal } from '@gpustack/core-ui';
 import { request, useAccess, useIntl, useModel } from '@umijs/max';
 import {
   Button,
@@ -10,7 +11,6 @@ import {
   Drawer,
   Form,
   Input,
-  Modal,
   Select,
   Space,
   Switch,
@@ -43,6 +43,7 @@ const Roles: React.FC = () => {
   const [pending, setPending] = React.useState<string | null>(null);
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
+  const modalRef = React.useRef<any>(null);
   const [filters, setFilters] = React.useState<{
     name?: string;
     code?: string;
@@ -154,11 +155,13 @@ const Roles: React.FC = () => {
     load();
   };
 
-  const remove = async (id: number) => {
-    Modal.confirm({
-      title: intl.formatMessage({ id: 'common.button.delete' }),
-      onOk: async () => {
-        await request(`/roles/${id}`, { method: 'DELETE' });
+  const remove = (row: any) => {
+    modalRef.current?.show({
+      content: 'roles.tab.roles',
+      operation: 'common.delete.single.confirm',
+      name: roleDisplayName(row, intl.formatMessage),
+      async onOk() {
+        await request(`/roles/${row.id}`, { method: 'DELETE' });
         load();
       }
     });
@@ -355,7 +358,7 @@ const Roles: React.FC = () => {
                         id: 'common.button.edit'
                       })}
                     </a>
-                    <a onClick={() => remove(row.id)}>
+                    <a onClick={() => remove(row)}>
                       {intl.formatMessage({
                         id: 'common.button.delete'
                       })}
@@ -501,6 +504,7 @@ const Roles: React.FC = () => {
           </Space>
         </Checkbox.Group>
       </Drawer>
+      <DeleteModal ref={modalRef} />
     </PageBox>
   );
 };

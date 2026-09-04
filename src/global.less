@@ -334,6 +334,13 @@ body {
     background: var(--console-bg-sidebar) !important;
     border-inline-end: 1px solid var(--border-default) !important;
 
+    .ant-layout-sider-children {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
     .ant-pro-base-menu-inline-item-title {
       gap: 12px;
     }
@@ -809,6 +816,9 @@ body {
 
 .ant-pro-sider-logo + div {
   display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
   overflow: hidden;
   &::-webkit-scrollbar {
     width: 0;

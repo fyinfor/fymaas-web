@@ -1,13 +1,14 @@
 import { collapsedMenuGroupsAtom } from '@/atoms/settings';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { IconFont, OverlayScroller } from '@gpustack/core-ui';
+import { IconFont } from '@gpustack/core-ui';
+import { nsLocal } from '@gpustack/core-ui/utils';
 import { Link, useAppData, useLocation } from '@umijs/max';
 import { useDebounceFn } from 'ahooks';
 import { Tooltip } from 'antd';
 import { createStyles, type FullToken } from 'antd-style';
 import { useAtom } from 'jotai';
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useRef } from 'react';
 
 interface MenuItem {
   icon?: string;
@@ -24,6 +25,40 @@ interface SiderMenuProps {
   initialState: Global.InitialStateType;
 }
 
+const normalizePath = (path?: string) =>
+  (path || '').replace(/\/\*$/, '').replace(/\/$/, '') || '/';
+
+const isMenuSelected = (menuItem: MenuItem, pathname: string) => {
+  const current = normalizePath(pathname);
+  const itemPath = normalizePath(menuItem.path);
+  if (current === itemPath) {
+    return true;
+  }
+  if (
+    menuItem.subMenu?.includes(pathname) ||
+    menuItem.subMenu?.includes(current)
+  ) {
+    return true;
+  }
+  return itemPath !== '/' && current.startsWith(`${itemPath}/`);
+};
+
+const groupPersistKey = (item: MenuItem) => item.path || item.key;
+
+const groupKeyAliases = (item: MenuItem) =>
+  [item.path, item.key].filter(Boolean) as string[];
+
+const SIDER_SCROLL_KEY = 'siderMenuScrollTop';
+
+const readSiderScrollTop = () => {
+  const value = Number(nsLocal.get(SIDER_SCROLL_KEY) || 0);
+  return Number.isFinite(value) && value > 0 ? value : 0;
+};
+
+const writeSiderScrollTop = (top: number) => {
+  nsLocal.set(SIDER_SCROLL_KEY, String(Math.round(Math.max(0, top))));
+};
+
 const useStyles = createStyles(
   ({ css, token }: { css: any; token: FullToken }) => {
     // @ts-ignore
@@ -36,6 +71,20 @@ const useStyles = createStyles(
     return {
       siderMenu: css`
         width: 100%;
+        height: 100%;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      `,
+      scrollArea: css`
+        flex: 1;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-right: 8px;
+        scrollbar-width: thin;
+      `,
+      siderMenuCollapsed: css`
         &.sider-menu-collapsed {
           .menu-item-nested {
             padding-left: 10px;
@@ -237,6 +286,45 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
     () => new Set(collapsedGroups),
     [collapsedGroups]
   );
+  const isGroupCollapsed = (item: MenuItem) =>
+    groupKeyAliases(item).some((key) => collapseKeys.has(key));
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const restoringRef = useRef(false);
+  const allowRestoreRef = useRef(true);
+
+  const restoreSiderScroll = () => {
+    const el = scrollRef.current;
+    const saved = readSiderScrollTop();
+    if (!el || !allowRestoreRef.current || saved <= 0) {
+      return;
+    }
+    restoringRef.current = true;
+    el.scrollTop = Math.min(
+      saved,
+      Math.max(0, el.scrollHeight - el.clientHeight)
+    );
+    restoringRef.current = false;
+  };
+
+  useLayoutEffect(() => {
+    restoreSiderScroll();
+    const frame = window.requestAnimationFrame(restoreSiderScroll);
+    const timer = window.setTimeout(restoreSiderScroll, 300);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [collapsed, menuData]);
+
+  useLayoutEffect(() => {
+    const persist = () => {
+      if (scrollRef.current && !restoringRef.current) {
+        writeSiderScrollTop(scrollRef.current.scrollTop);
+      }
+    };
+    window.addEventListener('pagehide', persist);
+    return () => window.removeEventListener('pagehide', persist);
+  }, []);
 
   const { preloadRoute } = useAppData();
 
@@ -271,18 +359,19 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
 
   const handleToggleGroup = (e: any, menuGroup: any) => {
     e.stopPropagation();
+    allowRestoreRef.current = false;
 
+    const persistKey = groupPersistKey(menuGroup);
+    const aliases = new Set(groupKeyAliases(menuGroup));
     setCollapsedGroups(
-      collapsedGroups.includes(menuGroup.key)
-        ? collapsedGroups.filter((key) => key !== menuGroup.key)
-        : [...collapsedGroups, menuGroup.key]
+      collapsedGroups.some((key) => aliases.has(key))
+        ? collapsedGroups.filter((key) => !aliases.has(key))
+        : [...collapsedGroups, persistKey]
     );
   };
 
   const menuItemRender = (menuItem: MenuItem, key: string, nested = false) => {
-    const selected =
-      location.pathname === menuItem.path ||
-      menuItem.subMenu?.includes(location.pathname);
+    const selected = isMenuSelected(menuItem, location.pathname);
     const to = menuItem.path.replace('/*', '');
 
     // Keep this subtree identical in both states — the icon and the label
@@ -330,68 +419,69 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
 
   return (
     <div
-      className={cx(styles.siderMenu, 'sider-menu', {
+      className={cx(styles.siderMenu, styles.siderMenuCollapsed, 'sider-menu', {
         'sider-menu-collapsed': collapsed
       })}
     >
-      <OverlayScroller
-        styles={{
-          wrapper: {
-            paddingInline: 0,
-            maxHeight: '100%'
+      <div
+        ref={scrollRef}
+        className={styles.scrollArea}
+        onScroll={(event) => {
+          if (restoringRef.current) {
+            return;
           }
+          allowRestoreRef.current = false;
+          writeSiderScrollTop(event.currentTarget.scrollTop);
         }}
       >
-        <div style={{ paddingRight: 8 }}>
-          <PluginExtraFields
-            name="SiderWorkspaceSwitcher"
-            collapsed={collapsed}
-            context={{ collapsed }}
-          />
-          {menuData.map((item: MenuItem, index: number) => (
-            <div key={item.key}>
-              {item.children && item.children.length > 0 ? (
-                <>
-                  <div
-                    className={cx(styles.groupTitle, {
-                      'menu-item-group-title-collapsed': collapsed
-                    })}
-                    onClick={(e) => handleToggleGroup(e, item)}
-                  >
-                    {/* Mounted in both states and hidden by style, so toggling
+        <PluginExtraFields
+          name="SiderWorkspaceSwitcher"
+          collapsed={collapsed}
+          context={{ collapsed }}
+        />
+        {menuData.map((item: MenuItem, index: number) => (
+          <div key={item.key}>
+            {item.children && item.children.length > 0 ? (
+              <>
+                <div
+                  className={cx(styles.groupTitle, {
+                    'menu-item-group-title-collapsed': collapsed
+                  })}
+                  onClick={(e) => handleToggleGroup(e, item)}
+                >
+                  {/* Mounted in both states and hidden by style, so toggling
                         the sider doesn't remount every group header. The
                         collapsed row is 1px tall, which is why the styles hide
                         this outright rather than relying on the clip. */}
-                    <IconFont
-                      className="group-title-icon"
-                      type={item.defaultIcon || item.icon || 'icon-cube'}
-                    />
-                    <span className="group-title-text">{item.name}</span>
-                    <CaretDownOutlined
-                      className="group-title-caret"
-                      rotate={collapseKeys.has(item.key) ? -90 : 0}
-                    />
-                    {collapsed && <span className={styles.line}></span>}
-                  </div>
-                  <div
-                    className={cx(styles.menuItemGroup, {
-                      'menu-item-group-collapsed': collapsed,
-                      'menu-item-group-hidden':
-                        !collapsed && collapseKeys.has(item.key)
-                    })}
-                  >
-                    {item.children?.map((child: MenuItem) =>
-                      menuItemRender(child, child.key, true)
-                    )}
-                  </div>
-                </>
-              ) : (
-                menuItemRender(item, item.key)
-              )}
-            </div>
-          ))}
-        </div>
-      </OverlayScroller>
+                  <IconFont
+                    className="group-title-icon"
+                    type={item.defaultIcon || item.icon || 'icon-cube'}
+                  />
+                  <span className="group-title-text">{item.name}</span>
+                  <CaretDownOutlined
+                    className="group-title-caret"
+                    rotate={isGroupCollapsed(item) ? -90 : 0}
+                  />
+                  {collapsed && <span className={styles.line}></span>}
+                </div>
+                <div
+                  className={cx(styles.menuItemGroup, {
+                    'menu-item-group-collapsed': collapsed,
+                    'menu-item-group-hidden':
+                      !collapsed && isGroupCollapsed(item)
+                  })}
+                >
+                  {item.children?.map((child: MenuItem) =>
+                    menuItemRender(child, child.key, true)
+                  )}
+                </div>
+              </>
+            ) : (
+              menuItemRender(item, item.key)
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
