@@ -454,6 +454,17 @@ export default {
   'workspaces.form.scopePlaceholder': 'Current workspace',
   'workspaces.org': 'Organization',
   'workspaces.default': 'Default',
+  'workspaces.name.default': 'Default workspace',
+  'workspaces.delete.defaultDisabled':
+    'The default workspace cannot be deleted. Set another workspace as default first.',
+  'workspaces.delete.lastDisabled':
+    'An organization must keep at least one workspace.',
+  'workspaces.delete.title': 'Delete workspace',
+  'workspaces.delete.confirmHint':
+    'This cannot be undone. Type the workspace name below to confirm.',
+  'workspaces.delete.namePlaceholder': 'Workspace name',
+  'workspaces.delete.oneByOne':
+    'Delete one workspace at a time and type its name.',
   'workspaces.setDefault': 'Set as default',
   'workspaces.members': 'Members',
   'workspaces.members.title': 'Members of {name}',

@@ -1,13 +1,12 @@
 import { ListEmpty, TableLoadGate } from '@/components/console';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
+import CreateWorkspaceModal from '@/enterprise/create-workspace-modal';
+import DeleteWorkspaceModal from '@/enterprise/delete-workspace-modal';
 import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
+import { subscribeWorkspaceListChanged } from '@/enterprise/workspace-events';
+import { formatWorkspaceName } from '@/enterprise/workspace-switcher';
 import useTableFetch from '@/hooks/use-table-fetch';
-import {
-  DeleteModal,
-  FilterBar,
-  FormDrawer,
-  IconFont
-} from '@gpustack/core-ui';
+import { FilterBar, FormDrawer, IconFont } from '@gpustack/core-ui';
 import { request, useIntl } from '@umijs/max';
 import {
   Button,
@@ -19,6 +18,7 @@ import {
   Space,
   Table,
   Tag,
+  Tooltip,
   message
 } from 'antd';
 import React from 'react';
@@ -44,9 +44,6 @@ const EnterpriseWorkspaces: React.FC = () => {
     dataSource,
     rowSelection,
     queryParams,
-    modalRef,
-    handleDelete,
-    handleDeleteBatch,
     fetchData,
     handlePageChange,
     handleTableChange,
@@ -54,19 +51,18 @@ const EnterpriseWorkspaces: React.FC = () => {
     handleNameChange
   } = useTableFetch<WorkspaceItem>({
     fetchAPI: (params) => request(API, { method: 'GET', params }),
-    deleteAPI: (id) => request(`${API}/${id}`, { method: 'DELETE' }),
-    watch: false,
-    contentForDelete: intl.formatMessage({ id: 'workspaces.item' })
+    watch: false
   });
 
   const [open, setOpen] = React.useState(false);
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [deleting, setDeleting] = React.useState<WorkspaceItem | null>(null);
   const [editing, setEditing] = React.useState<WorkspaceItem | null>(null);
   const [membersOpen, setMembersOpen] = React.useState(false);
   const [active, setActive] = React.useState<WorkspaceItem | null>(null);
   const [members, setMembers] = React.useState<any[]>([]);
   const [memberForm] = Form.useForm();
   const [people, setPeople] = React.useState<PersonOption[]>([]);
-  const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
 
   const loadMembers = async (id: number) => {
     const rows = await request(`${API}/${id}/members`);
@@ -80,29 +76,16 @@ const EnterpriseWorkspaces: React.FC = () => {
   };
 
   React.useEffect(() => {
-    const search = window.location.hash.split('?')[1] || '';
-    if (new URLSearchParams(search).get('create') === '1') {
-      form.resetFields();
-      setEditing(null);
-      setOpen(true);
-    }
-  }, [form]);
-
-  React.useEffect(() => {
     loadEnterprisePeople()
       .then(setPeople)
       .catch(() => undefined);
-    request('/organization-directory', { params: { page: 1, perPage: 100 } })
-      .then((page) =>
-        setOrgs(
-          (page.items || []).map((item: any) => ({
-            id: item.id,
-            name: item.display_name || item.name
-          }))
-        )
-      )
-      .catch(() => undefined);
   }, []);
+
+  React.useEffect(() => {
+    return subscribeWorkspaceListChanged(() => {
+      fetchData();
+    });
+  }, [fetchData]);
 
   const addMember = async () => {
     if (!active) return;
@@ -128,17 +111,13 @@ const EnterpriseWorkspaces: React.FC = () => {
   };
 
   const handleAdd = () => {
-    form.resetFields();
-    setEditing(null);
-    setOpen(true);
+    setCreateOpen(true);
   };
 
   const handleOk = async () => {
     const values = await form.validateFields();
     if (editing) {
       await request(`${API}/${editing.id}`, { method: 'PUT', data: values });
-    } else {
-      await request(API, { method: 'POST', data: values });
     }
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     setOpen(false);
@@ -152,6 +131,46 @@ const EnterpriseWorkspaces: React.FC = () => {
     fetchData();
   };
 
+  const deleteBlockedReason = (row: WorkspaceItem) => {
+    if (row.is_default) {
+      return intl.formatMessage({ id: 'workspaces.delete.defaultDisabled' });
+    }
+    if (dataSource.total <= 1) {
+      return intl.formatMessage({ id: 'workspaces.delete.lastDisabled' });
+    }
+    return null;
+  };
+
+  const dataList = React.useMemo(
+    () =>
+      dataSource.dataList.map((row) => ({
+        ...row,
+        disabled: !!deleteBlockedReason(row)
+      })),
+    [dataSource.dataList, dataSource.total, intl]
+  );
+
+  const openDelete = (row: WorkspaceItem) => {
+    if (deleteBlockedReason(row)) return;
+    setDeleting(row);
+  };
+
+  const handleDeleteBatchSafe = () => {
+    const rows = (rowSelection.selectedRows || []).filter(
+      (row: WorkspaceItem) => !deleteBlockedReason(row)
+    );
+    if (rows.length !== 1) {
+      message.warning(
+        intl.formatMessage({
+          id: 'workspaces.delete.oneByOne',
+          defaultMessage: 'Delete one workspace at a time and type its name.'
+        })
+      );
+      return;
+    }
+    openDelete(rows[0]);
+  };
+
   return (
     <>
       <PageBox>
@@ -161,7 +180,7 @@ const EnterpriseWorkspaces: React.FC = () => {
           inputHolder={intl.formatMessage({ id: 'workspaces.filter.name' })}
           buttonText={intl.formatMessage({ id: 'workspaces.add' })}
           handleSearch={handleSearch}
-          handleDeleteByBatch={handleDeleteBatch}
+          handleDeleteByBatch={handleDeleteBatchSafe}
           handleClickPrimary={handleAdd}
           handleInputChange={handleNameChange}
           rowSelection={rowSelection}
@@ -194,8 +213,17 @@ const EnterpriseWorkspaces: React.FC = () => {
             <Table
               className="scroll-table"
               rowKey="id"
-              dataSource={dataSource.dataList}
-              rowSelection={rowSelection}
+              dataSource={dataList}
+              rowSelection={{
+                ...rowSelection,
+                getCheckboxProps: (row: WorkspaceItem) => {
+                  const reason = deleteBlockedReason(row);
+                  return {
+                    disabled: !!reason,
+                    title: reason || undefined
+                  };
+                }
+              }}
               loading={false}
               sortDirections={TABLE_SORT_DIRECTIONS}
               onChange={handleTableChange}
@@ -216,7 +244,9 @@ const EnterpriseWorkspaces: React.FC = () => {
                 },
                 {
                   title: intl.formatMessage({ id: 'common.table.displayName' }),
-                  dataIndex: 'display_name'
+                  dataIndex: 'display_name',
+                  render: (_: string, row: WorkspaceItem) =>
+                    formatWorkspaceName(row, intl)
                 },
                 {
                   title: intl.formatMessage({ id: 'workspaces.org' }),
@@ -249,16 +279,26 @@ const EnterpriseWorkspaces: React.FC = () => {
                           {intl.formatMessage({ id: 'workspaces.setDefault' })}
                         </a>
                       ) : null}
-                      <a
-                        onClick={() =>
-                          handleDelete({
-                            ...row,
-                            name: row.display_name || row.name
-                          })
-                        }
-                      >
-                        {intl.formatMessage({ id: 'common.button.delete' })}
-                      </a>
+                      {deleteBlockedReason(row) ? (
+                        <Tooltip title={deleteBlockedReason(row)}>
+                          <span
+                            style={{
+                              color: 'var(--ant-color-text-disabled)',
+                              cursor: 'not-allowed'
+                            }}
+                          >
+                            {intl.formatMessage({
+                              id: 'common.button.delete'
+                            })}
+                          </span>
+                        </Tooltip>
+                      ) : (
+                        <a onClick={() => openDelete(row)}>
+                          {intl.formatMessage({
+                            id: 'common.button.delete'
+                          })}
+                        </a>
+                      )}
                     </Space>
                   )
                 }
@@ -274,10 +314,24 @@ const EnterpriseWorkspaces: React.FC = () => {
           </ConfigProvider>
         </TableLoadGate>
       </PageBox>
+      <CreateWorkspaceModal
+        open={createOpen}
+        onCancel={() => setCreateOpen(false)}
+        onCreated={() => fetchData()}
+      />
+      <DeleteWorkspaceModal
+        open={!!deleting}
+        workspace={deleting}
+        onCancel={() => setDeleting(null)}
+        onDeleted={() => {
+          if (deleting) {
+            rowSelection.removeSelectedKeys([deleting.id]);
+          }
+          fetchData();
+        }}
+      />
       <FormDrawer
-        title={intl.formatMessage({
-          id: editing ? 'workspaces.edit' : 'workspaces.add'
-        })}
+        title={intl.formatMessage({ id: 'workspaces.edit' })}
         open={open}
         onCancel={() => {
           setOpen(false);
@@ -287,27 +341,6 @@ const EnterpriseWorkspaces: React.FC = () => {
         width={480}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="organization_id"
-            label={intl.formatMessage({ id: 'workspaces.org' })}
-            rules={[{ required: !editing }]}
-            hidden={!!editing}
-          >
-            <Select
-              options={orgs.map((item) => ({
-                label: item.name,
-                value: item.id
-              }))}
-            />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            label={intl.formatMessage({ id: 'workspaces.form.name' })}
-            rules={[{ required: !editing }]}
-            hidden={!!editing}
-          >
-            <Input />
-          </Form.Item>
           <Form.Item
             name="display_name"
             label={intl.formatMessage({ id: 'common.table.displayName' })}
@@ -322,7 +355,6 @@ const EnterpriseWorkspaces: React.FC = () => {
           </Form.Item>
         </Form>
       </FormDrawer>
-      <DeleteModal ref={modalRef} />
       <Drawer
         open={membersOpen}
         width={560}

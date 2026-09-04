@@ -435,6 +435,15 @@ export default {
   'workspaces.form.scopePlaceholder': '当前工作空间',
   'workspaces.org': '所属组织',
   'workspaces.default': '默认',
+  'workspaces.name.default': '默认工作空间',
+  'workspaces.delete.defaultDisabled':
+    '默认工作空间不支持删除，请先将其他空间设为默认',
+  'workspaces.delete.lastDisabled': '组织内至少需保留一个工作空间',
+  'workspaces.delete.title': '删除工作空间',
+  'workspaces.delete.confirmHint':
+    '此操作不可撤销。请输入下方工作空间名称以确认删除。',
+  'workspaces.delete.namePlaceholder': '请输入工作空间名称',
+  'workspaces.delete.oneByOne': '删除工作空间需逐个确认名称，请只选择一个',
   'workspaces.setDefault': '设为默认',
   'workspaces.members': '成员',
   'workspaces.members.title': '{name} 的成员',

@@ -5,7 +5,11 @@ import { nsLocal } from '@gpustack/core-ui/utils';
 import { useAccess, useIntl } from '@umijs/max';
 import { Form, Select } from 'antd';
 import React from 'react';
-import { loadMyWorkspaces, type MyWorkspaceItem } from './workspace-switcher';
+import {
+  formatWorkspaceName,
+  loadMyWorkspaces,
+  type MyWorkspaceItem
+} from './workspace-switcher';
 
 const useWorkspaceOptions = () => {
   const intl = useIntl();
@@ -20,7 +24,7 @@ const useWorkspaceOptions = () => {
     .map((item) => {
       const ws = item.workspace;
       const orgName = ws.organization?.display_name || ws.organization?.name;
-      const name = ws.display_name || ws.name || String(ws.id);
+      const name = formatWorkspaceName(ws, intl);
       return {
         value: ws.id,
         label: orgName ? `${orgName} / ${name}` : name
@@ -107,12 +111,16 @@ export const OwnerScopeTag: React.FC<{
       </MetaChip>
     );
   }
-  const label =
-    cached?.display_name ||
-    cached?.organization?.display_name ||
-    cached?.organization?.name ||
-    cached?.name ||
-    String(ownerId);
+  const label = cached
+    ? formatWorkspaceName(
+        {
+          name: cached.name,
+          display_name: cached.display_name,
+          id: cached.id
+        },
+        intl
+      )
+    : String(ownerId);
   return <MetaChip>{label}</MetaChip>;
 };
 

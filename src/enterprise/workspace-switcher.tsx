@@ -9,6 +9,8 @@ import { nsLocal } from '@gpustack/core-ui/utils';
 import { request, useAccess, useIntl } from '@umijs/max';
 import { Dropdown, Tooltip } from 'antd';
 import React from 'react';
+import CreateWorkspaceModal from './create-workspace-modal';
+import { subscribeWorkspaceListChanged } from './workspace-events';
 
 export type MyWorkspaceItem = {
   workspace: {
@@ -25,6 +27,7 @@ export type MyWorkspaceItem = {
 };
 
 export const WORKSPACES_PATH = '/workspaces';
+export { notifyWorkspaceListChanged } from './workspace-events';
 
 export const persistWorkspaceSelection = (id: number | null) => {
   if (id == null) {
@@ -109,10 +112,27 @@ export const ensureDefaultWorkspaceSelection = (
   return true;
 };
 
-export const workspaceLabel = (item: MyWorkspaceItem): string => {
-  const ws = item.workspace;
-  return ws.display_name || ws.name || String(ws.id);
+type IntlLike = {
+  formatMessage: (desc: { id: string; defaultMessage?: string }) => string;
 };
+
+const isStockDefaultName = (value?: string) => /^default$/i.test(value || '');
+
+export const formatWorkspaceName = (
+  ws: { name?: string; display_name?: string; id?: number },
+  intl: IntlLike
+): string => {
+  if (isStockDefaultName(ws.display_name) || isStockDefaultName(ws.name)) {
+    return intl.formatMessage({
+      id: 'workspaces.name.default',
+      defaultMessage: 'Default workspace'
+    });
+  }
+  return ws.display_name || ws.name || String(ws.id ?? '');
+};
+
+export const workspaceLabel = (item: MyWorkspaceItem, intl: IntlLike): string =>
+  formatWorkspaceName(item.workspace, intl);
 
 /** Persist the selection then reload so tenant headers apply. */
 export const enterWorkspace = (id: number, path?: string) => {
@@ -132,20 +152,27 @@ const useWorkspaceList = () => {
   const [current, setCurrent] = React.useState<number | null>(() =>
     readCurrentWorkspaceId()
   );
-  React.useEffect(() => {
-    loadMyWorkspaces()
-      .then((rows) => {
-        setItems(rows);
-        cacheWorkspaces(rows);
-        const applied = ensureDefaultWorkspaceSelection(rows);
-        setCurrent(readCurrentWorkspaceId());
-        if (applied) {
-          window.location.reload();
-        }
-      })
-      .catch(() => undefined);
+  const refresh = React.useCallback(async () => {
+    const rows = await loadMyWorkspaces();
+    setItems(rows);
+    cacheWorkspaces(rows);
+    const applied = ensureDefaultWorkspaceSelection(rows);
+    setCurrent(readCurrentWorkspaceId());
+    if (applied) {
+      window.location.reload();
+    }
+    return rows;
   }, []);
-  return { items, current };
+  React.useEffect(() => {
+    refresh().catch(() => undefined);
+  }, [refresh]);
+  React.useEffect(() => {
+    const onChange = () => {
+      refresh().catch(() => undefined);
+    };
+    return subscribeWorkspaceListChanged(onChange);
+  }, [refresh]);
+  return { items, current, refresh };
 };
 
 /** Compact Select used in the top-bar slot (kept for compatibility). */
@@ -162,19 +189,27 @@ type SidebarProps = {
 export const SidebarWorkspaceSwitcher: React.FC<SidebarProps> = (props) => {
   const intl = useIntl();
   const access = useAccess();
-  const { items, current } = useWorkspaceList();
+  const { items, current, refresh } = useWorkspaceList();
   const collapsed = !!(props.collapsed ?? props.context?.collapsed);
+  const [createOpen, setCreateOpen] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const singleWorkspace = items.length <= 1;
 
   const currentItem = items.find((item) => item.workspace?.id === current);
-  const currentName = currentItem ? workspaceLabel(currentItem) : '';
+  const currentName = currentItem
+    ? workspaceLabel(currentItem, intl)
+    : items[0]
+      ? workspaceLabel(items[0], intl)
+      : '';
 
   const pick = (key: string) => {
+    setMenuOpen(false);
     if (key === 'manage') {
       window.location.hash = `#${WORKSPACES_PATH}`;
       return;
     }
     if (key === 'create') {
-      window.location.hash = `#${WORKSPACES_PATH}?create=1`;
+      setCreateOpen(true);
       return;
     }
     const id = Number(key);
@@ -213,30 +248,33 @@ export const SidebarWorkspaceSwitcher: React.FC<SidebarProps> = (props) => {
         boxShadow: '0 6px 16px rgba(0,0,0,0.08)'
       }}
     >
-      {items.map((item) => {
-        const ws = item.workspace;
-        const selected = current === ws.id;
-        return (
-          <button
-            type="button"
-            key={ws.id}
-            style={rowStyle}
-            onClick={() => pick(String(ws.id))}
-          >
-            <span style={{ width: 14 }}>
-              {selected ? <CheckOutlined /> : null}
-            </span>
-            {workspaceLabel(item)}
-          </button>
-        );
-      })}
-      <div
-        style={{
-          height: 1,
-          margin: '4px 0',
-          background: 'var(--console-border, var(--ant-color-split))'
-        }}
-      />
+      {!singleWorkspace &&
+        items.map((item) => {
+          const ws = item.workspace;
+          const selected = current === ws.id;
+          return (
+            <button
+              type="button"
+              key={ws.id}
+              style={rowStyle}
+              onClick={() => pick(String(ws.id))}
+            >
+              <span style={{ width: 14 }}>
+                {selected ? <CheckOutlined /> : null}
+              </span>
+              {workspaceLabel(item, intl)}
+            </button>
+          );
+        })}
+      {!singleWorkspace && (
+        <div
+          style={{
+            height: 1,
+            margin: '4px 0',
+            background: 'var(--console-border, var(--ant-color-split))'
+          }}
+        />
+      )}
       <button type="button" style={rowStyle} onClick={() => pick('manage')}>
         <SettingOutlined />
         {intl.formatMessage({
@@ -295,9 +333,11 @@ export const SidebarWorkspaceSwitcher: React.FC<SidebarProps> = (props) => {
           >
             {currentName}
           </span>
-          <CaretDownOutlined
-            style={{ fontSize: 10, opacity: 0.65, flexShrink: 0 }}
-          />
+          {!singleWorkspace && (
+            <CaretDownOutlined
+              style={{ fontSize: 10, opacity: 0.65, flexShrink: 0 }}
+            />
+          )}
         </>
       )}
     </button>
@@ -307,6 +347,13 @@ export const SidebarWorkspaceSwitcher: React.FC<SidebarProps> = (props) => {
     <div style={{ padding: collapsed ? '8px 8px 4px' : '8px 8px 8px 0' }}>
       <Dropdown
         trigger={['click']}
+        open={menuOpen}
+        onOpenChange={(open) => {
+          setMenuOpen(open);
+          if (open) {
+            refresh().catch(() => undefined);
+          }
+        }}
         popupRender={() => overlay}
         placement="bottomLeft"
         getPopupContainer={() => document.body}
@@ -319,6 +366,13 @@ export const SidebarWorkspaceSwitcher: React.FC<SidebarProps> = (props) => {
           trigger
         )}
       </Dropdown>
+      <CreateWorkspaceModal
+        open={createOpen}
+        onCancel={() => setCreateOpen(false)}
+        onCreated={() => {
+          refresh().catch(() => undefined);
+        }}
+      />
     </div>
   );
 };
