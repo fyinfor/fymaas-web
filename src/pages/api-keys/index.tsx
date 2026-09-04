@@ -1,13 +1,13 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
 import useQueryUserList from '@/pages/users/services/use-query-user-list';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import useMemoizedFn from 'ahooks/lib/useMemoizedFn';
 import { ConfigProvider, Table } from 'antd';
-import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import PageBox from '../_components/page-box';
 import { deleteApisKey, queryApisKeysList } from './apis';
@@ -182,24 +182,18 @@ const APIKeys: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-key" />}
-        filters={{
-          ..._.omit(queryParams, ['sort_by']),
+      <ListEmpty
+        icon={<IconFont type="icon-key" />}
+        title={intl.formatMessage({ id: 'noresult.keys.title' })}
+        description={intl.formatMessage({ id: 'noresult.keys.subTitle' })}
+        noFound={intl.formatMessage({ id: 'noresult.keys.nofound' })}
+        queryParams={{
+          ...queryParams,
           user_id: queryParams.user_id === '*' ? undefined : queryParams.user_id
         }}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.keys.nofound'
-        })}
-        title={intl.formatMessage({ id: 'noresult.keys.title' })}
-        subTitle={intl.formatMessage({ id: 'noresult.keys.subTitle' })}
-        onClick={handleAddKey}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-      ></NoResult>
+        onAdd={handleAddKey}
+        addText={intl.formatMessage({ id: 'noresult.button.add' })}
+      />
     );
   };
 
@@ -230,31 +224,36 @@ const APIKeys: React.FC = () => {
           rowSelection={rowSelection}
           widths={{ input: 300 }}
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            columns={columns}
-            dataSource={dataSource.dataList}
-            rowSelection={rowSelection}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey="id"
-            onChange={handleTableChange}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table'}
+              columns={columns}
+              dataSource={dataSource.dataList}
+              rowSelection={rowSelection}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              rowKey="id"
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <AddAPIKeyModal
         open={openAddModal.open}

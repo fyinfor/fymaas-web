@@ -20,7 +20,7 @@ const useStyles = createStyles(({ css }) => ({
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 16px;
 
-    @media (max-width: 1440px) {
+    @media (max-width: 1280px) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   `,

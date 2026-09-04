@@ -178,6 +178,12 @@ const groupAdditions: Record<string, RouteLike[]> = {
       redirect: '/settings/ip-access'
     },
     {
+      path: '/access-control/workspaces',
+      hideInMenu: true,
+      access: 'canSeeWorkspaces',
+      redirect: '/workspaces'
+    },
+    {
       name: 'auditLogs',
       path: '/access-control/audit-logs',
       key: 'auditLogs',
@@ -251,6 +257,20 @@ export const applyRouteExtensions = <T>(base: T): T => {
     0,
     ...enterpriseRoutes
   );
+
+  // Workspaces are opened from the switcher ("Manage workspaces"),
+  // not as a sider row.
+  const dashboardIndex = routes.findIndex(
+    (route) => route?.path === '/dashboard'
+  );
+  routes.splice(dashboardIndex === -1 ? 0 : dashboardIndex, 0, {
+    name: 'workspaces',
+    path: '/workspaces',
+    key: 'workspaces',
+    hideInMenu: true,
+    access: 'canSeeWorkspaces',
+    component: './enterprise-workspaces'
+  });
 
   return routes as T;
 };

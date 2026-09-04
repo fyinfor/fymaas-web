@@ -7,9 +7,11 @@ export const hasActiveFilters = (
   queryParams?: Record<string, any>,
   omitKeys: string[] = ['sort_by', 'page', 'perPage']
 ) =>
-  Object.entries(_.omit(queryParams || {}, omitKeys)).some(
-    ([, value]) => value !== undefined && value !== '' && value !== null
-  );
+  Object.entries(_.omit(queryParams || {}, omitKeys)).some(([, value]) => {
+    if (value === undefined || value === '' || value === null) return false;
+    if (Array.isArray(value)) return value.length > 0;
+    return true;
+  });
 
 const ListEmpty: React.FC<{
   icon?: React.ReactNode;

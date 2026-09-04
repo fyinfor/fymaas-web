@@ -14,9 +14,10 @@ export type RequestInterceptor = (
   options: Record<string, any>
 ) => { url: string; options: Record<string, any> };
 
-const readCurrentOrgId = (): number | null => {
+const readCurrentWorkspaceId = (): number | null => {
   try {
-    const raw = nsLocal.get('currentOrganizationId');
+    const raw =
+      nsLocal.get('currentWorkspaceId') || nsLocal.get('currentOrganizationId');
     if (!raw) return null;
     const value = JSON.parse(raw);
     return typeof value === 'number' && value > 0 ? value : null;
@@ -26,9 +27,12 @@ const readCurrentOrgId = (): number | null => {
 };
 
 export const getTenantHeaders = (_method?: string): Record<string, string> => {
-  const orgId = readCurrentOrgId();
-  if (orgId == null) return {};
-  return { 'X-Organization-Id': String(orgId) };
+  const workspaceId = readCurrentWorkspaceId();
+  if (workspaceId == null) return {};
+  return {
+    'X-Workspace-Id': String(workspaceId),
+    'X-Organization-Id': String(workspaceId)
+  };
 };
 
 export const extraRequestInterceptors: RequestInterceptor[] = [

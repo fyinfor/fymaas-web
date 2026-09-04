@@ -12,17 +12,17 @@ import {
  * onto the table.
  */
 export default function useQueryStorageBreakdown(option?: { key?: string }) {
-  const { detailData, loading, cancelRequest, fetchData } = useQueryData<
-    ResourceBreakdownResponse,
-    ResourceBreakdownRequest
-  >({
-    fetchDetail: queryStorageBreakdown,
-    key: option?.key || 'storageBreakdownTable'
-  });
+  const { detailData, loading, loadend, error, cancelRequest, fetchData } =
+    useQueryData<ResourceBreakdownResponse, ResourceBreakdownRequest>({
+      fetchDetail: queryStorageBreakdown,
+      key: option?.key || 'storageBreakdownTable'
+    });
 
   return {
     detailData,
     loading,
+    loadend,
+    error,
     cancelRequest,
     fetchData
   };

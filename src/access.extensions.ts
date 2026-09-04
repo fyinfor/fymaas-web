@@ -25,6 +25,7 @@ export type AccessPredicates = {
   canSeePermissions?: boolean;
   canSeeTopology?: boolean;
   canSeeRollouts?: boolean;
+  canSeeWorkspaces?: boolean;
 };
 
 type CachedMembership = {
@@ -46,12 +47,24 @@ const readMemberships = (): CachedMembership[] => {
 
 const readCurrentOrgId = (): number | null => {
   try {
-    const raw = nsLocal.get('currentOrganizationId');
+    const raw =
+      nsLocal.get('currentWorkspaceId') || nsLocal.get('currentOrganizationId');
     if (!raw) return null;
     const value = JSON.parse(raw);
     return typeof value === 'number' ? value : null;
   } catch {
     return null;
+  }
+};
+
+const readWorkspaces = (): CachedMembership[] => {
+  try {
+    const raw = nsLocal.get('workspaceList');
+    if (!raw) return [];
+    const list = JSON.parse(raw);
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
   }
 };
 
@@ -75,10 +88,14 @@ export const applyAccessExtensions = <T extends AccessPredicates>(
   base: T
 ): T => {
   const memberships = readMemberships();
+  const workspaces = readWorkspaces();
   const orgId = readCurrentOrgId();
   const perms = readPermissions();
-  const isOwnerSomewhere = memberships.some(isOwnerOf);
-  const current = memberships.find((item) => String(item.id) === String(orgId));
+  const isOwnerSomewhere =
+    memberships.some(isOwnerOf) || workspaces.some(isOwnerOf);
+  const current =
+    workspaces.find((item) => String(item.id) === String(orgId)) ||
+    memberships.find((item) => String(item.id) === String(orgId));
   const isOwnerHere = current ? isOwnerOf(current) : false;
   const canManageByRole = orgId != null && isOwnerHere;
   const canSeeByPerm =
@@ -110,6 +127,13 @@ export const applyAccessExtensions = <T extends AccessPredicates>(
       base.canSeeAdmin || canManageByRole || has(perms, 'ipacl:read'),
     canSeeTopology:
       base.canSeeAdmin || has(perms, 'cluster:read') || isOwnerHere,
-    canSeeRollouts: base.canSeeAdmin || has(perms, 'route:write') || isOwnerHere
+    canSeeRollouts:
+      base.canSeeAdmin || has(perms, 'route:write') || isOwnerHere,
+    canSeeWorkspaces:
+      base.canSeeAdmin ||
+      has(perms, 'workspace:read') ||
+      has(perms, 'org:write') ||
+      isOwnerSomewhere ||
+      workspaces.some((item) => !item.is_personal)
   };
 };

@@ -29,6 +29,24 @@ export default {
   'usage.tabs.models': 'Models',
   'usage.tabs.apikeys': 'API Keys',
   'usage.tabs.users': 'User',
+  'usage.noresult.nofound': 'No matching usage records found',
+  'usage.noresult.models.title': 'No model usage yet',
+  'usage.noresult.models.subTitle':
+    'No model calls in the selected time range.',
+  'usage.noresult.users.title': 'No user usage yet',
+  'usage.noresult.users.subTitle': 'No user calls in the selected time range.',
+  'usage.noresult.apikeys.title': 'No API key usage yet',
+  'usage.noresult.apikeys.subTitle':
+    'No API key calls in the selected time range.',
+  'usage.noresult.instances.title': 'No GPU instance usage yet',
+  'usage.noresult.instances.subTitle':
+    'No GPU instance usage in the selected time range.',
+  'usage.noresult.storage.title': 'No storage usage yet',
+  'usage.noresult.storage.subTitle':
+    'No storage usage in the selected time range.',
+  'usage.noresult.events.title': 'No resource events yet',
+  'usage.noresult.events.subTitle':
+    'No resource lifecycle events in the selected time range.',
   'usage.export.chart': 'Export Chart Data',
   'usage.export.table': 'Export Table Data',
   'usage.export.rows': 'About {total} rows will be exported.',

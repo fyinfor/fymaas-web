@@ -39,6 +39,8 @@ export default {
   'menu.accessControl.apikeys': 'API Ключи',
   'menu.accessControl.users': 'Управление пользователями',
   'menu.accessControl.organizations': 'Управление организациями',
+  'menu.workspaces': 'Рабочие пространства',
+  'menu.accessControl.workspaces': 'Рабочие пространства',
   'menu.resources.clusters': 'Кластеры',
   'menu.resources.credentials': 'Облачные аккаунты',
   'menu.models.userModels': 'Модели',

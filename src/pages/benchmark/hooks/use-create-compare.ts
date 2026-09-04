@@ -1,4 +1,3 @@
-import { PageActionType } from '@/config/types';
 import { useState } from 'react';
 import { BenchmarkListItem as ListItem } from '../config/types';
 
@@ -11,11 +10,7 @@ const useCreateCompare = () => {
     currentData: undefined
   });
 
-  const openModal = (
-    action: PageActionType,
-    title: string,
-    rows?: ListItem[]
-  ) => {
+  const openModal = (rows: ListItem[]) => {
     setOpenModalStatus({
       open: true,
       currentData: rows

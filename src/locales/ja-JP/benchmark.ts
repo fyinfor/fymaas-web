@@ -4,6 +4,12 @@ export default {
   'benchmark.button.edit': 'Edit Benchmark',
   'benchmark.button.clone': 'Clone Benchmark',
   'benchmark.button.compare': 'Compare',
+  'benchmark.compare.title': 'ベンチマーク比較',
+  'benchmark.compare.hint':
+    'スループットとレイテンシを比較します。バーの長さは選択結果の最大値で正規化されます。データがない指標は — と表示されます。',
+  'benchmark.compare.higher': 'より高いスループット',
+  'benchmark.compare.faster': 'より速い',
+  'benchmark.compare.select': '比較する結果を 2〜4 件選択してください',
   'benchmark.table.model': 'Model',
   'benchmark.table.instance': 'Model Instance',
   'benchmark.table.dataset': 'Dataset',

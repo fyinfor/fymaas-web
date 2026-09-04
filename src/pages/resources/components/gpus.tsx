@@ -1,4 +1,9 @@
-import { EmptyState, ErrorState, TableSkeleton } from '@/components/console';
+import {
+  EmptyState,
+  ErrorState,
+  TableSkeleton,
+  hasActiveFilters
+} from '@/components/console';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import PageBox from '@/pages/_components/page-box';
@@ -6,7 +11,6 @@ import { useQueryClusterList } from '@/pages/cluster-management/services/use-que
 import { FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl, useSearchParams } from '@umijs/max';
 import { ConfigProvider, Table } from 'antd';
-import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { GPU_DEVICES_API, queryGpuDevicesList } from '../apis';
 import { GPUDeviceItem } from '../config/types';
@@ -72,10 +76,11 @@ const GPUList: React.FC<GPUListProps> = ({ clusterId, source }) => {
 
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
-    const filtered = Object.entries(
-      _.omit(queryParams, ['sort_by', 'page', 'perPage'])
-    ).some(
-      ([, value]) => value !== undefined && value !== '' && value !== null
+    const filtered = hasActiveFilters(
+      queryParams,
+      source === 'clusterDetail'
+        ? ['sort_by', 'page', 'perPage', 'cluster_id']
+        : ['sort_by', 'page', 'perPage']
     );
     return (
       <EmptyState

@@ -4,6 +4,12 @@ export default {
   'benchmark.button.edit': 'Edit Benchmark',
   'benchmark.button.clone': 'Clone Benchmark',
   'benchmark.button.compare': 'Compare',
+  'benchmark.compare.title': 'Сравнение бенчмарков',
+  'benchmark.compare.hint':
+    'Сравнение пропускной способности и задержки. Длина полосы нормализована по максимальному значению среди выбранных результатов. Показатели без данных отображаются как —.',
+  'benchmark.compare.higher': 'Выше пропускная способность',
+  'benchmark.compare.faster': 'Быстрее',
+  'benchmark.compare.select': 'Выберите 2–4 результата для сравнения',
   'benchmark.table.model': 'Model',
   'benchmark.table.instance': 'Model Instance',
   'benchmark.table.dataset': 'Dataset',

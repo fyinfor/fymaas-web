@@ -1,4 +1,5 @@
 import { collapsedMenuGroupsAtom } from '@/atoms/settings';
+import PluginExtraFields from '@/components/plugin-extra-fields';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { IconFont, OverlayScroller } from '@gpustack/core-ui';
 import { Link, useAppData, useLocation } from '@umijs/max';
@@ -342,6 +343,11 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         }}
       >
         <div style={{ paddingRight: 8 }}>
+          <PluginExtraFields
+            name="SiderWorkspaceSwitcher"
+            collapsed={collapsed}
+            context={{ collapsed }}
+          />
           {menuData.map((item: MenuItem, index: number) => (
             <div key={item.key}>
               {item.children && item.children.length > 0 ? (

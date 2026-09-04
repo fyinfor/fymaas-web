@@ -1,16 +1,11 @@
 import { enabledBackendsAtom } from '@/atoms/backend';
-import { StatusBadge } from '@/components/console';
+import { ErrorState, ListEmpty, StatusBadge } from '@/components/console';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { SearchOutlined } from '@ant-design/icons';
-import {
-  IconFont,
-  InfiniteScrollerProvider,
-  NoResult
-} from '@gpustack/core-ui';
+import { IconFont, InfiniteScrollerProvider } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Input, Tooltip } from 'antd';
 import { useAtom } from 'jotai';
-import _ from 'lodash';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { INFERENCE_BACKEND_API, queryBackendsList } from '../apis';
@@ -165,17 +160,25 @@ const CommunityBackends: React.FC<{
           isFirst={!dataSource.loadend}
           renderItem={renderItem}
         ></BackendCardList>
-        <NoResult
-          minHeight="calc(100vh - 300px)"
-          loading={dataSource.loading}
-          loadend={dataSource.loadend}
-          dataSource={dataSource.dataList}
-          image={<IconFont type="icon-models" />}
-          filters={_.omit(queryParams, ['sort_by'])}
-          noFoundText={intl.formatMessage({
-            id: 'noresult.backend.nofound'
-          })}
-        ></NoResult>
+        {dataSource.loadend &&
+          (dataSource.error && !dataSource.dataList.length ? (
+            <ErrorState
+              onRetry={handleSearch}
+              style={{ minHeight: 'calc(100vh - 300px)' }}
+            />
+          ) : !dataSource.dataList.length ? (
+            <ListEmpty
+              icon={<IconFont type="icon-models" />}
+              title={intl.formatMessage({ id: 'noresult.backend.title' })}
+              description={intl.formatMessage({
+                id: 'noresult.backend.subTitle'
+              })}
+              noFound={intl.formatMessage({
+                id: 'noresult.backend.nofound'
+              })}
+              queryParams={queryParams}
+            />
+          ) : null)}
       </InfiniteScrollerProvider>
     </div>
   );

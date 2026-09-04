@@ -1,4 +1,4 @@
-import { StatusBadge } from '@/components/console';
+import { ListEmpty, StatusBadge, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
@@ -11,8 +11,7 @@ import {
   DeleteModal,
   FilterBar,
   FormDrawer,
-  IconFont,
-  NoResult
+  IconFont
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
@@ -28,7 +27,6 @@ import {
   Tabs,
   message
 } from 'antd';
-import _ from 'lodash';
 import React from 'react';
 import PageBox from '../_components/page-box';
 import {
@@ -47,6 +45,9 @@ const Quotas: React.FC = () => {
   const [form] = Form.useForm<FormData>();
   const [channelForm] = Form.useForm<ChannelForm>();
   const [channels, setChannels] = React.useState<ChannelItem[]>([]);
+  const [channelLoading, setChannelLoading] = React.useState(true);
+  const [channelError, setChannelError] = React.useState(false);
+  const [channelLoadend, setChannelLoadend] = React.useState(false);
   const [channelOpen, setChannelOpen] = React.useState(false);
   const [people, setPeople] = React.useState<PersonOption[]>([]);
   const [models, setModels] = React.useState<{ id: number; name: string }[]>(
@@ -86,8 +87,17 @@ const Quotas: React.FC = () => {
   }>({ open: false, action: PageAction.CREATE });
 
   const loadChannels = async () => {
-    const page = await queryNotificationChannels();
-    setChannels(page.items || []);
+    setChannelLoading(true);
+    setChannelError(false);
+    try {
+      const page = await queryNotificationChannels();
+      setChannels(page.items || []);
+    } catch {
+      setChannelError(true);
+    } finally {
+      setChannelLoading(false);
+      setChannelLoadend(true);
+    }
   };
 
   React.useEffect(() => {
@@ -273,47 +283,52 @@ const Quotas: React.FC = () => {
                     handleInputChange={handleNameChange}
                     rowSelection={rowSelection}
                   />
-                  <ConfigProvider
-                    renderEmpty={(type) =>
-                      type === 'Table' ? (
-                        <NoResult
-                          loading={dataSource.loading}
-                          loadend={dataSource.loadend}
-                          dataSource={dataSource.dataList}
-                          image={<IconFont type="icon-usage-outlined" />}
-                          filters={_.pick(queryParams, ['search'])}
-                          title={intl.formatMessage({
-                            id: 'quotas.noresult.title'
-                          })}
-                          subTitle={intl.formatMessage({
-                            id: 'quotas.noresult.subTitle'
-                          })}
-                          onClick={openCreate}
-                          buttonText={intl.formatMessage({
-                            id: 'noresult.button.add'
-                          })}
-                        />
-                      ) : undefined
-                    }
+                  <TableLoadGate
+                    loading={dataSource.loading}
+                    loadend={dataSource.loadend}
+                    error={dataSource.error}
+                    hasRows={!!dataSource.dataList.length}
+                    onRetry={() => fetchData()}
                   >
-                    <Table
-                      className="scroll-table"
-                      rowKey="id"
-                      columns={columns}
-                      dataSource={dataSource.dataList}
-                      rowSelection={rowSelection}
-                      loading={{ spinning: dataSource.loading }}
-                      sortDirections={TABLE_SORT_DIRECTIONS}
-                      onChange={handleTableChange}
-                      pagination={{
-                        showSizeChanger: true,
-                        pageSize: queryParams.perPage,
-                        current: queryParams.page,
-                        total: dataSource.total,
-                        onChange: handlePageChange
-                      }}
-                    />
-                  </ConfigProvider>
+                    <ConfigProvider
+                      renderEmpty={(type) =>
+                        type === 'Table' ? (
+                          <ListEmpty
+                            icon={<IconFont type="icon-usage-outlined" />}
+                            title={intl.formatMessage({
+                              id: 'quotas.noresult.title'
+                            })}
+                            description={intl.formatMessage({
+                              id: 'quotas.noresult.subTitle'
+                            })}
+                            queryParams={{ search: queryParams.search }}
+                            onAdd={openCreate}
+                            addText={intl.formatMessage({
+                              id: 'noresult.button.add'
+                            })}
+                          />
+                        ) : undefined
+                      }
+                    >
+                      <Table
+                        className="scroll-table"
+                        rowKey="id"
+                        columns={columns}
+                        dataSource={dataSource.dataList}
+                        rowSelection={rowSelection}
+                        loading={false}
+                        sortDirections={TABLE_SORT_DIRECTIONS}
+                        onChange={handleTableChange}
+                        pagination={{
+                          showSizeChanger: true,
+                          pageSize: queryParams.perPage,
+                          current: queryParams.page,
+                          total: dataSource.total,
+                          onChange: handlePageChange
+                        }}
+                      />
+                    </ConfigProvider>
+                  </TableLoadGate>
                 </>
               )
             },
@@ -338,39 +353,77 @@ const Quotas: React.FC = () => {
                       setChannelOpen(true);
                     }}
                   />
-                  <Table
-                    rowKey="id"
-                    dataSource={channels}
-                    columns={[
-                      {
-                        title: intl.formatMessage({ id: 'common.table.name' }),
-                        dataIndex: 'name'
-                      },
-                      {
-                        title: intl.formatMessage({
-                          id: 'quotas.form.channel'
-                        }),
-                        dataIndex: 'channel_type'
-                      },
-                      {
-                        title: intl.formatMessage({
-                          id: 'common.table.operation'
-                        }),
-                        render: (_: any, row: ChannelItem) => (
-                          <a
-                            onClick={async () => {
-                              await deleteNotificationChannel(row.id);
-                              loadChannels();
-                            }}
-                          >
-                            {intl.formatMessage({
-                              id: 'common.button.delete'
+                  <TableLoadGate
+                    loading={channelLoading}
+                    loadend={channelLoadend}
+                    error={channelError}
+                    hasRows={!!channels.length}
+                    onRetry={() => loadChannels()}
+                  >
+                    <ConfigProvider
+                      renderEmpty={(type) =>
+                        type === 'Table' ? (
+                          <ListEmpty
+                            icon={<IconFont type="icon-usage-outlined" />}
+                            title={intl.formatMessage({
+                              id: 'quotas.channel.noresult.title'
                             })}
-                          </a>
-                        )
+                            description={intl.formatMessage({
+                              id: 'quotas.channel.noresult.subTitle'
+                            })}
+                            onAdd={() => {
+                              channelForm.resetFields();
+                              channelForm.setFieldsValue({
+                                channel_type: 'webhook',
+                                enabled: true
+                              });
+                              setChannelOpen(true);
+                            }}
+                            addText={intl.formatMessage({
+                              id: 'noresult.button.add'
+                            })}
+                          />
+                        ) : undefined
                       }
-                    ]}
-                  />
+                    >
+                      <Table
+                        rowKey="id"
+                        dataSource={channels}
+                        loading={false}
+                        columns={[
+                          {
+                            title: intl.formatMessage({
+                              id: 'common.table.name'
+                            }),
+                            dataIndex: 'name'
+                          },
+                          {
+                            title: intl.formatMessage({
+                              id: 'quotas.form.channel'
+                            }),
+                            dataIndex: 'channel_type'
+                          },
+                          {
+                            title: intl.formatMessage({
+                              id: 'common.table.operation'
+                            }),
+                            render: (_: any, row: ChannelItem) => (
+                              <a
+                                onClick={async () => {
+                                  await deleteNotificationChannel(row.id);
+                                  loadChannels();
+                                }}
+                              >
+                                {intl.formatMessage({
+                                  id: 'common.button.delete'
+                                })}
+                              </a>
+                            )
+                          }
+                        ]}
+                      />
+                    </ConfigProvider>
+                  </TableLoadGate>
                 </>
               )
             }

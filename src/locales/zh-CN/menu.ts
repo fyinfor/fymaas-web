@@ -41,6 +41,8 @@ export default {
   'menu.accessControl.apikeys': 'API 密钥',
   'menu.accessControl.users': '用户管理',
   'menu.accessControl.organizations': '组织管理',
+  'menu.workspaces': '工作空间',
+  'menu.accessControl.workspaces': '工作空间',
   'menu.resources.clusters': '集群',
   'menu.resources.credentials': '云凭证',
   'menu.resources.clusterDetail': '集群详情',

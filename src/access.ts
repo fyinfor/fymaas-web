@@ -51,6 +51,7 @@ export default (initialState: {
     canManageCurrentOrg: false,
     canSeeUser,
     canDelete: true,
-    canLogin: true
+    canLogin: true,
+    canSeeWorkspaces: isPlatformAdmin
   });
 };

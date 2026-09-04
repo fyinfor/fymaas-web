@@ -13,17 +13,17 @@ type ResourceEventsParams = Parameters<typeof queryResourceEvents>[0];
  * response onto the table.
  */
 export default function useQueryResourceEvents(option?: { key?: string }) {
-  const { detailData, loading, cancelRequest, fetchData } = useQueryData<
-    ResourceEventsResponse,
-    ResourceEventsParams
-  >({
-    fetchDetail: queryResourceEvents,
-    key: option?.key || 'resourceEvents'
-  });
+  const { detailData, loading, loadend, error, cancelRequest, fetchData } =
+    useQueryData<ResourceEventsResponse, ResourceEventsParams>({
+      fetchDetail: queryResourceEvents,
+      key: option?.key || 'resourceEvents'
+    });
 
   return {
     detailData,
     loading,
+    loadend,
+    error,
     cancelRequest,
     fetchData
   };

@@ -1,3 +1,4 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
@@ -8,13 +9,11 @@ import {
   DeleteModal,
   FilterBar,
   IconFont,
-  NoResult,
   useExpandedRowKeys
 } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { Button, ConfigProvider, message, Space, Table } from 'antd';
-import _ from 'lodash';
 import { useState } from 'react';
 import PageBox from '../_components/page-box';
 import {
@@ -168,23 +167,19 @@ const KVCache: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-storage-outlined" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.kvCache.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-storage-outlined" />}
         title={intl.formatMessage({ id: 'noresult.kvCache.title' })}
-        subTitle={intl.formatMessage({
+        description={intl.formatMessage({
           id: 'noresult.kvCache.subTitle'
         })}
-        onClick={handleAddService}
-        buttonText={intl.formatMessage({ id: 'kvCache.button.add' })}
-      ></NoResult>
+        noFound={intl.formatMessage({
+          id: 'noresult.kvCache.nofound'
+        })}
+        queryParams={queryParams}
+        onAdd={handleAddService}
+        addText={intl.formatMessage({ id: 'kvCache.button.add' })}
+      />
     );
   };
 
@@ -265,56 +260,61 @@ const KVCache: React.FC = () => {
             </Space>
           }
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table cache-services-table'}
-            rowKey="id"
-            tableLayout="fixed"
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            dataSource={dataSource.dataList}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            rowSelection={rowSelection}
-            expandable={{
-              expandedRowKeys,
-              // only managed services run instances
-              rowExpandable: (record: ListItem) =>
-                record.mode === ServiceModeValueMap.Managed,
-              expandedRowRender: renderExpandedRow,
-              onExpand: (expanded: boolean, record: ListItem) =>
-                handleExpandChange(expanded, record, record.id),
-              expandIcon: ({ expanded, onExpand, record, expandable }) =>
-                expandable ? (
-                  <Button
-                    type="text"
-                    size="small"
-                    onClick={(e) => onExpand(record, e)}
-                  >
-                    <IconFont
-                      type="icon-down"
-                      rotate={expanded ? 0 : -90}
-                      style={{ fontSize: 12 }}
-                    ></IconFont>
-                  </Button>
-                ) : null
-            }}
-            columns={columns}
-            scroll={{ x: 1100 }}
-            onChange={handleTableChange}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table cache-services-table'}
+              rowKey="id"
+              tableLayout="fixed"
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              dataSource={dataSource.dataList}
+              loading={false}
+              rowSelection={rowSelection}
+              expandable={{
+                expandedRowKeys,
+                // only managed services run instances
+                rowExpandable: (record: ListItem) =>
+                  record.mode === ServiceModeValueMap.Managed,
+                expandedRowRender: renderExpandedRow,
+                onExpand: (expanded: boolean, record: ListItem) =>
+                  handleExpandChange(expanded, record, record.id),
+                expandIcon: ({ expanded, onExpand, record, expandable }) =>
+                  expandable ? (
+                    <Button
+                      type="text"
+                      size="small"
+                      onClick={(e) => onExpand(record, e)}
+                    >
+                      <IconFont
+                        type="icon-down"
+                        rotate={expanded ? 0 : -90}
+                        style={{ fontSize: 12 }}
+                      ></IconFont>
+                    </Button>
+                  ) : null
+              }}
+              columns={columns}
+              scroll={{ x: 1100 }}
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <AddService
         open={openModalStatus.open}

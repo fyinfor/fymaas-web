@@ -334,6 +334,9 @@ export default {
   'quotas.noresult.title': 'Henüz kota politikası yok',
   'quotas.noresult.subTitle':
     'Bir kiracı veya anahtar için jeton ya da istek hızı sınırı ekleyin.',
+  'quotas.channel.noresult.title': 'Henüz bildirim kanalı yok',
+  'quotas.channel.noresult.subTitle':
+    'Kota uyarılarının iletilmesi için webhook veya e-posta kanalı ekleyin.',
 
   'billing.tab.invoices': 'Faturalar',
   'billing.tab.plans': 'Fiyat planları',
@@ -442,5 +445,36 @@ export default {
   'orgs.members.member': 'Üye',
   'orgs.noresult.title': 'Henüz organizasyon yok',
   'orgs.noresult.subTitle':
-    'Kiracıları ve üyeleri ayırmak için bir organizasyon oluşturun.'
+    'Kiracıları ve üyeleri ayırmak için bir organizasyon oluşturun.',
+
+  'menu.workspaces': 'Çalışma alanları',
+  'menu.accessControl.workspaces': 'Çalışma alanları',
+  'workspaces.item': 'çalışma alanı',
+  'workspaces.add': 'Çalışma Alanı Ekle',
+  'workspaces.enter': 'Gir',
+  'workspaces.edit': 'Çalışma Alanını Düzenle',
+  'workspaces.filter.name': 'Ada göre ara',
+  'workspaces.form.name': 'Ad (URL güvenli)',
+  'workspaces.form.scope': 'Çalışma alanı',
+  'workspaces.form.scopePlaceholder': 'Geçerli çalışma alanı',
+  'workspaces.org': 'Organizasyon',
+  'workspaces.default': 'Varsayılan',
+  'workspaces.setDefault': 'Varsayılan yap',
+  'workspaces.members': 'Üyeler',
+  'workspaces.members.title': '{name} üyeleri',
+  'workspaces.members.user': 'Kullanıcı seçin',
+  'workspaces.members.add': 'Üye ekle',
+  'workspaces.members.owner': 'Sahip',
+  'workspaces.members.member': 'Üye',
+  'workspaces.noresult.title': 'Henüz çalışma alanı yok',
+  'workspaces.noresult.subTitle':
+    'Modelleri, GPU’ları ve API anahtarlarını ayırmak için bir çalışma alanı oluşturun.',
+  'workspaces.switcher.all': 'Tümü',
+  'workspaces.switcher.back': 'Çalışma alanlarına dön',
+  'workspaces.switcher.personal': 'Kişisel',
+  'workspaces.switcher.manage': 'Çalışma alanlarını yönet',
+  'workspaces.switcher.create': 'Yeni çalışma alanı',
+  'workspaces.filter': 'Çalışma alanına göre süz',
+  'workspaces.tag.global': 'Genel',
+  'billing.item.workspace': 'Çalışma alanı'
 };

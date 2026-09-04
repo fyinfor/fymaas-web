@@ -1,13 +1,13 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl, useModel } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ConfigProvider, message, Table } from 'antd';
-import _ from 'lodash';
 import { useMemo, useState } from 'react';
 import PageBox from '../_components/page-box';
 import {
@@ -140,21 +140,15 @@ const Users: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-users" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.users.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-users" />}
         title={intl.formatMessage({ id: 'noresult.users.title' })}
-        subTitle={intl.formatMessage({ id: 'noresult.users.subTitle' })}
-        onClick={handleAddUser}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-      ></NoResult>
+        description={intl.formatMessage({ id: 'noresult.users.subTitle' })}
+        noFound={intl.formatMessage({ id: 'noresult.users.nofound' })}
+        queryParams={queryParams}
+        onAdd={handleAddUser}
+        addText={intl.formatMessage({ id: 'noresult.button.add' })}
+      />
     );
   };
 
@@ -184,31 +178,36 @@ const Users: React.FC = () => {
           rowSelection={rowSelection}
           widths={{ input: 300 }}
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            columns={columns}
-            dataSource={dataList}
-            rowSelection={rowSelection}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey="id"
-            onChange={handleTableChange}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table'}
+              columns={columns}
+              dataSource={dataList}
+              rowSelection={rowSelection}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              rowKey="id"
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <AddModal
         open={openAddModalStatus.open}

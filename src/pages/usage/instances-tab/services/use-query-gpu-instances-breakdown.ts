@@ -14,17 +14,17 @@ import {
 export default function useQueryGpuInstancesBreakdown(option?: {
   key?: string;
 }) {
-  const { detailData, loading, cancelRequest, fetchData } = useQueryData<
-    ResourceBreakdownResponse,
-    ResourceBreakdownRequest
-  >({
-    fetchDetail: queryGpuInstancesBreakdown,
-    key: option?.key || 'gpuInstancesBreakdown'
-  });
+  const { detailData, loading, loadend, error, cancelRequest, fetchData } =
+    useQueryData<ResourceBreakdownResponse, ResourceBreakdownRequest>({
+      fetchDetail: queryGpuInstancesBreakdown,
+      key: option?.key || 'gpuInstancesBreakdown'
+    });
 
   return {
     detailData,
     loading,
+    loadend,
+    error,
     cancelRequest,
     fetchData
   };

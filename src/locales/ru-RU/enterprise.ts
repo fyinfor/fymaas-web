@@ -333,6 +333,9 @@ export default {
   'quotas.noresult.title': 'Политик квот пока нет',
   'quotas.noresult.subTitle':
     'Добавьте политику, чтобы ограничить токены или частоту запросов.',
+  'quotas.channel.noresult.title': 'Каналов уведомлений пока нет',
+  'quotas.channel.noresult.subTitle':
+    'Добавьте webhook или почтовый канал, чтобы получать оповещения о квотах.',
 
   'billing.tab.invoices': 'Счета',
   'billing.tab.plans': 'Тарифы',
@@ -442,5 +445,36 @@ export default {
   'orgs.members.member': 'Участник',
   'orgs.noresult.title': 'Организаций пока нет',
   'orgs.noresult.subTitle':
-    'Создайте организацию, чтобы изолировать арендаторов и участников.'
+    'Создайте организацию, чтобы изолировать арендаторов и участников.',
+
+  'menu.workspaces': 'Рабочие пространства',
+  'menu.accessControl.workspaces': 'Рабочие пространства',
+  'workspaces.item': 'рабочее пространство',
+  'workspaces.add': 'Добавить рабочее пространство',
+  'workspaces.enter': 'Войти',
+  'workspaces.edit': 'Изменить рабочее пространство',
+  'workspaces.filter.name': 'Поиск по названию',
+  'workspaces.form.name': 'Имя (безопасное для URL)',
+  'workspaces.form.scope': 'Рабочее пространство',
+  'workspaces.form.scopePlaceholder': 'Текущее рабочее пространство',
+  'workspaces.org': 'Организация',
+  'workspaces.default': 'По умолчанию',
+  'workspaces.setDefault': 'Сделать по умолчанию',
+  'workspaces.members': 'Участники',
+  'workspaces.members.title': 'Участники {name}',
+  'workspaces.members.user': 'Выберите пользователя',
+  'workspaces.members.add': 'Добавить участника',
+  'workspaces.members.owner': 'Владелец',
+  'workspaces.members.member': 'Участник',
+  'workspaces.noresult.title': 'Рабочих пространств пока нет',
+  'workspaces.noresult.subTitle':
+    'Создайте рабочее пространство, чтобы изолировать модели, GPU и API-ключи.',
+  'workspaces.switcher.all': 'Все',
+  'workspaces.switcher.back': 'Назад к пространствам',
+  'workspaces.switcher.personal': 'Личное',
+  'workspaces.switcher.manage': 'Управление пространствами',
+  'workspaces.switcher.create': 'Новое пространство',
+  'workspaces.filter': 'Фильтр по пространству',
+  'workspaces.tag.global': 'Глобально',
+  'billing.item.workspace': 'Рабочее пространство'
 };

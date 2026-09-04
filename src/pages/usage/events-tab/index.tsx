@@ -8,11 +8,12 @@
  * tab (date range + "filter by user" for managers); the resource-type /
  * event-type selects ride in the bar's ``extra`` slot.
  */
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { type StatusType } from '@/config/types';
 import { SimpleSelect, StatusDot } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
-import { Input, Select, Table } from 'antd';
+import { ConfigProvider, Input, Select, Table } from 'antd';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -119,7 +120,13 @@ const ResourceEvents: React.FC = () => {
     perPage: 50,
     page: 1
   });
-  const { detailData: data, loading, fetchData } = useQueryResourceEvents();
+  const {
+    detailData: data,
+    loading,
+    loadend,
+    error,
+    fetchData
+  } = useQueryResourceEvents();
 
   // Latest params, so the stable debounced name handler reads current values.
   const queryRef = useRef(queryParams);
@@ -271,25 +278,51 @@ const ResourceEvents: React.FC = () => {
         }
       />
 
-      <Table
-        rowKey="id"
-        dataSource={data?.items ?? []}
-        columns={columns as any}
-        style={{ marginTop: 24 }}
-        loading={{
-          spinning: loading,
-          size: 'middle'
-        }}
-        pagination={{
-          size: 'middle',
-          current: queryParams.page,
-          pageSize: data?.pagination?.perPage ?? 50,
-          total: data?.pagination?.total ?? 0,
-          showSizeChanger: false,
-          hideOnSinglePage: queryParams.perPage === 50,
-          onChange: (p) => fetchEvents({ page: p })
-        }}
-      />
+      <TableLoadGate
+        loading={loading}
+        loadend={loadend}
+        error={error}
+        hasRows={!!data?.items?.length}
+        onRetry={() => fetchEvents({})}
+      >
+        <ConfigProvider
+          renderEmpty={(type) =>
+            type === 'Table' ? (
+              <ListEmpty
+                title={intl.formatMessage({
+                  id: 'usage.noresult.events.title'
+                })}
+                description={intl.formatMessage({
+                  id: 'usage.noresult.events.subTitle'
+                })}
+                noFound={intl.formatMessage({ id: 'usage.noresult.nofound' })}
+                queryParams={{
+                  name: queryParams.nameQuery,
+                  resourceType: queryParams.resourceType,
+                  eventTypes: queryParams.eventTypes
+                }}
+              />
+            ) : undefined
+          }
+        >
+          <Table
+            rowKey="id"
+            dataSource={data?.items ?? []}
+            columns={columns as any}
+            style={{ marginTop: 24 }}
+            loading={false}
+            pagination={{
+              size: 'middle',
+              current: queryParams.page,
+              pageSize: data?.pagination?.perPage ?? 50,
+              total: data?.pagination?.total ?? 0,
+              showSizeChanger: false,
+              hideOnSinglePage: queryParams.perPage === 50,
+              onChange: (p) => fetchEvents({ page: p })
+            }}
+          />
+        </ConfigProvider>
+      </TableLoadGate>
     </div>
   );
 };

@@ -55,9 +55,16 @@ const useStyles = createStyles(({ css }) => ({
 const ProgressMetric: React.FC<{
   label: React.ReactNode;
   percent?: number | null;
+  display?: React.ReactNode;
   detail?: React.ReactNode;
   color?: string;
-}> = ({ label, percent, detail, color = 'var(--console-chart-gpu)' }) => {
+}> = ({
+  label,
+  percent,
+  display,
+  detail,
+  color = 'var(--console-chart-gpu)'
+}) => {
   const { styles } = useStyles();
   const empty =
     percent === null || percent === undefined || Number.isNaN(percent);
@@ -71,7 +78,11 @@ const ProgressMetric: React.FC<{
           {label}
         </span>
         <span className={styles.value}>
-          {empty ? '—' : `${Math.round(width)}%`}
+          {display !== undefined
+            ? display
+            : empty
+              ? '—'
+              : `${Math.round(width)}%`}
         </span>
       </div>
       <div className={styles.bar}>

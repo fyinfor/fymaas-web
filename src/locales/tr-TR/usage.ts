@@ -29,6 +29,25 @@ export default {
   'usage.tabs.models': 'Models',
   'usage.tabs.apikeys': 'API Keys',
   'usage.tabs.users': 'User',
+  'usage.noresult.nofound': 'Eşleşen kullanım kaydı bulunamadı',
+  'usage.noresult.models.title': 'Henüz model kullanımı yok',
+  'usage.noresult.models.subTitle':
+    'Seçilen zaman aralığında model çağrısı yok.',
+  'usage.noresult.users.title': 'Henüz kullanıcı kullanımı yok',
+  'usage.noresult.users.subTitle':
+    'Seçilen zaman aralığında kullanıcı çağrısı yok.',
+  'usage.noresult.apikeys.title': 'Henüz API anahtarı kullanımı yok',
+  'usage.noresult.apikeys.subTitle':
+    'Seçilen zaman aralığında API anahtarı çağrısı yok.',
+  'usage.noresult.instances.title': 'Henüz GPU örneği kullanımı yok',
+  'usage.noresult.instances.subTitle':
+    'Seçilen zaman aralığında GPU örneği kullanımı yok.',
+  'usage.noresult.storage.title': 'Henüz depolama kullanımı yok',
+  'usage.noresult.storage.subTitle':
+    'Seçilen zaman aralığında depolama kullanımı yok.',
+  'usage.noresult.events.title': 'Henüz kaynak olayı yok',
+  'usage.noresult.events.subTitle':
+    'Seçilen zaman aralığında kaynak yaşam döngüsü olayı yok.',
   'usage.export.chart': 'Export Chart Data',
   'usage.export.table': 'Export Table Data',
   'usage.export.rows': 'About {total} rows will be exported.',

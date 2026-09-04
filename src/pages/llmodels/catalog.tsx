@@ -1,4 +1,5 @@
 import { modelsExpandKeysAtom, modelsSessionAtom } from '@/atoms/models';
+import { ErrorState, ListEmpty } from '@/components/console';
 import { PageAction } from '@/config';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { IS_FIRST_LOGIN, writeState } from '@/utils/localstore/index';
@@ -6,7 +7,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import {
   IconFont,
   InfiniteScrollerProvider,
-  NoResult,
   useBodyScroll
 } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
@@ -195,19 +195,25 @@ const Catalog: React.FC = () => {
           activeId={-1}
           isFirst={!dataSource.loadend}
         ></CatalogList>
-        <NoResult
-          minHeight="calc(100vh - 300px)"
-          loading={dataSource.loading}
-          loadend={dataSource.loadend}
-          dataSource={dataSource.dataList}
-          image={<IconFont type="icon-layers" />}
-          filters={_.omit(queryParams, ['sort_by'])}
-          noFoundText={intl.formatMessage({
-            id: 'noresult.catalog.nofound'
-          })}
-          title={intl.formatMessage({ id: 'noresult.catalog.title' })}
-          subTitle={intl.formatMessage({ id: 'noresult.catalog.subTitle' })}
-        ></NoResult>
+        {dataSource.loadend &&
+          (dataSource.error && !dataSource.dataList.length ? (
+            <ErrorState
+              onRetry={handleSearch}
+              style={{ minHeight: 'calc(100vh - 300px)' }}
+            />
+          ) : !dataSource.dataList.length ? (
+            <ListEmpty
+              icon={<IconFont type="icon-layers" />}
+              title={intl.formatMessage({ id: 'noresult.catalog.title' })}
+              description={intl.formatMessage({
+                id: 'noresult.catalog.subTitle'
+              })}
+              noFound={intl.formatMessage({
+                id: 'noresult.catalog.nofound'
+              })}
+              queryParams={queryParams}
+            />
+          ) : null)}
       </InfiniteScrollerProvider>
       <DelopyBuiltInModal
         open={openDeployModal.show}

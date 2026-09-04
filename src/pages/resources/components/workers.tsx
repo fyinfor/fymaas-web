@@ -239,8 +239,13 @@ const Workers: React.FC<WorkersProps> = ({ clusterId, source }) => {
     loading: dataSource.loading,
     dataSource: dataSource.dataList,
     queryParams: queryParams,
+    omitKeys: source === 'clusterDetail' ? ['cluster_id'] : undefined,
     iconType: 'icon-resources',
     title: intl.formatMessage({ id: 'noresult.workers.title' }),
+    subTitle:
+      source === 'clusterDetail'
+        ? intl.formatMessage({ id: 'noresult.workers.subTitle' })
+        : undefined,
     noClusters: !clusterData.list.length,
     noWorkers: dataSource.dataList.length === 0 && clusterData.list.length > 0,
     defaultContent: {

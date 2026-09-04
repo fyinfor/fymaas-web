@@ -18,23 +18,26 @@ import {
   Select,
   Space,
   Table,
+  Tag,
   message
 } from 'antd';
 import React from 'react';
 import PageBox from '../_components/page-box';
 
-interface OrgItem {
+interface WorkspaceItem {
   id: number;
   name: string;
   display_name?: string;
   description?: string;
-  is_platform?: boolean;
+  organization_id?: number;
+  organization?: { id: number; name?: string; display_name?: string };
+  is_default?: boolean;
   created_at: string;
 }
 
-const API = '/organizations';
+const API = '/workspaces';
 
-const EnterpriseOrganizations: React.FC = () => {
+const EnterpriseWorkspaces: React.FC = () => {
   const intl = useIntl();
   const [form] = Form.useForm();
   const {
@@ -49,42 +52,62 @@ const EnterpriseOrganizations: React.FC = () => {
     handleTableChange,
     handleSearch,
     handleNameChange
-  } = useTableFetch<OrgItem>({
+  } = useTableFetch<WorkspaceItem>({
     fetchAPI: (params) => request(API, { method: 'GET', params }),
     deleteAPI: (id) => request(`${API}/${id}`, { method: 'DELETE' }),
     watch: false,
-    contentForDelete: intl.formatMessage({ id: 'orgs.item' })
+    contentForDelete: intl.formatMessage({ id: 'workspaces.item' })
   });
 
   const [open, setOpen] = React.useState(false);
-  const [editing, setEditing] = React.useState<OrgItem | null>(null);
+  const [editing, setEditing] = React.useState<WorkspaceItem | null>(null);
   const [membersOpen, setMembersOpen] = React.useState(false);
-  const [activeOrg, setActiveOrg] = React.useState<OrgItem | null>(null);
+  const [active, setActive] = React.useState<WorkspaceItem | null>(null);
   const [members, setMembers] = React.useState<any[]>([]);
   const [memberForm] = Form.useForm();
   const [people, setPeople] = React.useState<PersonOption[]>([]);
+  const [orgs, setOrgs] = React.useState<{ id: number; name: string }[]>([]);
 
-  const loadMembers = async (orgId: number) => {
-    const rows = await request(`/organizations/${orgId}/members`);
+  const loadMembers = async (id: number) => {
+    const rows = await request(`${API}/${id}/members`);
     setMembers(Array.isArray(rows) ? rows : []);
   };
 
-  const openMembers = async (row: OrgItem) => {
-    setActiveOrg(row);
+  const openMembers = async (row: WorkspaceItem) => {
+    setActive(row);
     setMembersOpen(true);
     await loadMembers(row.id);
   };
 
   React.useEffect(() => {
+    const search = window.location.hash.split('?')[1] || '';
+    if (new URLSearchParams(search).get('create') === '1') {
+      form.resetFields();
+      setEditing(null);
+      setOpen(true);
+    }
+  }, [form]);
+
+  React.useEffect(() => {
     loadEnterprisePeople()
       .then(setPeople)
+      .catch(() => undefined);
+    request('/organization-directory', { params: { page: 1, perPage: 100 } })
+      .then((page) =>
+        setOrgs(
+          (page.items || []).map((item: any) => ({
+            id: item.id,
+            name: item.display_name || item.name
+          }))
+        )
+      )
       .catch(() => undefined);
   }, []);
 
   const addMember = async () => {
-    if (!activeOrg) return;
+    if (!active) return;
     const values = await memberForm.validateFields();
-    await request(`/organizations/${activeOrg.id}/members`, {
+    await request(`${API}/${active.id}/members`, {
       method: 'POST',
       data: {
         principal_ids: [Number(values.principal_id)],
@@ -93,15 +116,15 @@ const EnterpriseOrganizations: React.FC = () => {
     });
     message.success(intl.formatMessage({ id: 'common.message.success' }));
     memberForm.resetFields();
-    loadMembers(activeOrg.id);
+    loadMembers(active.id);
   };
 
   const removeMember = async (principalId: number) => {
-    if (!activeOrg) return;
-    await request(`/organizations/${activeOrg.id}/members/${principalId}`, {
+    if (!active) return;
+    await request(`${API}/${active.id}/members/${principalId}`, {
       method: 'DELETE'
     });
-    loadMembers(activeOrg.id);
+    loadMembers(active.id);
   };
 
   const handleAdd = () => {
@@ -123,14 +146,20 @@ const EnterpriseOrganizations: React.FC = () => {
     fetchData();
   };
 
+  const setDefault = async (row: WorkspaceItem) => {
+    await request(`${API}/${row.id}/default`, { method: 'POST' });
+    message.success(intl.formatMessage({ id: 'common.message.success' }));
+    fetchData();
+  };
+
   return (
     <>
       <PageBox>
         <FilterBar
           marginBottom={22}
           showSelect={false}
-          inputHolder={intl.formatMessage({ id: 'orgs.filter.name' })}
-          buttonText={intl.formatMessage({ id: 'orgs.add' })}
+          inputHolder={intl.formatMessage({ id: 'workspaces.filter.name' })}
+          buttonText={intl.formatMessage({ id: 'workspaces.add' })}
           handleSearch={handleSearch}
           handleDeleteByBatch={handleDeleteBatch}
           handleClickPrimary={handleAdd}
@@ -149,9 +178,11 @@ const EnterpriseOrganizations: React.FC = () => {
               type === 'Table' ? (
                 <ListEmpty
                   icon={<IconFont type="icon-org-outlined" />}
-                  title={intl.formatMessage({ id: 'orgs.noresult.title' })}
+                  title={intl.formatMessage({
+                    id: 'workspaces.noresult.title'
+                  })}
                   description={intl.formatMessage({
-                    id: 'orgs.noresult.subTitle'
+                    id: 'workspaces.noresult.subTitle'
                   })}
                   queryParams={{ search: queryParams.search }}
                   onAdd={handleAdd}
@@ -171,44 +202,63 @@ const EnterpriseOrganizations: React.FC = () => {
               columns={[
                 {
                   title: intl.formatMessage({ id: 'common.table.name' }),
-                  dataIndex: 'name'
+                  dataIndex: 'name',
+                  render: (name: string, row: WorkspaceItem) => (
+                    <Space>
+                      <span>{name}</span>
+                      {row.is_default ? (
+                        <Tag color="blue">
+                          {intl.formatMessage({ id: 'workspaces.default' })}
+                        </Tag>
+                      ) : null}
+                    </Space>
+                  )
                 },
                 {
                   title: intl.formatMessage({ id: 'common.table.displayName' }),
                   dataIndex: 'display_name'
                 },
                 {
-                  title: intl.formatMessage({ id: 'common.table.description' }),
-                  dataIndex: 'description'
+                  title: intl.formatMessage({ id: 'workspaces.org' }),
+                  render: (_: any, row: WorkspaceItem) =>
+                    row.organization?.display_name ||
+                    row.organization?.name ||
+                    row.organization_id
                 },
                 {
                   title: intl.formatMessage({ id: 'common.table.operation' }),
-                  render: (_: any, row: OrgItem) => (
+                  render: (_: any, row: WorkspaceItem) => (
                     <Space>
                       <a
                         onClick={() => {
                           setEditing(row);
-                          form.setFieldsValue(row);
+                          form.setFieldsValue({
+                            ...row,
+                            organization_id: row.organization_id
+                          });
                           setOpen(true);
                         }}
                       >
                         {intl.formatMessage({ id: 'common.button.edit' })}
                       </a>
                       <a onClick={() => openMembers(row)}>
-                        {intl.formatMessage({ id: 'orgs.members' })}
+                        {intl.formatMessage({ id: 'workspaces.members' })}
                       </a>
-                      {row.is_platform ? null : (
-                        <a
-                          onClick={() =>
-                            handleDelete({
-                              ...row,
-                              name: row.display_name || row.name
-                            })
-                          }
-                        >
-                          {intl.formatMessage({ id: 'common.button.delete' })}
+                      {!row.is_default ? (
+                        <a onClick={() => setDefault(row)}>
+                          {intl.formatMessage({ id: 'workspaces.setDefault' })}
                         </a>
-                      )}
+                      ) : null}
+                      <a
+                        onClick={() =>
+                          handleDelete({
+                            ...row,
+                            name: row.display_name || row.name
+                          })
+                        }
+                      >
+                        {intl.formatMessage({ id: 'common.button.delete' })}
+                      </a>
                     </Space>
                   )
                 }
@@ -226,7 +276,7 @@ const EnterpriseOrganizations: React.FC = () => {
       </PageBox>
       <FormDrawer
         title={intl.formatMessage({
-          id: editing ? 'orgs.edit' : 'orgs.add'
+          id: editing ? 'workspaces.edit' : 'workspaces.add'
         })}
         open={open}
         onCancel={() => {
@@ -238,9 +288,23 @@ const EnterpriseOrganizations: React.FC = () => {
       >
         <Form form={form} layout="vertical">
           <Form.Item
+            name="organization_id"
+            label={intl.formatMessage({ id: 'workspaces.org' })}
+            rules={[{ required: !editing }]}
+            hidden={!!editing}
+          >
+            <Select
+              options={orgs.map((item) => ({
+                label: item.name,
+                value: item.id
+              }))}
+            />
+          </Form.Item>
+          <Form.Item
             name="name"
-            label={intl.formatMessage({ id: 'orgs.form.name' })}
-            rules={[{ required: true }]}
+            label={intl.formatMessage({ id: 'workspaces.form.name' })}
+            rules={[{ required: !editing }]}
+            hidden={!!editing}
           >
             <Input />
           </Form.Item>
@@ -264,8 +328,8 @@ const EnterpriseOrganizations: React.FC = () => {
         width={560}
         onClose={() => setMembersOpen(false)}
         title={intl.formatMessage(
-          { id: 'orgs.members.title' },
-          { name: activeOrg?.display_name || activeOrg?.name }
+          { id: 'workspaces.members.title' },
+          { name: active?.display_name || active?.name }
         )}
       >
         <Form
@@ -280,7 +344,7 @@ const EnterpriseOrganizations: React.FC = () => {
               optionFilterProp="label"
               style={{ minWidth: 220 }}
               placeholder={intl.formatMessage({
-                id: 'orgs.members.user'
+                id: 'workspaces.members.user'
               })}
               options={people.map((item) => ({
                 label: item.name,
@@ -293,18 +357,20 @@ const EnterpriseOrganizations: React.FC = () => {
               style={{ width: 120 }}
               options={[
                 {
-                  label: intl.formatMessage({ id: 'orgs.members.owner' }),
+                  label: intl.formatMessage({ id: 'workspaces.members.owner' }),
                   value: 'owner'
                 },
                 {
-                  label: intl.formatMessage({ id: 'orgs.members.member' }),
+                  label: intl.formatMessage({
+                    id: 'workspaces.members.member'
+                  }),
                   value: 'member'
                 }
               ]}
             />
           </Form.Item>
           <Button type="primary" onClick={addMember}>
-            {intl.formatMessage({ id: 'orgs.members.add' })}
+            {intl.formatMessage({ id: 'workspaces.members.add' })}
           </Button>
         </Form>
         <Table
@@ -339,4 +405,4 @@ const EnterpriseOrganizations: React.FC = () => {
   );
 };
 
-export default EnterpriseOrganizations;
+export default EnterpriseWorkspaces;

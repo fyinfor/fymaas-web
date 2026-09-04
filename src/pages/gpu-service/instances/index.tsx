@@ -1,4 +1,5 @@
 import { clusterSessionAtom } from '@/atoms/clusters';
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
@@ -11,7 +12,6 @@ import {
   DropdownButtons,
   FilterBar,
   IconFont,
-  NoResult,
   Table as SealTable,
   type TableOrder
 } from '@gpustack/core-ui';
@@ -19,7 +19,6 @@ import { useAccess, useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { Button, message, Modal, Space } from 'antd';
 import { useSetAtom } from 'jotai';
-import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import PageBox from '../../_components/page-box';
 import { queryGPUServiceStorage } from '../storage/apis';
@@ -295,50 +294,34 @@ const GPUService: React.FC = () => {
   // ends and get different copy: the first sends an admin to add a Kubernetes
   // cluster, the second offers the create button.
   const renderEmpty = () => {
-    if (!clusterLoading && !hasK8sCluster) {
-      return (
-        <NoResult
-          minHeight="calc(100vh - 300px)"
-          loading={dataSource.loading || clusterLoading}
-          loadend={dataSource.loadend}
-          dataSource={[]}
-          image={<IconFont type="icon-cloud-outlined" />}
-          title={intl.formatMessage({
-            id: 'noresult.gpuservice.instance.title'
-          })}
-          subTitle={intl.formatMessage({
-            id: 'noresult.resources.k8sCluster'
-          })}
-          {...(access.canSeeOrgAdmin
-            ? {
-                buttonText: intl.formatMessage({
-                  id: 'noresult.resources.addk8scluster'
-                }),
-                onClick: handleAddK8sCluster
-              }
-            : {})}
-        />
-      );
-    }
+    const noCluster = !clusterLoading && !hasK8sCluster;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-cloud-outlined" />}
-        filters={_.pick(queryParams, ['search'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.gpuservice.instance.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-cloud-outlined" />}
         title={intl.formatMessage({
           id: 'noresult.gpuservice.instance.title'
         })}
-        subTitle={intl.formatMessage({
-          id: 'noresult.gpuservice.instance.subTitle'
+        description={intl.formatMessage({
+          id: noCluster
+            ? 'noresult.resources.k8sCluster'
+            : 'noresult.gpuservice.instance.subTitle'
         })}
-        onClick={openCreateInstanceModal}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
+        noFound={intl.formatMessage({
+          id: 'noresult.gpuservice.instance.nofound'
+        })}
+        queryParams={noCluster ? {} : { search: queryParams.search }}
+        onAdd={
+          noCluster
+            ? access.canSeeOrgAdmin
+              ? handleAddK8sCluster
+              : undefined
+            : openCreateInstanceModal
+        }
+        addText={intl.formatMessage({
+          id: noCluster
+            ? 'noresult.resources.addk8scluster'
+            : 'noresult.button.add'
+        })}
       />
     );
   };
@@ -407,37 +390,42 @@ const GPUService: React.FC = () => {
             </Space>
           }
         />
-        <SealTable
-          rowKey="id"
-          columns={columns}
-          dataSource={dataSource.dataList}
-          rowSelection={rowSelection}
-          loading={dataSource.loading}
+        <TableLoadGate
+          loading={dataSource.loading || clusterLoading}
           loadend={dataSource.loadend}
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          showSorterTooltip={false}
-          onTableSort={handleTableSort}
-          // `true` widens the row out to the columns' own floors (sum of their
-          // `width` / `minWidth` + the prefix gutter) and scrolls past that. Not
-          // `'max-content'`: the columns are `fr` tracks, and under a
-          // content-driven constraint the greediest cell sets the `fr` unit for
-          // every track, which blows the table far past the width it needs.
-          scroll={{ x: true }}
-          empty={renderEmpty()}
-          // Matches the `<NoResult minHeight>` inside the empty state, so the
-          // first-load spinner, the empty state and the eventual rows occupy one
-          // stable block instead of jumping on entry.
-          emptyMinHeight="calc(100vh - 300px)"
-          pagination={{
-            size: 'middle',
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: dataSource.total,
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        />
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <SealTable
+            rowKey="id"
+            columns={columns}
+            dataSource={dataSource.dataList}
+            rowSelection={rowSelection}
+            loading={false}
+            loadend={dataSource.loadend}
+            sortDirections={TABLE_SORT_DIRECTIONS}
+            showSorterTooltip={false}
+            onTableSort={handleTableSort}
+            // `true` widens the row out to the columns' own floors (sum of their
+            // `width` / `minWidth` + the prefix gutter) and scrolls past that. Not
+            // `'max-content'`: the columns are `fr` tracks, and under a
+            // content-driven constraint the greediest cell sets the `fr` unit for
+            // every track, which blows the table far past the width it needs.
+            scroll={{ x: true }}
+            empty={renderEmpty()}
+            emptyMinHeight="calc(100vh - 300px)"
+            pagination={{
+              size: 'middle',
+              showSizeChanger: true,
+              pageSize: queryParams.perPage,
+              current: queryParams.page,
+              total: dataSource.total,
+              hideOnSinglePage: queryParams.perPage === 10,
+              onChange: handlePageChange
+            }}
+          />
+        </TableLoadGate>
       </PageBox>
       <AddModal
         open={openInstanceModalStatus.open}

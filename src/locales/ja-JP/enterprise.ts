@@ -331,6 +331,9 @@ export default {
   'quotas.noresult.title': 'クォータポリシーはまだありません',
   'quotas.noresult.subTitle':
     'テナントまたはキーのトークン／レート上限を設定するポリシーを追加してください。',
+  'quotas.channel.noresult.title': '通知チャネルはまだありません',
+  'quotas.channel.noresult.subTitle':
+    'Webhook またはメールチャネルを追加して、クォータアラートを届けます。',
 
   'billing.tab.invoices': '請求書',
   'billing.tab.plans': '料金プラン',
@@ -440,5 +443,36 @@ export default {
   'orgs.members.member': 'メンバー',
   'orgs.noresult.title': '組織はまだありません',
   'orgs.noresult.subTitle':
-    'テナントとメンバーを分離する組織を作成してください。'
+    'テナントとメンバーを分離する組織を作成してください。',
+
+  'menu.workspaces': 'ワークスペース',
+  'menu.accessControl.workspaces': 'ワークスペース',
+  'workspaces.item': 'ワークスペース',
+  'workspaces.add': 'ワークスペースを追加',
+  'workspaces.enter': '入る',
+  'workspaces.edit': 'ワークスペースを編集',
+  'workspaces.filter.name': '名前で検索',
+  'workspaces.form.name': '名前（URL 安全）',
+  'workspaces.form.scope': 'ワークスペース',
+  'workspaces.form.scopePlaceholder': '現在のワークスペース',
+  'workspaces.org': '所属組織',
+  'workspaces.default': 'デフォルト',
+  'workspaces.setDefault': 'デフォルトに設定',
+  'workspaces.members': 'メンバー',
+  'workspaces.members.title': '{name} のメンバー',
+  'workspaces.members.user': 'ユーザーを選択',
+  'workspaces.members.add': 'メンバーを追加',
+  'workspaces.members.owner': 'オーナー',
+  'workspaces.members.member': 'メンバー',
+  'workspaces.noresult.title': 'ワークスペースはまだありません',
+  'workspaces.noresult.subTitle':
+    'モデル、GPU、API キーを分離するワークスペースを作成してください。',
+  'workspaces.switcher.all': 'すべて',
+  'workspaces.switcher.back': 'ワークスペースに戻る',
+  'workspaces.switcher.personal': '個人スペース',
+  'workspaces.switcher.manage': 'ワークスペースを管理',
+  'workspaces.switcher.create': '新しいワークスペース',
+  'workspaces.filter': 'ワークスペースで絞り込み',
+  'workspaces.tag.global': 'グローバル',
+  'billing.item.workspace': 'ワークスペース'
 };

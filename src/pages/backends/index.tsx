@@ -1,11 +1,11 @@
+import { ErrorState, ListEmpty } from '@/components/console';
 import { PageAction } from '@/config';
 import useTableFetch from '@/hooks/use-table-fetch';
 import {
   DeleteModal,
   FilterBar,
   IconFont,
-  InfiniteScrollerProvider,
-  NoResult
+  InfiniteScrollerProvider
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import useMemoizedFn from 'ahooks/lib/useMemoizedFn';
@@ -287,21 +287,27 @@ const BackendList = () => {
           isFirst={!dataSource.loadend}
           onSelect={handleOnSelect}
         ></BackendCardList>
-        <NoResult
-          minHeight="calc(100vh - 300px)"
-          loading={dataSource.loading}
-          loadend={dataSource.loadend}
-          dataSource={dataSource.dataList}
-          image={<IconFont type="icon-models" />}
-          filters={_.omit(queryParams, ['sort_by'])}
-          noFoundText={intl.formatMessage({
-            id: 'noresult.backend.nofound'
-          })}
-          title={intl.formatMessage({ id: 'noresult.backend.title' })}
-          subTitle={intl.formatMessage({ id: 'noresult.backend.subTitle' })}
-          onClick={() => handleAddBackend({ key: 'community' })}
-          buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-        ></NoResult>
+        {dataSource.loadend &&
+          (dataSource.error && !dataSource.dataList.length ? (
+            <ErrorState
+              onRetry={handleSearch}
+              style={{ minHeight: 'calc(100vh - 300px)' }}
+            />
+          ) : !dataSource.dataList.length ? (
+            <ListEmpty
+              icon={<IconFont type="icon-models" />}
+              title={intl.formatMessage({ id: 'noresult.backend.title' })}
+              description={intl.formatMessage({
+                id: 'noresult.backend.subTitle'
+              })}
+              noFound={intl.formatMessage({
+                id: 'noresult.backend.nofound'
+              })}
+              queryParams={queryParams}
+              onAdd={() => handleAddBackend({ key: 'community' })}
+              addText={intl.formatMessage({ id: 'noresult.button.add' })}
+            />
+          ) : null)}
       </InfiniteScrollerProvider>
       <AddModal
         action={openBackendModalStatus.action}

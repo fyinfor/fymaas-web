@@ -1,5 +1,7 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
-import { Table } from 'antd';
+import { useIntl } from '@umijs/max';
+import { ConfigProvider, Table } from 'antd';
 import dayjs from 'dayjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { ResourceBreakdownItem } from '../../apis/resource';
@@ -59,11 +61,14 @@ const StorageBreakdownTable: React.FC<Props> = ({
     perPage: number;
     sort_by: string;
   }>({ page: 1, perPage: PER_PAGE, sort_by: DEFAULT_SORT });
+  const [retryKey, setRetryKey] = useState(0);
   const pendingPageResetRef = useRef(false);
 
-  const { detailData, loading, fetchData } = useQueryStorageBreakdown({
-    key: `storageBreakdown-${groupKey}`
-  });
+  const intl = useIntl();
+  const { detailData, loading, loadend, error, fetchData } =
+    useQueryStorageBreakdown({
+      key: `storageBreakdown-${groupKey}`
+    });
 
   const columns = useStorageColumns(groupKey);
 
@@ -144,32 +149,63 @@ const StorageBreakdownTable: React.FC<Props> = ({
     queryParams.perPage,
     queryParams.sort_by,
     refreshKey,
+    retryKey,
     fetchData
   ]);
 
   const rows: ResourceBreakdownItem[] = detailData?.items ?? [];
 
   return (
-    <Table
-      rowKey={(row) =>
-        `${row.volume_id ?? ''}|${row.user_id ?? ''}|${row.volume_name ?? ''}`
-      }
-      dataSource={rows}
-      columns={columns as any}
-      loading={{ spinning: loading, size: 'middle' }}
-      sortDirections={TABLE_SORT_DIRECTIONS}
-      showSorterTooltip={false}
-      onChange={handleTableChange}
-      pagination={{
-        size: 'middle',
-        current: queryParams.page,
-        pageSize: detailData?.pagination?.perPage ?? queryParams.perPage,
-        total: detailData?.pagination?.total ?? 0,
-        showSizeChanger: true,
-        hideOnSinglePage: queryParams.perPage === PER_PAGE,
-        onChange: handlePageChange
-      }}
-    />
+    <TableLoadGate
+      loading={loading}
+      loadend={loadend}
+      error={error}
+      hasRows={!!rows.length}
+      onRetry={() => setRetryKey((key) => key + 1)}
+    >
+      <ConfigProvider
+        renderEmpty={(type) =>
+          type === 'Table' ? (
+            <ListEmpty
+              title={intl.formatMessage({
+                id: 'usage.noresult.storage.title'
+              })}
+              description={intl.formatMessage({
+                id: 'usage.noresult.storage.subTitle'
+              })}
+              noFound={intl.formatMessage({ id: 'usage.noresult.nofound' })}
+              queryParams={{
+                users: selectedUsers,
+                volumes: selectedVolumes,
+                organizations: selectedOrganizations,
+                userGroups: selectedUserGroups
+              }}
+            />
+          ) : undefined
+        }
+      >
+        <Table
+          rowKey={(row) =>
+            `${row.volume_id ?? ''}|${row.user_id ?? ''}|${row.volume_name ?? ''}`
+          }
+          dataSource={rows}
+          columns={columns as any}
+          loading={false}
+          sortDirections={TABLE_SORT_DIRECTIONS}
+          showSorterTooltip={false}
+          onChange={handleTableChange}
+          pagination={{
+            size: 'middle',
+            current: queryParams.page,
+            pageSize: detailData?.pagination?.perPage ?? queryParams.perPage,
+            total: detailData?.pagination?.total ?? 0,
+            showSizeChanger: true,
+            hideOnSinglePage: queryParams.perPage === PER_PAGE,
+            onChange: handlePageChange
+          }}
+        />
+      </ConfigProvider>
+    </TableLoadGate>
   );
 };
 

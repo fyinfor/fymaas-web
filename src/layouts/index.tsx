@@ -42,7 +42,7 @@ import {
 import { App, Button, ConfigProvider, Modal, theme } from 'antd';
 import { useAtom } from 'jotai';
 import 'overlayscrollbars/overlayscrollbars.css';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainerInner } from '../pages/_components/page-box';
 import Exception from './Exception';
 import './Layout.css';
@@ -242,7 +242,6 @@ export default (props: any) => {
 
   const role = initialState?.currentUser?.is_admin ? 'admin' : 'user';
   const [route] = useAccessMarkedRoutes(mapRoutes(newRoutes, role));
-  console.log('route++++++++', route, clientRoutes);
 
   const matchedRoute = useMemo(
     () => matchRoutes(route?.children || [], location.pathname)?.pop?.()?.route,
@@ -254,8 +253,21 @@ export default (props: any) => {
   }, [userSettings.collapsed]);
 
   // Chinese labels are 2–5 characters; 224px leaves a wide empty band.
-  // Latin menus keep the wider rail so "Inference Backends" still fits.
-  const siderWidth = intl.locale.startsWith('zh') ? 176 : 224;
+  // Latin menus keep the wider rail so "Inference Backends" still fits,
+  // then step down to 200px at 1280 so the content grid stays usable.
+  const [narrowViewport, setNarrowViewport] = useState(
+    typeof window !== 'undefined' ? window.innerWidth <= 1280 : false
+  );
+  useEffect(() => {
+    const onResize = () => setNarrowViewport(window.innerWidth <= 1280);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  const siderWidth = intl.locale.startsWith('zh')
+    ? 176
+    : narrowViewport
+      ? 200
+      : 224;
 
   const renderMenuHeader = (logo: React.ReactNode, title: React.ReactNode) => {
     return <>{logo}</>;

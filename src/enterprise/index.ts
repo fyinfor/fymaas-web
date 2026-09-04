@@ -17,6 +17,18 @@ import {
   getBranding,
   setBranding
 } from './branding/runtime';
+import {
+  CreateOrgScopeField,
+  OwnerScopeTag,
+  ResourceUsageFilterBar,
+  UsageFilterBar
+} from './workspace-scope';
+import {
+  SidebarWorkspaceSwitcher,
+  cacheWorkspaces,
+  ensureDefaultWorkspaceSelection,
+  loadMyWorkspaces
+} from './workspace-switcher';
 
 const cacheMemberships = async () => {
   try {
@@ -39,6 +51,13 @@ const cacheMemberships = async () => {
   } catch {
     // Login page / unauthenticated boot. Access predicates fall back
     // to the platform-admin flags already on currentUser.
+  }
+  try {
+    const workspaces = await loadMyWorkspaces();
+    cacheWorkspaces(workspaces);
+    ensureDefaultWorkspaceSelection(workspaces);
+  } catch {
+    // Same unauthenticated boot path as org membership.
   }
 };
 
@@ -104,6 +123,21 @@ const enterprisePlugin: AppPlugin = {
             : '—'
       }
     ]
+  },
+
+  login: {
+    onUserFetched: async () => {
+      await cacheMemberships();
+      await cachePermissions();
+    }
+  },
+
+  components: {
+    SiderWorkspaceSwitcher: SidebarWorkspaceSwitcher,
+    CreateOrgScopeField,
+    OwnerScopeTag,
+    UsageFilterBar,
+    ResourceUsageFilterBar
   },
 
   branding: {

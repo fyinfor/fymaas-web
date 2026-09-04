@@ -4,6 +4,12 @@ export default {
   'benchmark.button.edit': '编辑基准测试',
   'benchmark.button.clone': '克隆基准测试',
   'benchmark.button.compare': '对比',
+  'benchmark.compare.title': '基准对比',
+  'benchmark.compare.hint':
+    '对比吞吐与延迟。条形长度按该指标在所选结果中的最大值归一化。无数据的指标显示 —。',
+  'benchmark.compare.higher': '更高吞吐',
+  'benchmark.compare.faster': '更快',
+  'benchmark.compare.select': '请选择 2–4 条结果进行对比',
   'benchmark.table.model': '模型',
   'benchmark.table.instance': '模型实例',
   'benchmark.table.dataset': '数据集',

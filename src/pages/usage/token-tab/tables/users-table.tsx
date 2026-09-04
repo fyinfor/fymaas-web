@@ -1,7 +1,8 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import PageBox from '@/pages/_components/page-box';
 import { useIntl } from '@umijs/max';
-import { Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { BreakdownFilters } from '../../config/types';
 import useUsersColumns from '../../hooks/use-users-columns';
@@ -105,27 +106,59 @@ const Users: React.FC<{
   return (
     <>
       <PageBox>
-        <Table
-          columns={columns}
-          dataSource={dataSource.dataList}
-          rowKey={(record) => getBreakdownRowKey(record, 'users')}
-          loading={{
-            spinning: loading,
-            size: 'middle'
-          }}
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          showSorterTooltip={false}
-          onChange={handleTableChange}
-          pagination={{
-            size: 'middle',
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: dataSource.total,
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        ></Table>
+        <TableLoadGate
+          loading={loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() =>
+            fetchData({
+              ...queryParams,
+              group_by: ['user'],
+              filters,
+              scope,
+              ...dateRange
+            })
+          }
+        >
+          <ConfigProvider
+            renderEmpty={(type) =>
+              type === 'Table' ? (
+                <ListEmpty
+                  title={intl.formatMessage({
+                    id: 'usage.noresult.users.title'
+                  })}
+                  description={intl.formatMessage({
+                    id: 'usage.noresult.users.subTitle'
+                  })}
+                  noFound={intl.formatMessage({
+                    id: 'usage.noresult.nofound'
+                  })}
+                  queryParams={filters}
+                />
+              ) : undefined
+            }
+          >
+            <Table
+              columns={columns}
+              dataSource={dataSource.dataList}
+              rowKey={(record) => getBreakdownRowKey(record, 'users')}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
     </>
   );

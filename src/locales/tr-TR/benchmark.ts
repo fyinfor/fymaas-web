@@ -4,6 +4,12 @@ export default {
   'benchmark.button.edit': 'Kıyaslamayı Düzenle',
   'benchmark.button.clone': 'Kıyaslamayı Klonla',
   'benchmark.button.compare': 'Karşılaştır',
+  'benchmark.compare.title': 'Kıyaslama karşılaştırması',
+  'benchmark.compare.hint':
+    'Verim ve gecikmeyi karşılaştırın. Çubuk uzunluğu seçilen sonuçlar arasındaki en yüksek değere göre normalize edilir. Verisi olmayan metrikler — olarak gösterilir.',
+  'benchmark.compare.higher': 'Daha yüksek verim',
+  'benchmark.compare.faster': 'Daha hızlı',
+  'benchmark.compare.select': 'Karşılaştırmak için 2–4 sonuç seçin',
   'benchmark.table.model': 'Model',
   'benchmark.table.instance': 'Model Örneği',
   'benchmark.table.dataset': 'Veri Kümesi',

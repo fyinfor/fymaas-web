@@ -313,7 +313,15 @@ const baseRoutes = [
         selectedIcon: 'icon-cluster2-filled',
         defaultIcon: 'icon-cluster2-outline',
         component: './cluster-management/clusters',
-        subMenu: ['/resources/clusters/create']
+        subMenu: ['/resources/clusters/create', '/resources/clusters/detail']
+      },
+      {
+        name: 'clusterDetail',
+        path: '/resources/clusters/detail',
+        key: 'clusterDetail',
+        hideInMenu: true,
+        access: 'canSeeOrgAdmin',
+        component: './cluster-management/cluster-detail'
       },
       {
         name: 'workers',

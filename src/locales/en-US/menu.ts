@@ -32,6 +32,8 @@ export default {
   'menu.accessControl.apikeys': 'API Keys',
   'menu.accessControl.users': 'User Management',
   'menu.accessControl.organizations': 'Organization Management',
+  'menu.workspaces': 'Workspaces',
+  'menu.accessControl.workspaces': 'Workspaces',
   'menu.profile': 'Preferences',
   'menu.login': 'Login',
   'menu.usage': 'Usage',

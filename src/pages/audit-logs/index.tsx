@@ -1,6 +1,7 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
-import { IconFont, NoResult, SimpleSelect } from '@gpustack/core-ui';
+import { IconFont, SimpleSelect } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn, useRequest } from 'ahooks';
 import { Button, ConfigProvider, DatePicker, Input, Space, Table } from 'antd';
@@ -115,16 +116,16 @@ const AuditLogs: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 340px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-logs" />}
-        filters={_.pick(queryParams, ['search', 'action', 'result'])}
-        noFoundText={intl.formatMessage({ id: 'auditLogs.noresult.nofound' })}
+      <ListEmpty
+        icon={<IconFont type="icon-logs" />}
         title={intl.formatMessage({ id: 'auditLogs.noresult.title' })}
-        subTitle={intl.formatMessage({ id: 'auditLogs.noresult.subTitle' })}
+        description={intl.formatMessage({ id: 'auditLogs.noresult.subTitle' })}
+        noFound={intl.formatMessage({ id: 'auditLogs.noresult.nofound' })}
+        queryParams={{
+          search: queryParams.search,
+          action: queryParams.action,
+          result: queryParams.result
+        }}
       />
     );
   };
@@ -181,26 +182,34 @@ const AuditLogs: React.FC = () => {
             {intl.formatMessage({ id: 'auditLogs.button.export' })}
           </Button>
         </Space>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            columns={columns}
-            dataSource={dataSource.dataList}
-            loading={{ spinning: dataSource.loading, size: 'middle' }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey={(record) => record.id}
-            onChange={handleTableChange}
-            pagination={{
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          />
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table'}
+              columns={columns}
+              dataSource={dataSource.dataList}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              rowKey={(record) => record.id}
+              onChange={handleTableChange}
+              pagination={{
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            />
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <DetailDrawer
         open={detail.open}

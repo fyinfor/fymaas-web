@@ -1,9 +1,10 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { useBenchmarkTargetInstance } from '@/pages/llmodels/hooks/use-run-benchmark';
 import { useQueryModelList } from '@/pages/llmodels/services/use-query-model-list';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn, useToggle } from 'ahooks';
 import { ConfigProvider, Table, message } from 'antd';
@@ -19,6 +20,7 @@ import {
   updateBenchmark
 } from './apis';
 import AddBenchmarkModal from './components/add-benchmark-modal';
+import CompareDrawer from './components/compare-drawer';
 import LeftActions from './components/left-actions';
 import RightActions from './components/right-actions';
 import ViewLogsModal from './components/view-logs-modal';
@@ -34,6 +36,7 @@ import useBenchmarkColumns from './hooks/use-benchmark-columns';
 import useCloneBenchmark from './hooks/use-clone-benchmark';
 import useColumnSettings from './hooks/use-column-settings';
 import useCreateBenchmark from './hooks/use-create-benchmark';
+import useCreateCompare from './hooks/use-create-compare';
 import useViewLogs from './hooks/use-view-logs';
 import { useExportBenchmark } from './services/use-export-benchmark';
 import useQueryProfiles from './services/use-query-profiles';
@@ -66,6 +69,8 @@ const Benchmark: React.FC = () => {
   const navigate = useNavigate();
   const { openBenchmarkModal, closeBenchmarkModal, openBenchmarkModalStatus } =
     useCreateBenchmark();
+  const { openCompareModalStatus, openCompareModal, closeCompareModal } =
+    useCreateCompare();
   const { dataList: modelList, fetchData: fetchModelList } = useQueryModelList({
     getValue: (item: any) => item.name
   });
@@ -220,23 +225,17 @@ const Benchmark: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={[]}
-        image={<IconFont type="icon-speed" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.benchmark.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-speed" />}
         title={intl.formatMessage({ id: 'noresult.benchmark.title' })}
-        subTitle={intl.formatMessage({
+        description={intl.formatMessage({
           id: 'noresult.benchmark.subTitle'
         })}
-        onClick={handleAddBenchmark}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-      ></NoResult>
+        noFound={intl.formatMessage({ id: 'noresult.benchmark.nofound' })}
+        queryParams={queryParams}
+        onAdd={handleAddBenchmark}
+        addText={intl.formatMessage({ id: 'noresult.button.add' })}
+      />
     );
   };
 
@@ -249,6 +248,14 @@ const Benchmark: React.FC = () => {
 
   const handleExportData = () => {
     exportData(rowSelection.selectedRowKeys);
+  };
+
+  const handleCompare = () => {
+    const rows = dataSource.dataList.filter((row) =>
+      rowSelection.selectedRowKeys.includes(row.id)
+    );
+    if (rows.length < 2) return;
+    openCompareModal(rows.slice(0, 4));
   };
 
   const handleOnFilterChange = (filters: any) => {
@@ -309,6 +316,7 @@ const Benchmark: React.FC = () => {
               handleDeleteByBatch={handleDeleteBatch}
               handleClickPrimary={handleAddBenchmark}
               handleExport={handleExportData}
+              handleCompare={handleCompare}
               buttonText={intl.formatMessage({
                 id: 'benchmark.button.add'
               })}
@@ -316,33 +324,38 @@ const Benchmark: React.FC = () => {
             />
           }
         ></FilterBar>
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            tableLayout="fixed"
-            columns={columns}
-            className={'scroll-table'}
-            dataSource={dataSource.dataList}
-            rowSelection={rowSelection}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey="id"
-            scroll={{ x: 1200 }}
-            onChange={handleTableChange}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              tableLayout="fixed"
+              columns={columns}
+              className={'scroll-table'}
+              dataSource={dataSource.dataList}
+              rowSelection={rowSelection}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              rowKey="id"
+              scroll={{ x: 1200 }}
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <AddBenchmarkModal
         clusterList={clusterList}
@@ -355,6 +368,11 @@ const Benchmark: React.FC = () => {
         onCancel={handleModalCancel}
         onOk={handleModalOk}
       ></AddBenchmarkModal>
+      <CompareDrawer
+        open={openCompareModalStatus.open}
+        rows={openCompareModalStatus.currentData || []}
+        onClose={closeCompareModal}
+      />
       <ViewLogsModal
         open={openViewLogsModalStatus.open}
         url={openViewLogsModalStatus.url}

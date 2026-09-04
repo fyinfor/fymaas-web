@@ -1,8 +1,9 @@
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import PluginExtraFields from '@/components/plugin-extra-fields';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import PageBox from '@/pages/_components/page-box';
 import { useIntl } from '@umijs/max';
-import { Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BreakdownFilters, BreakdownItem } from '../../config/types';
 import useModelsColumns from '../../hooks/use-models-columns';
@@ -120,29 +121,61 @@ const Models: React.FC<{
   return (
     <>
       <PageBox>
-        <Table
-          columns={columns}
-          dataSource={dataSource.dataList}
-          rowKey={(record: BreakdownItem) =>
-            getBreakdownRowKey(record, 'models')
+        <TableLoadGate
+          loading={loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() =>
+            fetchData({
+              ...queryParams,
+              group_by: ['route'],
+              filters,
+              scope,
+              ...dateRange
+            })
           }
-          loading={{
-            spinning: loading,
-            size: 'middle'
-          }}
-          sortDirections={TABLE_SORT_DIRECTIONS}
-          showSorterTooltip={false}
-          onChange={handleTableChange}
-          pagination={{
-            size: 'middle',
-            showSizeChanger: true,
-            pageSize: queryParams.perPage,
-            current: queryParams.page,
-            total: dataSource.total,
-            hideOnSinglePage: queryParams.perPage === 10,
-            onChange: handlePageChange
-          }}
-        ></Table>
+        >
+          <ConfigProvider
+            renderEmpty={(type) =>
+              type === 'Table' ? (
+                <ListEmpty
+                  title={intl.formatMessage({
+                    id: 'usage.noresult.models.title'
+                  })}
+                  description={intl.formatMessage({
+                    id: 'usage.noresult.models.subTitle'
+                  })}
+                  noFound={intl.formatMessage({
+                    id: 'usage.noresult.nofound'
+                  })}
+                  queryParams={filters}
+                />
+              ) : undefined
+            }
+          >
+            <Table
+              columns={columns}
+              dataSource={dataSource.dataList}
+              rowKey={(record: BreakdownItem) =>
+                getBreakdownRowKey(record, 'models')
+              }
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       {/* Page-level data lifecycle for plugin-contributed extra
           columns on this tab. Receives the visible route ids so the

@@ -1,14 +1,14 @@
+import { EmptyState, ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { queryApisKeysList } from '@/pages/api-keys/apis';
 import { queryModelRoutes } from '@/pages/model-routes/apis';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useAccess, useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ConfigProvider, Radio, Select, Space, Table, message } from 'antd';
-import _ from 'lodash';
 import React from 'react';
 import PageBox from '../_components/page-box';
 import {
@@ -174,18 +174,16 @@ const IpAccessControl: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 400px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={dataSource.dataList}
-        image={<IconFont type="icon-network" />}
-        filters={_.pick(queryParams, ['search'])}
-        noFoundText={intl.formatMessage({ id: 'ipAccess.noresult.nofound' })}
+      <ListEmpty
+        icon={<IconFont type="icon-network" />}
         title={intl.formatMessage({ id: 'ipAccess.noresult.title' })}
-        subTitle={intl.formatMessage({ id: 'ipAccess.noresult.subTitle' })}
-        onClick={handleAdd}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
+        description={intl.formatMessage({
+          id: 'ipAccess.noresult.subTitle'
+        })}
+        noFound={intl.formatMessage({ id: 'ipAccess.noresult.nofound' })}
+        queryParams={{ search: queryParams.search }}
+        onAdd={handleAdd}
+        addText={intl.formatMessage({ id: 'noresult.button.add' })}
       />
     );
   };
@@ -286,44 +284,49 @@ const IpAccessControl: React.FC = () => {
               rowSelection={rowSelection}
               widths={{ input: 300 }}
             />
-            <ConfigProvider renderEmpty={renderEmpty}>
-              <Table
-                className={'scroll-table'}
-                columns={columns}
-                dataSource={dataSource.dataList}
-                rowSelection={rowSelection}
-                loading={{ spinning: dataSource.loading, size: 'middle' }}
-                sortDirections={TABLE_SORT_DIRECTIONS}
-                showSorterTooltip={false}
-                rowKey={(record) => record.id}
-                onChange={handleTableChange}
-                pagination={{
-                  showSizeChanger: true,
-                  pageSize: queryParams.perPage,
-                  current: queryParams.page,
-                  total: dataSource.total,
-                  hideOnSinglePage: queryParams.perPage === 10,
-                  onChange: handlePageChange
-                }}
-              />
-            </ConfigProvider>
+            <TableLoadGate
+              loading={dataSource.loading}
+              loadend={dataSource.loadend}
+              error={dataSource.error}
+              hasRows={!!dataSource.dataList.length}
+              onRetry={() => fetchData()}
+            >
+              <ConfigProvider renderEmpty={renderEmpty}>
+                <Table
+                  className={'scroll-table'}
+                  columns={columns}
+                  dataSource={dataSource.dataList}
+                  rowSelection={rowSelection}
+                  loading={false}
+                  sortDirections={TABLE_SORT_DIRECTIONS}
+                  showSorterTooltip={false}
+                  rowKey={(record) => record.id}
+                  onChange={handleTableChange}
+                  pagination={{
+                    showSizeChanger: true,
+                    pageSize: queryParams.perPage,
+                    current: queryParams.page,
+                    total: dataSource.total,
+                    hideOnSinglePage: queryParams.perPage === 10,
+                    onChange: handlePageChange
+                  }}
+                />
+              </ConfigProvider>
+            </TableLoadGate>
           </>
         ) : (
-          <NoResult
-            minHeight="calc(100vh - 360px)"
-            loading={false}
-            loadend
-            dataSource={[]}
-            image={<IconFont type="icon-network" />}
+          <EmptyState
+            icon={<IconFont type="icon-network" />}
             title={intl.formatMessage({
               id:
                 kind === 'api_key'
                   ? 'ipAccess.select.apiKey'
                   : 'ipAccess.select.route'
             })}
-            subTitle={intl.formatMessage({
+            description={intl.formatMessage({
               id: 'ipAccess.page.description'
             })}
+            style={{ minHeight: 'calc(100vh - 360px)' }}
           />
         )}
       </PageBox>

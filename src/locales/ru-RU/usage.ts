@@ -29,6 +29,24 @@ export default {
   'usage.tabs.models': 'Models',
   'usage.tabs.apikeys': 'API Keys',
   'usage.tabs.users': 'User',
+  'usage.noresult.nofound': 'Подходящие записи использования не найдены',
+  'usage.noresult.models.title': 'Использования моделей пока нет',
+  'usage.noresult.models.subTitle': 'В выбранном периоде нет вызовов моделей.',
+  'usage.noresult.users.title': 'Использования пользователей пока нет',
+  'usage.noresult.users.subTitle':
+    'В выбранном периоде нет вызовов пользователей.',
+  'usage.noresult.apikeys.title': 'Использования API-ключей пока нет',
+  'usage.noresult.apikeys.subTitle':
+    'В выбранном периоде нет вызовов API-ключей.',
+  'usage.noresult.instances.title': 'Использования GPU-инстансов пока нет',
+  'usage.noresult.instances.subTitle':
+    'В выбранном периоде нет использования GPU-инстансов.',
+  'usage.noresult.storage.title': 'Использования хранилища пока нет',
+  'usage.noresult.storage.subTitle':
+    'В выбранном периоде нет использования хранилища.',
+  'usage.noresult.events.title': 'Событий ресурсов пока нет',
+  'usage.noresult.events.subTitle':
+    'В выбранном периоде нет событий жизненного цикла ресурсов.',
   'usage.export.chart': 'Export Chart Data',
   'usage.export.table': 'Export Table Data',
   'usage.export.rows': 'About {total} rows will be exported.',

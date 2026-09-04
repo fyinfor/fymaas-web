@@ -113,6 +113,8 @@ export function useQueryData<Detail, Params = any>(option: {
   errorMsg?: string;
 }): {
   loading: boolean;
+  loadend: boolean;
+  error: boolean;
   detailData: Detail;
   manual?: boolean;
   cancelRequest: () => void;
@@ -121,6 +123,8 @@ export function useQueryData<Detail, Params = any>(option: {
   const { key, fetchDetail, getData, errorMsg, delay, manual = true } = option;
   const axiosTokenRef = useRef<CancelTokenSource | null>(null);
   const [detailData, setDetailData] = useState<Detail>({} as Detail);
+  const [loadend, setLoadend] = useState(false);
+  const [error, setError] = useState(false);
 
   const {
     runAsync: fetchData,
@@ -142,6 +146,8 @@ export function useQueryData<Detail, Params = any>(option: {
       }
 
       setDetailData(getData ? getData(res, params) : res);
+      setError(false);
+      setLoadend(true);
 
       return res;
     },
@@ -149,10 +155,19 @@ export function useQueryData<Detail, Params = any>(option: {
       manual: manual,
       onSuccess: () => {},
       onError: (error) => {
+        if (
+          error?.message === 'CANCEL_PREVIOUS_REQUEST' ||
+          error?.code === 'ERR_CANCELED' ||
+          error?.name === 'CanceledError'
+        ) {
+          return;
+        }
         message.error(
           error?.message || errorMsg || `Failed to fetch ${key} data`
         );
         setDetailData({} as Detail);
+        setError(true);
+        setLoadend(true);
       }
     }
   );
@@ -170,6 +185,8 @@ export function useQueryData<Detail, Params = any>(option: {
 
   return {
     loading,
+    loadend,
+    error,
     detailData,
     cancelRequest,
     fetchData

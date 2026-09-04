@@ -20,11 +20,13 @@ export const useQueryBreakdownList = (options?: {
   const { key = 'usageBreakdownList' } = options || {};
   const [dataSource, setDataSource] = React.useState<{
     loadend: boolean;
+    error: boolean;
     dataList: ListItem[];
     total: number;
   }>({
     total: 0,
     loadend: false,
+    error: false,
     dataList: []
   });
   const { dataList, loading, fetchData, cancelRequest } = useQueryDataList<
@@ -52,32 +54,49 @@ export const useQueryBreakdownList = (options?: {
       };
     }
   ) => {
-    const res = await fetchData(params);
-    setDataSource({
-      dataList: res.items || [],
-      loadend: true,
-      total: res.pagination?.total || 0
-    });
-    if (key === 'apiKeysTableData') {
-      setApiKeysTableData({
+    try {
+      const res = await fetchData(params);
+      setDataSource({
         dataList: res.items || [],
         loadend: true,
+        error: false,
         total: res.pagination?.total || 0
       });
-    }
-    if (key === 'modelsTableData') {
-      setModelsTableData({
-        dataList: res.items || [],
+      if (key === 'apiKeysTableData') {
+        setApiKeysTableData({
+          dataList: res.items || [],
+          loadend: true,
+          total: res.pagination?.total || 0
+        });
+      }
+      if (key === 'modelsTableData') {
+        setModelsTableData({
+          dataList: res.items || [],
+          loadend: true,
+          total: res.pagination?.total || 0
+        });
+      }
+      if (key === 'usersTableData') {
+        setUsersTableData({
+          dataList: res.items || [],
+          loadend: true,
+          total: res.pagination?.total || 0
+        });
+      }
+    } catch (error: any) {
+      if (
+        error?.message === 'CANCEL_PREVIOUS_REQUEST' ||
+        error?.code === 'ERR_CANCELED' ||
+        error?.name === 'CanceledError'
+      ) {
+        return;
+      }
+      setDataSource((prev) => ({
+        ...prev,
+        dataList: [],
         loadend: true,
-        total: res.pagination?.total || 0
-      });
-    }
-    if (key === 'usersTableData') {
-      setUsersTableData({
-        dataList: res.items || [],
-        loadend: true,
-        total: res.pagination?.total || 0
-      });
+        error: true
+      }));
     }
   };
 

@@ -25,6 +25,12 @@ export const currentOrganizationIdAtom = atomWithStorage<number | null>(
   nsLocalJSONStorage
 );
 
+export const currentWorkspaceIdAtom = atomWithStorage<number | null>(
+  'currentWorkspaceId',
+  null,
+  nsLocalJSONStorage
+);
+
 export const GPUStackVersionAtom = atom<{
   version: string;
   git_commit: string;
@@ -108,7 +114,8 @@ export const getCurrentOrgNamespace = (
 
 const getStoredCurrentOrgId = (): number | null => {
   try {
-    const raw = nsLocal.get('currentOrganizationId');
+    const raw =
+      nsLocal.get('currentWorkspaceId') || nsLocal.get('currentOrganizationId');
     if (!raw) return null;
     const value = JSON.parse(raw);
     return typeof value === 'number' ? value : null;
@@ -123,11 +130,20 @@ const getStoredCurrentOrgId = (): number | null => {
 // Both are checked because ``currentOrganizationId`` is null in the
 // admin "All" view but a member org's ``name`` might still cover the
 // cluster-owner fallback.
-const ORG_CACHE_KEYS = ['organizationList', 'allOrganizations'] as const;
+const ORG_CACHE_KEYS = [
+  'workspaceList',
+  'organizationList',
+  'allOrganizations'
+] as const;
 
 export interface CachedOrg {
   id: number;
   name?: string;
+  org_name?: string;
+  organization?: { id?: number; name?: string };
+  is_personal?: boolean;
+  is_default?: boolean;
+  display_name?: string;
   // The platform Org (single global tenant). Its models are NOT
   // namespaced in ``/v1/models`` — they appear under their bare name.
   is_platform?: boolean;
@@ -167,7 +183,9 @@ export const getOrgNameById = (
 };
 
 const lookupOrgNamespace = (id: number | null): string | null => {
-  const name = getOrgNameById(id);
+  const cached = getOrgById(id);
+  const name =
+    cached?.organization?.name || cached?.org_name || cached?.name || null;
   return name ? `gpustack-${name}` : null;
 };
 

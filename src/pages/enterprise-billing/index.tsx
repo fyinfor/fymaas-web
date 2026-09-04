@@ -669,6 +669,11 @@ const EnterpriseBilling: React.FC = () => {
               pagination={false}
               columns={[
                 {
+                  title: intl.formatMessage({ id: 'billing.item.workspace' }),
+                  dataIndex: 'workspace_name',
+                  render: (name: string) => name || '—'
+                },
+                {
                   title: intl.formatMessage({ id: 'billing.item.description' }),
                   dataIndex: 'description'
                 },

@@ -12,7 +12,7 @@ import {
   icons,
   type TableColumnProps as SealColumnProps
 } from '@gpustack/core-ui';
-import { useIntl } from '@umijs/max';
+import { useIntl, useNavigate } from '@umijs/max';
 import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai';
@@ -92,11 +92,12 @@ const useClusterColumns = (
   handleSelect: (val: string, record: ClusterListItem, item?: any) => void
 ): SealColumnProps[] => {
   const intl = useIntl();
+  const navigate = useNavigate();
   const systemConfig = useAtomValue(systemConfigAtom);
   const pluginCols = usePluginListColumns('clusters');
-  // The cluster name is plain text: there is no cluster-detail page
-  // to route into. A plugin may still contribute extra row actions
-  // (topology, Cluster Access) via `clusterDetail.useGenerateActions`.
+  // The cluster name routes into cluster detail. A plugin may still
+  // contribute extra row actions (topology, Cluster Access) via
+  // `clusterDetail.useGenerateActions`.
   const { useGenerateActions } = getGPUStackPlugin()?.clusterDetail || {};
 
   const actionList =
@@ -161,7 +162,18 @@ const useClusterColumns = (
         render: (text: string, record: ClusterListItem) => (
           <>
             <AutoTooltip ghost title={text} minWidth={20}>
-              <span className="text-primary">{record.name}</span>
+              <a
+                className="text-primary"
+                onClick={() =>
+                  navigate(
+                    `/resources/clusters/detail?id=${record.id}&name=${encodeURIComponent(
+                      record.name
+                    )}&page=clusters`
+                  )
+                }
+              >
+                {record.name}
+              </a>
             </AutoTooltip>
             {record.is_default && (
               <Tooltip
@@ -261,7 +273,7 @@ const useClusterColumns = (
         )
       }
     ];
-  }, [handleSelect, intl, pluginCols]);
+  }, [handleSelect, intl, navigate, pluginCols]);
 };
 
 export default useClusterColumns;

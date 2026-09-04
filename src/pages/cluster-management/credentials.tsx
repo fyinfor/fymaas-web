@@ -1,14 +1,14 @@
 import { clusterSessionAtom, fromClusterCreationAtom } from '@/atoms/clusters';
+import { ListEmpty, TableLoadGate } from '@/components/console';
 import { PageAction } from '@/config';
 import { PaginationKey, TABLE_SORT_DIRECTIONS } from '@/config/settings';
 import type { PageActionType } from '@/config/types';
 import useTableFetch from '@/hooks/use-table-fetch';
-import { DeleteModal, FilterBar, IconFont, NoResult } from '@gpustack/core-ui';
+import { DeleteModal, FilterBar, IconFont } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { ConfigProvider, Table, message } from 'antd';
 import { useAtom } from 'jotai';
-import _ from 'lodash';
 import { useState } from 'react';
 import PageBox from '../_components/page-box';
 import {
@@ -171,23 +171,17 @@ const Credentials: React.FC = () => {
   const renderEmpty = (type?: string) => {
     if (type !== 'Table') return;
     return (
-      <NoResult
-        minHeight="calc(100vh - 300px)"
-        loading={dataSource.loading}
-        loadend={dataSource.loadend}
-        dataSource={[]}
-        image={<IconFont type="icon-credential-outline" />}
-        filters={_.omit(queryParams, ['sort_by'])}
-        noFoundText={intl.formatMessage({
-          id: 'noresult.credentials.nofound'
-        })}
+      <ListEmpty
+        icon={<IconFont type="icon-credential-outline" />}
         title={intl.formatMessage({ id: 'noresult.credentials.title' })}
-        subTitle={intl.formatMessage({
+        description={intl.formatMessage({
           id: 'noresult.credentials.subTitle'
         })}
-        onClick={() => handleAddCredential(addActions[0])}
-        buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-      ></NoResult>
+        noFound={intl.formatMessage({ id: 'noresult.credentials.nofound' })}
+        queryParams={queryParams}
+        onAdd={() => handleAddCredential(addActions[0])}
+        addText={intl.formatMessage({ id: 'noresult.button.add' })}
+      />
     );
   };
 
@@ -213,32 +207,37 @@ const Credentials: React.FC = () => {
           widths={{ input: 300 }}
         ></FilterBar>
 
-        <ConfigProvider renderEmpty={renderEmpty}>
-          <Table
-            className={'scroll-table'}
-            tableLayout="fixed"
-            columns={columns}
-            dataSource={dataSource.dataList}
-            rowSelection={rowSelection}
-            loading={{
-              spinning: dataSource.loading,
-              size: 'middle'
-            }}
-            sortDirections={TABLE_SORT_DIRECTIONS}
-            showSorterTooltip={false}
-            rowKey="id"
-            onChange={handleTableChange}
-            pagination={{
-              size: 'middle',
-              showSizeChanger: true,
-              pageSize: queryParams.perPage,
-              current: queryParams.page,
-              total: dataSource.total,
-              hideOnSinglePage: queryParams.perPage === 10,
-              onChange: handlePageChange
-            }}
-          ></Table>
-        </ConfigProvider>
+        <TableLoadGate
+          loading={dataSource.loading}
+          loadend={dataSource.loadend}
+          error={dataSource.error}
+          hasRows={!!dataSource.dataList.length}
+          onRetry={() => fetchData()}
+        >
+          <ConfigProvider renderEmpty={renderEmpty}>
+            <Table
+              className={'scroll-table'}
+              tableLayout="fixed"
+              columns={columns}
+              dataSource={dataSource.dataList}
+              rowSelection={rowSelection}
+              loading={false}
+              sortDirections={TABLE_SORT_DIRECTIONS}
+              showSorterTooltip={false}
+              rowKey="id"
+              onChange={handleTableChange}
+              pagination={{
+                size: 'middle',
+                showSizeChanger: true,
+                pageSize: queryParams.perPage,
+                current: queryParams.page,
+                total: dataSource.total,
+                hideOnSinglePage: queryParams.perPage === 10,
+                onChange: handlePageChange
+              }}
+            ></Table>
+          </ConfigProvider>
+        </TableLoadGate>
       </PageBox>
       <AddModal
         provider={openModalStatus.provider}

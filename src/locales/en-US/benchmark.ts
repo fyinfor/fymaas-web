@@ -4,6 +4,12 @@ export default {
   'benchmark.button.edit': 'Edit Benchmark',
   'benchmark.button.clone': 'Clone Benchmark',
   'benchmark.button.compare': 'Compare',
+  'benchmark.compare.title': 'Compare benchmarks',
+  'benchmark.compare.hint':
+    'Compare throughput and latency. Bar length is normalized to the highest value among the selected results. Metrics without data show —.',
+  'benchmark.compare.higher': 'Higher throughput',
+  'benchmark.compare.faster': 'Faster',
+  'benchmark.compare.select': 'Select 2–4 results to compare',
   'benchmark.table.model': 'Model',
   'benchmark.table.instance': 'Model Instance',
   'benchmark.table.dataset': 'Dataset',

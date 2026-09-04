@@ -29,6 +29,25 @@ export default {
   'usage.tabs.models': 'Models',
   'usage.tabs.apikeys': 'API Keys',
   'usage.tabs.users': 'User',
+  'usage.noresult.nofound': '一致する利用記録が見つかりません',
+  'usage.noresult.models.title': 'モデル利用はまだありません',
+  'usage.noresult.models.subTitle':
+    '選択した期間にモデル呼び出しはありません。',
+  'usage.noresult.users.title': 'ユーザー利用はまだありません',
+  'usage.noresult.users.subTitle':
+    '選択した期間にユーザー呼び出しはありません。',
+  'usage.noresult.apikeys.title': 'API キー利用はまだありません',
+  'usage.noresult.apikeys.subTitle':
+    '選択した期間に API キー呼び出しはありません。',
+  'usage.noresult.instances.title': 'GPU インスタンス利用はまだありません',
+  'usage.noresult.instances.subTitle':
+    '選択した期間に GPU インスタンス利用はありません。',
+  'usage.noresult.storage.title': 'ストレージ利用はまだありません',
+  'usage.noresult.storage.subTitle':
+    '選択した期間にストレージ利用はありません。',
+  'usage.noresult.events.title': 'リソースイベントはまだありません',
+  'usage.noresult.events.subTitle':
+    '選択した期間にリソースライフサイクルイベントはありません。',
   'usage.export.chart': 'Export Chart Data',
   'usage.export.table': 'Export Table Data',
   'usage.export.rows': 'About {total} rows will be exported.',

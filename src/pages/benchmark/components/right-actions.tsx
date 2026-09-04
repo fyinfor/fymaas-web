@@ -1,12 +1,14 @@
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { DropdownButtons, IconFont } from '@gpustack/core-ui';
-import { Button, Space } from 'antd';
+import { useIntl } from '@umijs/max';
+import { Button, Space, Tooltip } from 'antd';
 import React from 'react';
 
 export interface RightActionsProps {
   handleDeleteByBatch: () => void;
   handleClickPrimary?: () => void;
   handleExport?: () => void;
+  handleCompare?: () => void;
   settingButton?: React.ReactNode;
   buttonText?: string;
   rowSelection: {
@@ -18,10 +20,14 @@ const RightActions: React.FC<RightActionsProps> = ({
   handleDeleteByBatch,
   handleClickPrimary,
   handleExport,
+  handleCompare,
   settingButton,
   buttonText,
   rowSelection
 }) => {
+  const intl = useIntl();
+  const selectedCount = rowSelection.selectedRowKeys.length;
+  const canCompare = selectedCount >= 2 && selectedCount <= 4;
   const ButtonList = [
     {
       label: 'benchmark.table.export.results',
@@ -51,6 +57,19 @@ const RightActions: React.FC<RightActionsProps> = ({
   return (
     <Space size={16}>
       {settingButton}
+      <Tooltip
+        title={
+          canCompare
+            ? undefined
+            : intl.formatMessage({ id: 'benchmark.compare.select' })
+        }
+      >
+        <span>
+          <Button disabled={!canCompare} onClick={handleCompare}>
+            {intl.formatMessage({ id: 'benchmark.button.compare' })}
+          </Button>
+        </span>
+      </Tooltip>
       <Button
         icon={<PlusOutlined></PlusOutlined>}
         color="primary"

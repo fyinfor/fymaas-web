@@ -329,6 +329,9 @@ export default {
   'quotas.noresult.title': 'No quota policies yet',
   'quotas.noresult.subTitle':
     'Add a policy to cap tokens or request rate for a tenant or key.',
+  'quotas.channel.noresult.title': 'No notification channels yet',
+  'quotas.channel.noresult.subTitle':
+    'Add a webhook or email channel so quota alerts can be delivered.',
 
   'billing.tab.invoices': 'Invoices',
   'billing.tab.plans': 'Price plans',
@@ -437,5 +440,36 @@ export default {
   'orgs.members.member': 'Member',
   'orgs.noresult.title': 'No organizations yet',
   'orgs.noresult.subTitle':
-    'Create an organization to isolate tenants and members.'
+    'Create an organization to isolate tenants and members.',
+
+  'menu.workspaces': 'Workspaces',
+  'menu.accessControl.workspaces': 'Workspaces',
+  'workspaces.item': 'workspace',
+  'workspaces.add': 'Add Workspace',
+  'workspaces.enter': 'Enter',
+  'workspaces.edit': 'Edit Workspace',
+  'workspaces.filter.name': 'Search by name',
+  'workspaces.form.name': 'Name (URL-safe)',
+  'workspaces.form.scope': 'Workspace',
+  'workspaces.form.scopePlaceholder': 'Current workspace',
+  'workspaces.org': 'Organization',
+  'workspaces.default': 'Default',
+  'workspaces.setDefault': 'Set as default',
+  'workspaces.members': 'Members',
+  'workspaces.members.title': 'Members of {name}',
+  'workspaces.members.user': 'Select a user',
+  'workspaces.members.add': 'Add member',
+  'workspaces.members.owner': 'Owner',
+  'workspaces.members.member': 'Member',
+  'workspaces.noresult.title': 'No workspaces yet',
+  'workspaces.noresult.subTitle':
+    'Create a workspace to isolate models, GPUs and API keys.',
+  'workspaces.switcher.all': 'All',
+  'workspaces.switcher.back': 'Back to workspaces',
+  'workspaces.switcher.personal': 'Personal',
+  'workspaces.switcher.manage': 'Manage workspaces',
+  'workspaces.switcher.create': 'New workspace',
+  'workspaces.filter': 'Filter by workspace',
+  'workspaces.tag.global': 'Global',
+  'billing.item.workspace': 'Workspace'
 };

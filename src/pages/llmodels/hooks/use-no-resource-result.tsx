@@ -1,11 +1,10 @@
 import { clusterSessionAtom } from '@/atoms/clusters';
-import { EmptyState } from '@/components/console';
+import { EmptyState, hasActiveFilters } from '@/components/console';
 import { IconFont } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
 import { Button } from 'antd';
 import { useAtom } from 'jotai';
-import _ from 'lodash';
 import React, { useMemo } from 'react';
 
 /**Title: Generally, this is from the activation page.
@@ -20,6 +19,7 @@ const useNoResourceResult = (props: {
   loadend?: boolean;
   dataSource?: any[];
   queryParams?: Record<string, any>;
+  omitKeys?: string[];
   title: React.ReactNode;
   noClusters?: boolean;
   noWorkers?: boolean;
@@ -38,6 +38,7 @@ const useNoResourceResult = (props: {
     noWorkers,
     defaultContent,
     queryParams,
+    omitKeys,
     iconType,
     title,
     subTitle
@@ -92,9 +93,12 @@ const useNoResourceResult = (props: {
     };
   }, [noClusters, noWorkers, intl]);
 
-  const filtered = Object.entries(
-    _.omit(queryParams, ['sort_by', 'page', 'perPage'])
-  ).some(([, value]) => value !== undefined && value !== '' && value !== null);
+  const filtered = hasActiveFilters(queryParams, [
+    'sort_by',
+    'page',
+    'perPage',
+    ...(omitKeys || [])
+  ]);
 
   const noResourceResult = (
     <EmptyState

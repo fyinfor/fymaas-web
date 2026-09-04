@@ -40,6 +40,8 @@ export default {
   'menu.accessControl.apikeys': 'API Keys',
   'menu.accessControl.users': 'ユーザー管理',
   'menu.accessControl.organizations': '組織管理',
+  'menu.workspaces': 'ワークスペース',
+  'menu.accessControl.workspaces': 'ワークスペース',
   'menu.resources.clusters': 'Clusters',
   'menu.resources.credentials': 'Cloud Credentials',
   'menu.models.userModels': 'Models',

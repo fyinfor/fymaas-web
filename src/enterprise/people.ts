@@ -6,7 +6,8 @@ export type PersonOption = { id: number; name: string };
 
 export const readCurrentOrgId = (): number | null => {
   try {
-    const raw = nsLocal.get('currentOrganizationId');
+    const raw =
+      nsLocal.get('currentWorkspaceId') || nsLocal.get('currentOrganizationId');
     if (!raw) return null;
     const value = JSON.parse(raw);
     return typeof value === 'number' ? value : null;
@@ -20,7 +21,7 @@ export async function loadEnterprisePeople(): Promise<PersonOption[]> {
   const orgId = readCurrentOrgId();
   if (orgId) {
     try {
-      const members = await request(`/organizations/${orgId}/members`);
+      const members = await request(`/workspaces/${orgId}/members`);
       if (Array.isArray(members)) {
         options.push(
           ...members.map((item: any) => ({

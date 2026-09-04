@@ -30,6 +30,8 @@ export default {
   'menu.accessControl.apikeys': 'API Anahtarları',
   'menu.accessControl.users': 'Kullanıcı Yönetimi',
   'menu.accessControl.organizations': 'Organizasyon Yönetimi',
+  'menu.workspaces': 'Çalışma alanları',
+  'menu.accessControl.workspaces': 'Çalışma alanları',
   'menu.profile': 'Preferences',
   'menu.login': 'Giriş',
   'menu.usage': 'Kullanım',

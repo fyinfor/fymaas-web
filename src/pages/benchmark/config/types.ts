@@ -231,6 +231,11 @@ export interface BenchmarkListItem extends FormData {
   progress: number;
   instance_snapshot: InstanceSnapshot;
   gpu_snapshot: GPUSnapshot[];
+  // Summary metrics denormalized onto the list row (same names as
+  // BenchmarkResultItem). Absent while the run is still in progress.
+  tokens_per_second_mean?: number | null;
+  time_to_first_token_mean?: number | null;
+  inter_token_latency_mean?: number | null;
 }
 
 export interface ProfileOption {

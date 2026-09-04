@@ -1,11 +1,11 @@
+import { ErrorState, ListEmpty } from '@/components/console';
 import { PageAction } from '@/config';
 import useTableFetch from '@/hooks/use-table-fetch';
 import {
   DeleteModal,
   FilterBar,
   IconFont,
-  InfiniteScrollerProvider,
-  NoResult
+  InfiniteScrollerProvider
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { useMemoizedFn } from 'ahooks';
@@ -229,25 +229,29 @@ const GPUServiceTemplates: React.FC = () => {
           isFirst={!dataSource.loadend}
           onSelect={handleOnSelect}
         />
-        <NoResult
-          minHeight="calc(100vh - 300px)"
-          loading={dataSource.loading}
-          loadend={dataSource.loadend}
-          dataSource={dataSource.dataList}
-          image={<IconFont type="icon-instance-template-filled" />}
-          filters={_.omit(queryParams, ['sort_by'])}
-          noFoundText={intl.formatMessage({
-            id: 'noresult.gpuservice.template.nofound'
-          })}
-          title={intl.formatMessage({
-            id: 'noresult.gpuservice.template.title'
-          })}
-          subTitle={intl.formatMessage({
-            id: 'noresult.gpuservice.template.subTitle'
-          })}
-          onClick={handleAddTemplate}
-          buttonText={intl.formatMessage({ id: 'noresult.button.add' })}
-        />
+        {dataSource.loadend &&
+          (dataSource.error && !dataSource.dataList.length ? (
+            <ErrorState
+              onRetry={handleRefresh}
+              style={{ minHeight: 'calc(100vh - 300px)' }}
+            />
+          ) : !dataSource.dataList.length ? (
+            <ListEmpty
+              icon={<IconFont type="icon-instance-template-filled" />}
+              title={intl.formatMessage({
+                id: 'noresult.gpuservice.template.title'
+              })}
+              description={intl.formatMessage({
+                id: 'noresult.gpuservice.template.subTitle'
+              })}
+              noFound={intl.formatMessage({
+                id: 'noresult.gpuservice.template.nofound'
+              })}
+              queryParams={queryParams}
+              onAdd={handleAddTemplate}
+              addText={intl.formatMessage({ id: 'noresult.button.add' })}
+            />
+          ) : null)}
       </InfiniteScrollerProvider>
       <AddModal
         action={openTemplateModalStatus.action}

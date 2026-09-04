@@ -316,6 +316,9 @@ export default {
   'quotas.noresult.title': '暂无配额策略',
   'quotas.noresult.subTitle':
     '添加策略以为租户或密钥设置 token 或请求速率上限。',
+  'quotas.channel.noresult.title': '暂无通知通道',
+  'quotas.channel.noresult.subTitle':
+    '添加 Webhook 或邮件通道，以便配额告警可以送达。',
 
   'billing.tab.invoices': '账单',
   'billing.tab.plans': '价目表',
@@ -418,5 +421,35 @@ export default {
   'orgs.members.owner': '所有者',
   'orgs.members.member': '成员',
   'orgs.noresult.title': '暂无组织',
-  'orgs.noresult.subTitle': '创建组织以隔离租户和成员。'
+  'orgs.noresult.subTitle': '创建组织以隔离租户和成员。',
+
+  'menu.workspaces': '工作空间',
+  'menu.accessControl.workspaces': '工作空间',
+  'workspaces.item': '工作空间',
+  'workspaces.add': '添加工作空间',
+  'workspaces.enter': '进入',
+  'workspaces.edit': '编辑工作空间',
+  'workspaces.filter.name': '按名称搜索',
+  'workspaces.form.name': '名称（URL 安全）',
+  'workspaces.form.scope': '工作空间',
+  'workspaces.form.scopePlaceholder': '当前工作空间',
+  'workspaces.org': '所属组织',
+  'workspaces.default': '默认',
+  'workspaces.setDefault': '设为默认',
+  'workspaces.members': '成员',
+  'workspaces.members.title': '{name} 的成员',
+  'workspaces.members.user': '选择用户',
+  'workspaces.members.add': '添加成员',
+  'workspaces.members.owner': '所有者',
+  'workspaces.members.member': '成员',
+  'workspaces.noresult.title': '暂无工作空间',
+  'workspaces.noresult.subTitle': '创建工作空间以隔离模型、GPU 与 API Key。',
+  'workspaces.switcher.all': '全部',
+  'workspaces.switcher.back': '返回工作空间',
+  'workspaces.switcher.personal': '个人空间',
+  'workspaces.switcher.manage': '管理工作空间',
+  'workspaces.switcher.create': '新建工作空间',
+  'workspaces.filter': '按工作空间筛选',
+  'workspaces.tag.global': '全局',
+  'billing.item.workspace': '工作空间'
 };
