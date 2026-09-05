@@ -121,9 +121,9 @@ const AddModal: React.FC<AddModalProps> = ({
       try {
         const data = {
           ..._.omit(formdata, ['allowed_type']),
+          scope: ['inference'],
           allowed_model_names:
-            formdata.allowed_type === 'all' ||
-            !formdata.scope?.includes('inference')
+            formdata.allowed_type === 'all'
               ? []
               : formdata.allowed_model_names || []
         };
@@ -186,16 +186,13 @@ const AddModal: React.FC<AddModalProps> = ({
     if (action === PageAction.EDIT && currentData && open) {
       parseExpireValue(currentData as ListItem);
       const isLegacyAllScope = currentData.scope?.includes('*');
-      const normalizedScope = isLegacyAllScope
-        ? ['management', 'inference']
-        : currentData.scope;
       const normalizedAllowedModelNames = isLegacyAllScope
         ? []
         : currentData.allowed_model_names || [];
       form.setFieldsValue({
         name: currentData.name,
         description: currentData.description,
-        scope: normalizedScope,
+        scope: ['inference'],
         allowed_type: normalizedAllowedModelNames.length ? 'custom' : 'all',
         expires_in: parseExpireValue(currentData as ListItem),
         allowed_model_names: normalizedAllowedModelNames

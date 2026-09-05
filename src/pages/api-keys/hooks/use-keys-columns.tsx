@@ -188,22 +188,13 @@ const useModelsColumns = ({
         },
         render: (text: string[], record: ListItem) => (
           <div className="flex-column gap-4">
-            {(record.scope?.includes('management') ||
-              record.scope?.includes('*')) && (
+            <MetaChip>
               <AutoTooltip ghost>
-                {intl.formatMessage({ id: 'apikeys.accessScope.management' })}
+                {record.allowed_model_names?.length
+                  ? record.allowed_model_names.join(', ')
+                  : intl.formatMessage({ id: 'apikeys.models.all' })}
               </AutoTooltip>
-            )}
-            {(record.scope?.includes('inference') ||
-              record.scope?.includes('*')) && (
-              <MetaChip>
-                <AutoTooltip ghost>
-                  {record.allowed_model_names?.length
-                    ? record.allowed_model_names.join(', ')
-                    : intl.formatMessage({ id: 'apikeys.models.all' })}
-                </AutoTooltip>
-              </MetaChip>
-            )}
+            </MetaChip>
           </div>
         )
       },
