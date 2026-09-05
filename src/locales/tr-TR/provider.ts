@@ -1,8 +1,8 @@
 export default {
-  'providers.title': 'Sağlayıcılar',
-  'providers.button.add': 'Sağlayıcı Ekle',
-  'providers.button.clone': 'Sağlayıcıyı Klonla',
-  'providers.table.providerName': 'Sağlayıcı',
+  'providers.title': 'Model Türleri',
+  'providers.button.add': 'Model Türü Ekle',
+  'providers.button.clone': 'Model Türünü Klonla',
+  'providers.table.providerName': 'Model Türü',
   'providers.table.models': 'Modeller',
   'providers.table.endpoint': 'Endpoint',
   'providers.status.ready': 'Hazır',

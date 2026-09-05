@@ -1,6 +1,9 @@
 export default {
   'page.subtitle.dashboard': 'MaaS kaynak ve çıkarım özeti',
-  'page.subtitle.usage': 'Token, hesaplama ve depolama kullanımını inceleyin',
+  'page.subtitle.usage':
+    'Model çağrıları, TTFT, TPM ve diğer teknik göstergeler',
+  'page.subtitle.usageLogs': 'Her çağrının token, gecikme ve tamamlanma durumu',
+  'page.subtitle.taskLogs': 'Görüntü ve konuşma üretme görevlerinin ilerlemesi',
   'page.subtitle.billing': 'Faturalar, planlar ve faturalama ayrıntıları',
   'page.subtitle.quotas': 'Kuruluş ve kullanıcı kotalarını yönetin',
   'page.subtitle.userModels': 'Erişilebilir modelleri görüntüleyin ve dağıtın',
@@ -8,7 +11,8 @@ export default {
   'page.subtitle.deployments':
     'Dağıtımları, kopyaları ve yapılandırmaları yönetin',
   'page.subtitle.routes': 'Uç noktaları, ağırlıkları ve hedefleri yapılandırın',
-  'page.subtitle.providers': 'Harici model sağlayıcılarını yönetin',
+  'page.subtitle.providers':
+    'Dışa açık model türlerini ve protokol uç noktalarını yönetin',
   'page.subtitle.benchmark': 'Throughput, TTFT ve TPOT karşılaştırması',
   'page.subtitle.backends': 'Çıkarım arka uç sürümlerini yönetin',
   'page.subtitle.kvCache': 'KV cache ile uzun bağlam çıkarımını hızlandırın',

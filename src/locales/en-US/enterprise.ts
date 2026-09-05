@@ -11,13 +11,51 @@ export default {
     'Platform defaults. Invoices are denominated in the base currency. Issued invoices are left unchanged.',
   'systemSettings.section.billing': 'Billing',
   'systemSettings.section.billing.description':
-    'New invoices and usage cost estimates use this currency. Unit prices are read as this currency; there is no FX conversion.',
+    'New invoices and usage estimates use this currency. Official catalog prices are USD per 1M tokens and convert with the FX rate below.',
   'systemSettings.form.baseCurrency': 'Base currency',
+  'systemSettings.form.fxCnyPerUsd': 'CNY per USD',
+  'systemSettings.form.fxCnyPerUsd.help':
+    'Official list prices are in USD. Used when the base currency is CNY. Issued invoices stay unchanged.',
   'systemSettings.currency.CNY': 'Chinese yuan (CNY)',
   'systemSettings.currency.USD': 'US dollar (USD)',
   'systemSettings.message.saved': 'System settings saved',
   'systemSettings.tab.general': 'General',
   'systemSettings.tab.environment': 'Environment',
+  'systemSettings.section.catalog': 'Official catalog',
+  'systemSettings.section.catalog.description':
+    'Pull official list prices from models.dev or llm-metadata. The server does not fetch on startup; only an admin can sync here. By default only rows already in the catalog are updated.',
+  'systemSettings.form.catalogSource': 'Catalog source',
+  'systemSettings.form.catalogSource.modelsDev': 'models.dev',
+  'systemSettings.form.catalogSource.llmMetadata': 'llm-metadata',
+  'systemSettings.form.catalogProviders': 'Vendor filter',
+  'systemSettings.form.catalogProviders.help':
+    'Comma or newline separated, e.g. openai, anthropic, qwen. Leave empty to sync every vendor.',
+  'systemSettings.form.catalogPricedOnly': 'Priced models only',
+  'systemSettings.form.catalogPricedOnly.help':
+    'Skip entries without input, output, or cache prices.',
+  'systemSettings.form.catalogImportNew': 'Import new models',
+  'systemSettings.form.catalogImportNew.help':
+    'When off, only existing official prices are updated. When on, new catalog models are inserted. An empty catalog always imports.',
+  'systemSettings.form.catalogApplyDefault':
+    'Write into the platform-default plan after sync',
+  'systemSettings.form.catalogApplyDefault.help':
+    'Convert official USD prices into platform-default. Manual price rows are left unchanged.',
+  'systemSettings.catalog.sync': 'Sync now',
+  'systemSettings.catalog.syncing': 'Syncing…',
+  'systemSettings.catalog.synced':
+    'Synced: {created} created, {updated} updated',
+  'systemSettings.catalog.lastSync': 'Last sync',
+  'systemSettings.catalog.lastSync.empty':
+    'The official catalog has not been synced yet.',
+  'systemSettings.catalog.result.source': 'Source',
+  'systemSettings.catalog.result.created': 'Created',
+  'systemSettings.catalog.result.updated': 'Updated',
+  'systemSettings.catalog.result.skipped': 'Skipped (no price)',
+  'systemSettings.catalog.result.skippedNotIn': 'Skipped (not in catalog)',
+  'systemSettings.catalog.result.total': 'Rows in source',
+  'systemSettings.catalog.result.providers': 'Vendors touched',
+  'systemSettings.catalog.result.errors': 'Errors',
+  'systemSettings.catalog.result.syncedAt': 'Time',
 
   'runtime.page.description':
     'Override image registries, repositories and namespaces. Blank fields keep the startup flags and image defaults. Saving applies to this server immediately.',
@@ -225,6 +263,7 @@ export default {
   'ipAccess.noresult.nofound': 'No rules match these filters',
 
   'menu.billingAndUsage.quotas': 'Quotas',
+  'menu.accessControl.system': 'System Settings',
   'menu.accessControl.roles': 'Role Management',
   'menu.accessControl.permissions': 'Permissions',
   'permissions.page.description':
@@ -247,7 +286,7 @@ export default {
   'permissions.group.security': 'Security',
   'permissions.group.access': 'Organizations & users',
   'permissions.group.settings': 'System settings',
-  'permissions.group.providers': 'Providers',
+  'permissions.group.providers': 'Model types',
   'permissions.group.benchmarks': 'Benchmarks',
   'permissions.group.cache': 'Cache',
   'permissions.desc.model:read': 'View models and deployments',
@@ -285,8 +324,8 @@ export default {
   'permissions.desc.settings:read': 'View system settings',
   'permissions.desc.settings:write':
     'Update branding, catalog, and platform defaults',
-  'permissions.desc.provider:read': 'View model providers',
-  'permissions.desc.provider:write': 'Manage model providers',
+  'permissions.desc.provider:read': 'View model types',
+  'permissions.desc.provider:write': 'Manage model types',
   'permissions.desc.benchmark:read': 'View benchmarks',
   'permissions.desc.benchmark:write': 'Manage benchmarks',
   'permissions.desc.cache:read': 'View cache acceleration',
@@ -337,6 +376,7 @@ export default {
 
   'billing.tab.invoices': 'Invoices',
   'billing.tab.plans': 'Price plans',
+  'billing.tab.catalog': 'Official prices',
   'billing.tab.centers': 'Cost centres',
   'billing.invoice.org': 'Organization',
   'billing.invoice.period': 'Period start',
@@ -374,12 +414,32 @@ export default {
   'billing.center.principalId': 'Principal ID',
   'billing.item.description': 'Description',
   'billing.item.quantity': 'Quantity',
+  'billing.item.unit': 'Unit',
   'billing.item.amount': 'Amount',
   'billing.item.type': 'Type',
   'billing.item.match': 'Match key',
   'billing.item.kind': 'Token kind',
   'billing.item.price': 'Unit price',
+  'billing.item.priceHint': 'Token unit prices are per 1k tokens',
+  'billing.item.unitPer1k': '/ 1k tokens',
   'billing.item.add': 'Add item',
+  'billing.item.source': 'Source',
+  'billing.item.source.official': 'Official',
+  'billing.item.source.manual': 'Manual',
+  'billing.plan.syncOfficial': 'Sync official prices',
+  'billing.catalog.sync': 'Refresh official catalog',
+  'billing.catalog.apply': 'Write into this plan',
+  'billing.catalog.search': 'Search model or vendor',
+  'billing.catalog.provider': 'Vendor',
+  'billing.catalog.model': 'Model',
+  'billing.catalog.input': 'Input / 1M tokens',
+  'billing.catalog.output': 'Output / 1M tokens',
+  'billing.catalog.cacheRead': 'Cache hit / 1M tokens',
+  'billing.catalog.adminHint': 'Sync in system settings',
+  'billing.catalog.empty':
+    'No official prices yet. An admin can sync the catalog in system settings.',
+  'billing.catalog.synced': 'Synced {count} official prices',
+  'billing.catalog.applied': 'Wrote {count} price items',
 
   'roles.add': 'Add Role',
   'roles.edit': 'Edit Role',

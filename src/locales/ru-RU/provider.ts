@@ -1,8 +1,8 @@
 export default {
-  'providers.title': 'Providers',
-  'providers.button.add': 'Add Provider',
-  'providers.button.clone': 'Clone Provider',
-  'providers.table.providerName': 'Provider',
+  'providers.title': 'Типы моделей',
+  'providers.button.add': 'Добавить тип модели',
+  'providers.button.clone': 'Клонировать тип модели',
+  'providers.table.providerName': 'Тип модели',
   'providers.table.models': 'Models',
   'providers.table.endpoint': 'Endpoint',
   'providers.status.ready': 'Ready',

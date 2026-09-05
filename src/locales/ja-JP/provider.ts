@@ -1,8 +1,8 @@
 export default {
-  'providers.title': 'Providers',
-  'providers.button.add': 'Add Provider',
-  'providers.button.clone': 'Clone Provider',
-  'providers.table.providerName': 'Provider',
+  'providers.title': 'モデルタイプ',
+  'providers.button.add': 'モデルタイプを追加',
+  'providers.button.clone': 'モデルタイプを複製',
+  'providers.table.providerName': 'モデルタイプ',
   'providers.table.models': 'Models',
   'providers.table.endpoint': 'Endpoint',
   'providers.status.ready': 'Ready',

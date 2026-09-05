@@ -78,6 +78,10 @@ export default {
 
   // --- Resource usage: shared metrics & units ---
   'usage.metric.tokens': 'Токены',
+  'usage.metric.ttft': 'TTFT',
+  'usage.metric.latency': 'Сквозная задержка',
+  'usage.metric.tpm': 'TPM',
+  'usage.metric.rpm': 'RPM',
   'usage.metric.input': 'Вход',
   'usage.metric.output': 'Выход',
   'usage.metric.gpuHours': 'GPU-часы',

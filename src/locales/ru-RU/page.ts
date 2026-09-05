@@ -1,13 +1,16 @@
 export default {
   'page.subtitle.dashboard': 'Обзор ресурсов и инференса MaaS',
-  'page.subtitle.usage': 'Использование токенов, вычислений и хранилища',
+  'page.subtitle.usage':
+    'Вызовы моделей, TTFT, TPM и другие технические метрики',
+  'page.subtitle.usageLogs': 'Токены, задержка и статус каждого вызова',
+  'page.subtitle.taskLogs': 'Прогресс задач генерации изображений и речи',
   'page.subtitle.billing': 'Счета, тарифы и детали биллинга',
   'page.subtitle.quotas': 'Квоты организаций и пользователей',
   'page.subtitle.userModels': 'Доступные модели и их развёртывание',
   'page.subtitle.catalog': 'Выберите модель из каталога и разверните инференс',
   'page.subtitle.deployments': 'Развёртывания, реплики и конфигурации',
   'page.subtitle.routes': 'Конечные точки, веса и цели трафика',
-  'page.subtitle.providers': 'Внешние провайдеры моделей',
+  'page.subtitle.providers': 'Типы исходящих моделей и протокольные эндпоинты',
   'page.subtitle.benchmark': 'Сравнение throughput, TTFT и TPOT',
   'page.subtitle.backends': 'Версии бэкендов инференса',
   'page.subtitle.kvCache': 'Ускорение длинного контекста с KV cache',

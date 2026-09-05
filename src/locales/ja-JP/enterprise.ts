@@ -9,13 +9,51 @@ export default {
     'プラットフォーム全体の既定値です。請求書はこの基準通貨で記帳されます。発行済みの請求書は変更しません。',
   'systemSettings.section.billing': '請求',
   'systemSettings.section.billing.description':
-    '新規の請求書と使用量の見積コストはこの通貨を使います。単価はこの通貨として扱い、為替換算は行いません。',
+    '新規の請求書と使用量の見積はこの通貨を使います。公式カタログ価格は USD / 100万トークンで、下の為替で換算します。',
   'systemSettings.form.baseCurrency': '基準通貨',
+  'systemSettings.form.fxCnyPerUsd': '人民元 / 米ドル為替',
+  'systemSettings.form.fxCnyPerUsd.help':
+    '公式価格は米ドルです。基準通貨が人民元のときに換算します。発行済み請求書は変わりません。',
   'systemSettings.currency.CNY': '人民元 (CNY)',
   'systemSettings.currency.USD': '米ドル (USD)',
   'systemSettings.message.saved': 'システム設定を保存しました',
   'systemSettings.tab.general': '一般',
   'systemSettings.tab.environment': '実行環境',
+  'systemSettings.section.catalog': '公式カタログ',
+  'systemSettings.section.catalog.description':
+    'models.dev または llm-metadata から公式価格を取得します。起動時は取得しません。管理者がここで手動同期します。既定では既存行だけ更新します。',
+  'systemSettings.form.catalogSource': 'カタログソース',
+  'systemSettings.form.catalogSource.modelsDev': 'models.dev',
+  'systemSettings.form.catalogSource.llmMetadata': 'llm-metadata',
+  'systemSettings.form.catalogProviders': 'ベンダー絞り込み',
+  'systemSettings.form.catalogProviders.help':
+    'カンマまたは改行区切り。例: openai, anthropic, qwen。空なら全ベンダーを同期します。',
+  'systemSettings.form.catalogPricedOnly': '価格があるモデルのみ',
+  'systemSettings.form.catalogPricedOnly.help':
+    '入力・出力・キャッシュ単価のない項目をスキップします。',
+  'systemSettings.form.catalogImportNew': '新しいモデルを取り込む',
+  'systemSettings.form.catalogImportNew.help':
+    'オフのときは既存の公式価格だけ更新します。オンにするとカタログの新規モデルも追加します。空のカタログは必ず取り込みます。',
+  'systemSettings.form.catalogApplyDefault':
+    '同期後にプラットフォーム既定プランへ書き込む',
+  'systemSettings.form.catalogApplyDefault.help':
+    '公式 USD 価格を platform-default に換算します。手動の価格項目は上書きしません。',
+  'systemSettings.catalog.sync': '今すぐ同期',
+  'systemSettings.catalog.syncing': '同期中…',
+  'systemSettings.catalog.synced':
+    '同期しました：新規 {created}、更新 {updated}',
+  'systemSettings.catalog.lastSync': '前回の同期',
+  'systemSettings.catalog.lastSync.empty':
+    '公式カタログはまだ同期されていません。',
+  'systemSettings.catalog.result.source': 'ソース',
+  'systemSettings.catalog.result.created': '新規',
+  'systemSettings.catalog.result.updated': '更新',
+  'systemSettings.catalog.result.skipped': 'スキップ（価格なし）',
+  'systemSettings.catalog.result.skippedNotIn': 'スキップ（カタログにない）',
+  'systemSettings.catalog.result.total': 'ソース件数',
+  'systemSettings.catalog.result.providers': '対象ベンダー',
+  'systemSettings.catalog.result.errors': 'エラー',
+  'systemSettings.catalog.result.syncedAt': '時刻',
 
   'runtime.page.description':
     'レジストリ、リポジトリ、名前空間を上書きします。空欄は起動フラグとイメージの既定値を使います。保存するとこのサーバーにすぐ反映されます。',
@@ -228,6 +266,7 @@ export default {
   'ipAccess.noresult.nofound': '条件に一致するルールはありません',
 
   'menu.billingAndUsage.quotas': 'クォータ',
+  'menu.accessControl.system': 'システム設定',
   'menu.accessControl.roles': 'ロール管理',
   'menu.accessControl.permissions': '権限管理',
   'permissions.page.description':
@@ -249,7 +288,7 @@ export default {
   'permissions.group.security': 'セキュリティ',
   'permissions.group.access': '組織とユーザー',
   'permissions.group.settings': 'システム設定',
-  'permissions.group.providers': 'プロバイダー',
+  'permissions.group.providers': 'モデルタイプ',
   'permissions.group.benchmarks': 'ベンチマーク',
   'permissions.group.cache': 'キャッシュ',
   'permissions.desc.model:read': 'モデルとデプロイを表示',
@@ -287,8 +326,8 @@ export default {
   'permissions.desc.settings:read': 'システム設定を表示',
   'permissions.desc.settings:write':
     'ブランド、カタログ、プラットフォームの既定値を変更',
-  'permissions.desc.provider:read': 'モデルプロバイダーを表示',
-  'permissions.desc.provider:write': 'モデルプロバイダーを管理',
+  'permissions.desc.provider:read': 'モデルタイプを表示',
+  'permissions.desc.provider:write': 'モデルタイプを管理',
   'permissions.desc.benchmark:read': 'ベンチマークを表示',
   'permissions.desc.benchmark:write': 'ベンチマークを管理',
   'permissions.desc.cache:read': 'キャッシュ加速を表示',
@@ -339,6 +378,7 @@ export default {
 
   'billing.tab.invoices': '請求書',
   'billing.tab.plans': '料金プラン',
+  'billing.tab.catalog': '公式価格',
   'billing.tab.centers': 'コストセンター',
   'billing.invoice.org': '組織',
   'billing.invoice.period': '期間開始',
@@ -377,12 +417,32 @@ export default {
   'billing.center.principalId': 'プリンシパル ID',
   'billing.item.description': '説明',
   'billing.item.quantity': '数量',
+  'billing.item.unit': '単位',
   'billing.item.amount': '金額',
   'billing.item.type': '種別',
   'billing.item.match': 'マッチキー',
   'billing.item.kind': 'トークン種別',
   'billing.item.price': '単価',
+  'billing.item.priceHint': 'トークン単価は 1,000 トークンあたり',
+  'billing.item.unitPer1k': '/ 千トークン',
   'billing.item.add': '項目を追加',
+  'billing.item.source': '出典',
+  'billing.item.source.official': '公式',
+  'billing.item.source.manual': '手動',
+  'billing.plan.syncOfficial': '公式価格を同期',
+  'billing.catalog.sync': '公式カタログを更新',
+  'billing.catalog.apply': 'このプランに書き込む',
+  'billing.catalog.search': 'モデルまたはベンダーを検索',
+  'billing.catalog.provider': 'ベンダー',
+  'billing.catalog.model': 'モデル',
+  'billing.catalog.input': '入力 / 100万トークン',
+  'billing.catalog.output': '出力 / 100万トークン',
+  'billing.catalog.cacheRead': 'キャッシュヒット / 100万トークン',
+  'billing.catalog.adminHint': 'システム設定で同期',
+  'billing.catalog.empty':
+    '公式価格がありません。管理者はシステム設定でカタログを同期できます。',
+  'billing.catalog.synced': '{count} 件の公式価格を同期しました',
+  'billing.catalog.applied': '{count} 件の価格項目を書き込みました',
 
   'roles.add': 'ロールを追加',
   'roles.edit': 'ロールを編集',

@@ -9,13 +9,51 @@ export default {
     'Общеплатформенные значения по умолчанию. Счета выставляются в базовой валюте. Выставленные счета не меняются.',
   'systemSettings.section.billing': 'Биллинг',
   'systemSettings.section.billing.description':
-    'Новые счета и оценка стоимости используют эту валюту. Цены читаются в ней без конвертации курса.',
+    'Новые счета и оценка стоимости используют эту валюту. Официальные цены — USD за 1 млн токенов и конвертируются курсом ниже.',
   'systemSettings.form.baseCurrency': 'Базовая валюта',
+  'systemSettings.form.fxCnyPerUsd': 'Курс CNY за USD',
+  'systemSettings.form.fxCnyPerUsd.help':
+    'Официальные цены в долларах. При базовой валюте CNY применяется этот курс. Выставленные счета не меняются.',
   'systemSettings.currency.CNY': 'Юань (CNY)',
   'systemSettings.currency.USD': 'Доллар США (USD)',
   'systemSettings.message.saved': 'Системные настройки сохранены',
   'systemSettings.tab.general': 'Общие',
   'systemSettings.tab.environment': 'Среда',
+  'systemSettings.section.catalog': 'Официальный каталог',
+  'systemSettings.section.catalog.description':
+    'Загрузка официальных цен из models.dev или llm-metadata. При запуске сервер ничего не скачивает — синхронизирует только администратор. По умолчанию обновляются только уже существующие строки.',
+  'systemSettings.form.catalogSource': 'Источник каталога',
+  'systemSettings.form.catalogSource.modelsDev': 'models.dev',
+  'systemSettings.form.catalogSource.llmMetadata': 'llm-metadata',
+  'systemSettings.form.catalogProviders': 'Фильтр поставщиков',
+  'systemSettings.form.catalogProviders.help':
+    'Через запятую или с новой строки, например openai, anthropic, qwen. Пусто — все поставщики.',
+  'systemSettings.form.catalogPricedOnly': 'Только модели с ценой',
+  'systemSettings.form.catalogPricedOnly.help':
+    'Пропускать записи без цен на вход, выход или кэш.',
+  'systemSettings.form.catalogImportNew': 'Импортировать новые модели',
+  'systemSettings.form.catalogImportNew.help':
+    'Если выключено, обновляются только существующие официальные цены. Если включено, добавляются новые модели. Пустой каталог всегда импортируется.',
+  'systemSettings.form.catalogApplyDefault':
+    'После синхронизации записать в тариф platform-default',
+  'systemSettings.form.catalogApplyDefault.help':
+    'Конвертировать официальные цены USD в platform-default. Ручные строки не перезаписываются.',
+  'systemSettings.catalog.sync': 'Синхронизировать',
+  'systemSettings.catalog.syncing': 'Синхронизация…',
+  'systemSettings.catalog.synced':
+    'Синхронизировано: создано {created}, обновлено {updated}',
+  'systemSettings.catalog.lastSync': 'Последняя синхронизация',
+  'systemSettings.catalog.lastSync.empty':
+    'Официальный каталог ещё не синхронизировался.',
+  'systemSettings.catalog.result.source': 'Источник',
+  'systemSettings.catalog.result.created': 'Создано',
+  'systemSettings.catalog.result.updated': 'Обновлено',
+  'systemSettings.catalog.result.skipped': 'Пропущено (нет цены)',
+  'systemSettings.catalog.result.skippedNotIn': 'Пропущено (нет в каталоге)',
+  'systemSettings.catalog.result.total': 'Строк в источнике',
+  'systemSettings.catalog.result.providers': 'Поставщиков',
+  'systemSettings.catalog.result.errors': 'Ошибки',
+  'systemSettings.catalog.result.syncedAt': 'Время',
 
   'runtime.page.description':
     'Переопределите реестры образов, репозитории и пространства имён. Пустые поля оставляют флаги запуска и встроенные значения. Сохранение сразу действует на этот сервер.',
@@ -228,6 +266,7 @@ export default {
   'ipAccess.noresult.nofound': 'Нет правил, удовлетворяющих фильтрам',
 
   'menu.billingAndUsage.quotas': 'Квоты',
+  'menu.accessControl.system': 'Системные настройки',
   'menu.accessControl.roles': 'Управление ролями',
   'menu.accessControl.permissions': 'Права',
   'permissions.page.description':
@@ -249,7 +288,7 @@ export default {
   'permissions.group.security': 'Безопасность',
   'permissions.group.access': 'Организации и пользователи',
   'permissions.group.settings': 'Системные настройки',
-  'permissions.group.providers': 'Провайдеры',
+  'permissions.group.providers': 'Типы моделей',
   'permissions.group.benchmarks': 'Бенчмарки',
   'permissions.group.cache': 'Кэш',
   'permissions.desc.model:read': 'Просмотр моделей и развёртываний',
@@ -290,8 +329,8 @@ export default {
   'permissions.desc.settings:read': 'Просмотр системных настроек',
   'permissions.desc.settings:write':
     'Изменение брендинга, каталога и значений по умолчанию',
-  'permissions.desc.provider:read': 'Просмотр провайдеров моделей',
-  'permissions.desc.provider:write': 'Управление провайдерами моделей',
+  'permissions.desc.provider:read': 'Просмотр типов моделей',
+  'permissions.desc.provider:write': 'Управление типами моделей',
   'permissions.desc.benchmark:read': 'Просмотр бенчмарков',
   'permissions.desc.benchmark:write': 'Управление бенчмарками',
   'permissions.desc.cache:read': 'Просмотр кэш-ускорения',
@@ -342,6 +381,7 @@ export default {
 
   'billing.tab.invoices': 'Счета',
   'billing.tab.plans': 'Тарифы',
+  'billing.tab.catalog': 'Официальные цены',
   'billing.tab.centers': 'Центры затрат',
   'billing.invoice.org': 'Организация',
   'billing.invoice.period': 'Начало периода',
@@ -380,12 +420,32 @@ export default {
   'billing.center.principalId': 'ID субъекта',
   'billing.item.description': 'Описание',
   'billing.item.quantity': 'Количество',
+  'billing.item.unit': 'Единица',
   'billing.item.amount': 'Сумма',
   'billing.item.type': 'Тип',
   'billing.item.match': 'Ключ',
   'billing.item.kind': 'Вид токена',
   'billing.item.price': 'Цена',
+  'billing.item.priceHint': 'Цена токенов указана за 1 тыс. токенов',
+  'billing.item.unitPer1k': '/ 1 тыс. токенов',
   'billing.item.add': 'Добавить позицию',
+  'billing.item.source': 'Источник',
+  'billing.item.source.official': 'Официальная',
+  'billing.item.source.manual': 'Вручную',
+  'billing.plan.syncOfficial': 'Синхронизировать официальные цены',
+  'billing.catalog.sync': 'Обновить официальный каталог',
+  'billing.catalog.apply': 'Записать в этот тариф',
+  'billing.catalog.search': 'Поиск модели или поставщика',
+  'billing.catalog.provider': 'Поставщик',
+  'billing.catalog.model': 'Модель',
+  'billing.catalog.input': 'Вход / 1 млн токенов',
+  'billing.catalog.output': 'Выход / 1 млн токенов',
+  'billing.catalog.cacheRead': 'Кэш / 1 млн токенов',
+  'billing.catalog.adminHint': 'Синхронизация в системных настройках',
+  'billing.catalog.empty':
+    'Официальных цен нет. Администратор может синхронизировать каталог в системных настройках.',
+  'billing.catalog.synced': 'Синхронизировано официальных цен: {count}',
+  'billing.catalog.applied': 'Записано позиций: {count}',
 
   'roles.add': 'Добавить роль',
   'roles.edit': 'Изменить роль',

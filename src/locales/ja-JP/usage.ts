@@ -79,6 +79,10 @@ export default {
 
   // --- Resource usage: shared metrics & units ---
   'usage.metric.tokens': 'トークン数',
+  'usage.metric.ttft': 'TTFT',
+  'usage.metric.latency': 'エンドツーエンド遅延',
+  'usage.metric.tpm': 'TPM',
+  'usage.metric.rpm': 'RPM',
   'usage.metric.input': '入力',
   'usage.metric.output': '出力',
   'usage.metric.gpuHours': 'GPU 時間',

@@ -117,8 +117,7 @@ export const applyAccessExtensions = <T extends AccessPredicates>(
       has(perms, 'org:write') ||
       has(perms, 'role:write'),
     canSeeQuotas: base.canSeeAdmin || has(perms, 'quota:read') || isOwnerHere,
-    canSeeBilling:
-      base.canSeeAdmin || has(perms, 'billing:read') || isOwnerHere,
+    canSeeBilling: false,
     canSeeRoles: base.canSeeAdmin || has(perms, 'role:read') || isOwnerHere,
     canSeePermissions:
       base.canSeeAdmin || has(perms, 'role:read') || isOwnerHere,

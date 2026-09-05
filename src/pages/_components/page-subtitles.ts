@@ -1,6 +1,9 @@
 const PAGE_SUBTITLES: Array<{ prefix: string; id: string }> = [
   { prefix: '/dashboard', id: 'page.subtitle.dashboard' },
   { prefix: '/usage/overview', id: 'page.subtitle.usage' },
+  { prefix: '/access-control/usage', id: 'page.subtitle.usage' },
+  { prefix: '/usage/request-logs', id: 'page.subtitle.usageLogs' },
+  { prefix: '/usage/task-logs', id: 'page.subtitle.taskLogs' },
   { prefix: '/usage/billing', id: 'page.subtitle.billing' },
   { prefix: '/usage/quotas', id: 'page.subtitle.quotas' },
   { prefix: '/models/user-models', id: 'page.subtitle.userModels' },
@@ -30,6 +33,7 @@ const PAGE_SUBTITLES: Array<{ prefix: string; id: string }> = [
   { prefix: '/access-control/roles', id: 'page.subtitle.roles' },
   { prefix: '/access-control/permissions', id: 'page.subtitle.roles' },
   { prefix: '/access-control/audit-logs', id: 'page.subtitle.audit' },
+  { prefix: '/access-control/system', id: 'page.subtitle.settings' },
   { prefix: '/playground', id: 'page.subtitle.playground' }
 ];
 

@@ -41,7 +41,7 @@ const TopTokenUsageByUser: React.FC<TopTokenUsageByUserProps> = ({
       title={intl.formatMessage({ id: 'dashboard.topConsumers' })}
       extra={
         <a
-          onClick={() => history.push('/usage/overview')}
+          onClick={() => history.push('/access-control/usage')}
           style={{ fontSize: 12 }}
         >
           {intl.formatMessage({ id: 'dashboard.viewAllUsers' })}

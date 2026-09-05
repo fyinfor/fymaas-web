@@ -64,7 +64,7 @@ export default {
   'usage.export.suggest.split': '分片导出（{parts} 个 CSV 文件）',
   'usage.user.currentAccount': '当前账户',
   'usage.table.cluster': '集群',
-  'usage.table.provider': '提供商',
+  'usage.table.provider': '模型类型',
   'usage.table.deleted': '已删除',
   'usage.chart.cached': '缓存',
   'usage.chart.uncached': '非缓存',
@@ -73,6 +73,10 @@ export default {
 
   // --- Resource usage: shared metrics & units ---
   'usage.metric.tokens': 'Token 数',
+  'usage.metric.ttft': 'TTFT',
+  'usage.metric.latency': '端到端延迟',
+  'usage.metric.tpm': 'TPM',
+  'usage.metric.rpm': 'RPM',
   'usage.metric.input': '输入',
   'usage.metric.output': '输出',
   'usage.metric.gpuHours': 'GPU 小时',

@@ -1,6 +1,6 @@
 export default {
   'clusters.title': '集群',
-  'clusters.table.provider': '提供商',
+  'clusters.table.provider': '环境类型',
   'clusters.table.deployments': '部署',
   'clusters.button.add': '添加集群',
   'clusters.button.addCredential': '添加云凭证',

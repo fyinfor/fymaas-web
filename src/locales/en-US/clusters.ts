@@ -1,6 +1,6 @@
 export default {
   'clusters.title': 'Cluster',
-  'clusters.table.provider': 'Provider',
+  'clusters.table.provider': 'Environment',
   'clusters.table.deployments': 'Deployments',
   'clusters.button.add': 'Add Cluster',
   'clusters.button.addCredential': 'Add Cloud Credential',

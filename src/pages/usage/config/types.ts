@@ -35,6 +35,11 @@ export interface TimeSeriesSummary {
   total_tokens: number;
   api_requests: number;
   models_called: number;
+  avg_ttft_ms?: number | null;
+  avg_latency_ms?: number | null;
+  tpm?: number | null;
+  rpm?: number | null;
+  cache_hit_rate?: number | null;
 }
 
 export interface TimeLineItem {
@@ -67,6 +72,11 @@ export type BreakdownItem = {
   models_called: number;
   api_keys_used: number;
   last_active: string;
+  avg_ttft_ms?: number | null;
+  avg_latency_ms?: number | null;
+  tpm?: number | null;
+  estimated_cost?: number | null;
+  currency?: string | null;
   provider_type: string;
   provider_name: string;
   user: UsageFilterItem;

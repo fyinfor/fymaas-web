@@ -9,34 +9,24 @@
 
 type RouteLike = { path?: string; [key: string]: any };
 
+// Settings pages stay on `/settings/*` so existing links (entry redirect,
+// profile dropdown) keep working. The group itself is hidden from the
+// sider: system settings is grafted under `/access-control`, and personal
+// settings is opened from the avatar menu only.
 const enterpriseRoutes: RouteLike[] = [
   {
     name: 'settings',
     path: '/settings',
     key: 'settings',
+    hideInMenu: true,
     icon: 'icon-settings',
     selectedIcon: 'icon-settings',
     defaultIcon: 'icon-settings',
     routes: [
       {
         path: '/settings',
+        hideInMenu: true,
         component: './settings/entry'
-      },
-      {
-        name: 'system',
-        path: '/settings/system',
-        key: 'system',
-        icon: 'icon-settings',
-        selectedIcon: 'icon-settings',
-        defaultIcon: 'icon-settings',
-        access: 'canSeeIpAccess',
-        component: './settings',
-        subMenu: [
-          '/settings/environment',
-          '/settings/branding',
-          '/settings/ldap',
-          '/settings/ip-access'
-        ]
       },
       {
         name: 'system',
@@ -74,6 +64,7 @@ const enterpriseRoutes: RouteLike[] = [
         name: 'profile',
         path: '/settings/profile',
         key: 'profile',
+        hideInMenu: true,
         icon: 'icon-preferences',
         selectedIcon: 'icon-preferences',
         defaultIcon: 'icon-preferences',
@@ -88,8 +79,13 @@ const enterpriseRoutes: RouteLike[] = [
 // definition in `routes.ts` untouched and mergeable.
 const groupReplacements: Record<string, Record<string, Partial<RouteLike>>> = {
   '/usage': {
+    usage: {
+      hideInMenu: true,
+      redirect: '/access-control/usage',
+      component: undefined
+    },
     billing: {
-      hideInMenu: false,
+      hideInMenu: true,
       access: 'canSeeBilling',
       component: './enterprise-billing'
     }
@@ -106,8 +102,61 @@ const groupReplacements: Record<string, Record<string, Partial<RouteLike>>> = {
   }
 };
 
+const USAGE_MENU_ORDER = [
+  '/usage/api-keys',
+  '/usage/request-logs',
+  '/usage/task-logs',
+  '/usage/quotas',
+  '/usage/billing'
+];
+
+const orderUsageRoutes = (children: RouteLike[]): RouteLike[] => {
+  const redirects: RouteLike[] = [];
+  const rest: RouteLike[] = [];
+  children.forEach((child) => {
+    if (child.path === '/usage' && child.redirect) {
+      redirects.push({ ...child, redirect: '/usage/api-keys' });
+      return;
+    }
+    rest.push(child);
+  });
+  const rank = (path?: string) => {
+    const index = USAGE_MENU_ORDER.indexOf(path || '');
+    return index === -1 ? USAGE_MENU_ORDER.length : index;
+  };
+  rest.sort((left, right) => rank(left.path) - rank(right.path));
+  return [...redirects, ...rest];
+};
+
 const groupAdditions: Record<string, RouteLike[]> = {
   '/usage': [
+    {
+      name: 'apikeys',
+      path: '/usage/api-keys',
+      key: 'apikeys',
+      icon: 'icon-key',
+      selectedIcon: 'icon-key-filled',
+      defaultIcon: 'icon-key',
+      component: './api-keys'
+    },
+    {
+      name: 'usageLogs',
+      path: '/usage/request-logs',
+      key: 'usageLogs',
+      icon: 'icon-logs',
+      selectedIcon: 'icon-logs',
+      defaultIcon: 'icon-logs',
+      component: './usage-logs/index'
+    },
+    {
+      name: 'taskLogs',
+      path: '/usage/task-logs',
+      key: 'taskLogs',
+      icon: 'icon-logs',
+      selectedIcon: 'icon-logs',
+      defaultIcon: 'icon-logs',
+      component: './task-logs/index'
+    },
     {
       name: 'quotas',
       path: '/usage/quotas',
@@ -117,15 +166,6 @@ const groupAdditions: Record<string, RouteLike[]> = {
       defaultIcon: 'icon-usage-outlined',
       access: 'canSeeQuotas',
       component: './quotas'
-    },
-    {
-      name: 'apikeys',
-      path: '/usage/api-keys',
-      key: 'apikeys',
-      icon: 'icon-key',
-      selectedIcon: 'icon-key-filled',
-      defaultIcon: 'icon-key',
-      component: './api-keys'
     }
   ],
   '/resources': [
@@ -151,6 +191,16 @@ const groupAdditions: Record<string, RouteLike[]> = {
     }
   ],
   '/access-control': [
+    {
+      name: 'usage',
+      path: '/access-control/usage',
+      key: 'usageOverview',
+      icon: 'icon-usage-outlined',
+      selectedIcon: 'icon-usage-filled',
+      defaultIcon: 'icon-usage-outlined',
+      access: 'canSeeOrgAdmin',
+      component: './usage/index'
+    },
     {
       name: 'roles',
       path: '/access-control/roles',
@@ -192,6 +242,28 @@ const groupAdditions: Record<string, RouteLike[]> = {
       // that widens to Org owners once the access extension does.
       access: 'canSeeAudit',
       component: './audit-logs'
+    },
+    {
+      // React Router rejects an absolute child path that does not start
+      // with its parent's path, and rejecting it takes the whole route
+      // tree down (blank page). System settings shows as a row of the
+      // access-control group, so it has to live under that prefix; the
+      // tabs it renders keep their own `/settings/*` routes, which
+      // `subMenu` below maps back onto this row for highlighting.
+      name: 'system',
+      path: '/access-control/system',
+      key: 'systemSettings',
+      icon: 'icon-settings',
+      selectedIcon: 'icon-settings',
+      defaultIcon: 'icon-settings',
+      access: 'canSeeIpAccess',
+      component: './settings',
+      subMenu: [
+        '/settings/environment',
+        '/settings/branding',
+        '/settings/ldap',
+        '/settings/ip-access'
+      ]
     }
   ]
 };
@@ -241,6 +313,9 @@ export const applyRouteExtensions = <T>(base: T): T => {
     if (additions) {
       nextRoutes = [...nextRoutes, ...additions];
     }
+    if (route.path === '/usage') {
+      nextRoutes = orderUsageRoutes(nextRoutes);
+    }
     return nextRoutes === route.routes
       ? route
       : { ...route, routes: nextRoutes };
@@ -267,6 +342,15 @@ export const applyRouteExtensions = <T>(base: T): T => {
     access: 'canSeeWorkspaces',
     component: './enterprise-workspaces'
   });
+
+  // Token service sits ahead of model service in the sider.
+  const usageIndex = routes.findIndex((route) => route?.path === '/usage');
+  const modelsIndex = routes.findIndex((route) => route?.path === '/models');
+  if (usageIndex !== -1 && modelsIndex !== -1 && usageIndex !== modelsIndex) {
+    const [usageRoute] = routes.splice(usageIndex, 1);
+    const insertAt = routes.findIndex((route) => route?.path === '/models');
+    routes.splice(insertAt === -1 ? routes.length : insertAt, 0, usageRoute);
+  }
 
   return routes as T;
 };

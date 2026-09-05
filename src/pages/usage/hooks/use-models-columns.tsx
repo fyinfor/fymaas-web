@@ -122,6 +122,26 @@ const useModelsColumns = (): ColumnDef[] => {
         },
         render: (text: number) => <AutoTooltip ghost>{text}</AutoTooltip>
       },
+      {
+        title: intl.formatMessage({ id: 'usage.metric.ttft' }),
+        key: 'avg_ttft_ms',
+        render: (_: unknown, record: ListItem) => (
+          <AutoTooltip ghost>
+            {record.avg_ttft_ms == null
+              ? '—'
+              : `${Math.round(record.avg_ttft_ms)} ms`}
+          </AutoTooltip>
+        )
+      },
+      {
+        title: intl.formatMessage({ id: 'usage.metric.tpm' }),
+        key: 'tpm',
+        render: (_: unknown, record: ListItem) => (
+          <AutoTooltip ghost>
+            {record.tpm == null ? '—' : Number(record.tpm).toFixed(1)}
+          </AutoTooltip>
+        )
+      },
       ...beforeLastActive,
       {
         title: intl.formatMessage({ id: 'usage.table.lastActive' }),

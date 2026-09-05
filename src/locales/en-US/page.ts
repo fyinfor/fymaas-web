@@ -1,13 +1,17 @@
 export default {
   'page.subtitle.dashboard': 'MaaS resources and inference overview',
-  'page.subtitle.usage': 'Review token, compute, and storage usage',
+  'page.subtitle.usage': 'Model calls, TTFT, TPM and other technical metrics',
+  'page.subtitle.usageLogs':
+    'Per-request tokens, latency, and completion status',
+  'page.subtitle.taskLogs': 'Image and speech generation task progress',
   'page.subtitle.billing': 'Invoices, plans, and billing details',
   'page.subtitle.quotas': 'Manage organization and user quotas',
   'page.subtitle.userModels': 'Browse accessible models and deploy them',
   'page.subtitle.catalog': 'Pick a catalog model and deploy inference',
   'page.subtitle.deployments': 'Manage deployments, replicas, and configs',
   'page.subtitle.routes': 'Configure endpoints, weights, and targets',
-  'page.subtitle.providers': 'Manage external model providers',
+  'page.subtitle.providers':
+    'Manage outbound model types and protocol endpoints',
   'page.subtitle.benchmark': 'Compare throughput, TTFT, and TPOT',
   'page.subtitle.backends': 'Manage inference backend versions',
   'page.subtitle.kvCache': 'Accelerate long-context inference with KV cache',

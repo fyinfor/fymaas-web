@@ -1,13 +1,16 @@
 export default {
   'page.subtitle.dashboard': 'MaaS リソースと推論サービスの概要',
-  'page.subtitle.usage': 'トークン、計算、ストレージの使用量を確認',
+  'page.subtitle.usage': 'モデル呼び出し、TTFT、TPM などの技術指標',
+  'page.subtitle.usageLogs': '各推論呼び出しのトークン、遅延、完了状態',
+  'page.subtitle.taskLogs': '画像・音声生成タスクの進捗と結果',
   'page.subtitle.billing': '請求書、プラン、課金明細',
   'page.subtitle.quotas': '組織とユーザーのクォータを管理',
   'page.subtitle.userModels': '利用可能なモデルを閲覧してデプロイ',
   'page.subtitle.catalog': 'カタログからモデルを選んで推論をデプロイ',
   'page.subtitle.deployments': 'デプロイ、レプリカ、設定を管理',
   'page.subtitle.routes': 'エンドポイント、重み、ターゲットを設定',
-  'page.subtitle.providers': '外部モデルプロバイダーを管理',
+  'page.subtitle.providers':
+    '対外向けモデルタイプとプロトコルエンドポイントを管理',
   'page.subtitle.benchmark': 'スループット、TTFT、TPOT を比較',
   'page.subtitle.backends': '推論バックエンドのバージョンを管理',
   'page.subtitle.kvCache': 'KV Cache で長文脈推論を高速化',

@@ -9,13 +9,51 @@ export default {
     'Platform varsayılanları. Faturalar temel para biriminde yazılır. Kesilmiş faturalar değişmez.',
   'systemSettings.section.billing': 'Faturalama',
   'systemSettings.section.billing.description':
-    'Yeni faturalar ve kullanım maliyeti bu para birimini kullanır. Birim fiyatlar kur çevrimi olmadan bu birimde okunur.',
+    'Yeni faturalar ve kullanım tahmini bu para birimini kullanır. Resmi katalog fiyatları 1M token başına USD’dir ve aşağıdaki kurla çevrilir.',
   'systemSettings.form.baseCurrency': 'Temel para birimi',
+  'systemSettings.form.fxCnyPerUsd': 'USD başına CNY kuru',
+  'systemSettings.form.fxCnyPerUsd.help':
+    'Resmi fiyatlar USD’dir. Temel para birimi CNY olduğunda bu kur kullanılır. Kesilmiş faturalar değişmez.',
   'systemSettings.currency.CNY': 'Çin yuanı (CNY)',
   'systemSettings.currency.USD': 'ABD doları (USD)',
   'systemSettings.message.saved': 'Sistem ayarları kaydedildi',
   'systemSettings.tab.general': 'Genel',
   'systemSettings.tab.environment': 'Ortam',
+  'systemSettings.section.catalog': 'Resmi katalog',
+  'systemSettings.section.catalog.description':
+    'Resmi liste fiyatlarını models.dev veya llm-metadata’den alın. Sunucu başlangıçta indirmez; yalnızca yönetici buradan senkronize eder. Varsayılan olarak yalnızca mevcut satırlar güncellenir.',
+  'systemSettings.form.catalogSource': 'Katalog kaynağı',
+  'systemSettings.form.catalogSource.modelsDev': 'models.dev',
+  'systemSettings.form.catalogSource.llmMetadata': 'llm-metadata',
+  'systemSettings.form.catalogProviders': 'Sağlayıcı filtresi',
+  'systemSettings.form.catalogProviders.help':
+    'Virgül veya satır sonu ile ayırın, örn. openai, anthropic, qwen. Boş bırakılırsa tüm sağlayıcılar senkronize edilir.',
+  'systemSettings.form.catalogPricedOnly': 'Yalnızca fiyatı olan modeller',
+  'systemSettings.form.catalogPricedOnly.help':
+    'Girdi, çıktı veya önbellek fiyatı olmayan kayıtları atla.',
+  'systemSettings.form.catalogImportNew': 'Yeni modelleri içe aktar',
+  'systemSettings.form.catalogImportNew.help':
+    'Kapalıyken yalnızca mevcut resmi fiyatlar güncellenir. Açıkken katalogdaki yeni modeller eklenir. Boş katalog her zaman içe aktarılır.',
+  'systemSettings.form.catalogApplyDefault':
+    'Senkron sonrası platform-default tarifesine yaz',
+  'systemSettings.form.catalogApplyDefault.help':
+    'Resmi USD fiyatlarını platform-default’a çevirir. Elle girilen satırlar değişmez.',
+  'systemSettings.catalog.sync': 'Şimdi senkronize et',
+  'systemSettings.catalog.syncing': 'Senkronize ediliyor…',
+  'systemSettings.catalog.synced':
+    'Senkronize edildi: {created} eklendi, {updated} güncellendi',
+  'systemSettings.catalog.lastSync': 'Son senkron',
+  'systemSettings.catalog.lastSync.empty':
+    'Resmi katalog henüz senkronize edilmedi.',
+  'systemSettings.catalog.result.source': 'Kaynak',
+  'systemSettings.catalog.result.created': 'Eklenen',
+  'systemSettings.catalog.result.updated': 'Güncellenen',
+  'systemSettings.catalog.result.skipped': 'Atlanan (fiyat yok)',
+  'systemSettings.catalog.result.skippedNotIn': 'Atlanan (katalogda yok)',
+  'systemSettings.catalog.result.total': 'Kaynaktaki satır',
+  'systemSettings.catalog.result.providers': 'Sağlayıcı',
+  'systemSettings.catalog.result.errors': 'Hatalar',
+  'systemSettings.catalog.result.syncedAt': 'Zaman',
 
   'runtime.page.description':
     'İmaj kayıtlarını, depoları ve ad alanlarını geçersiz kılın. Boş alanlar başlatma bayraklarını ve imaj varsayılanlarını kullanır. Kaydetmek bu sunucuya hemen uygulanır.',
@@ -228,6 +266,7 @@ export default {
   'ipAccess.noresult.nofound': 'Bu filtrelere uyan kural yok',
 
   'menu.billingAndUsage.quotas': 'Kotalar',
+  'menu.accessControl.system': 'Sistem Ayarları',
   'menu.accessControl.roles': 'Rol Yönetimi',
   'menu.accessControl.permissions': 'İzinler',
   'permissions.page.description':
@@ -249,7 +288,7 @@ export default {
   'permissions.group.security': 'Güvenlik',
   'permissions.group.access': 'Organizasyonlar ve kullanıcılar',
   'permissions.group.settings': 'Sistem ayarları',
-  'permissions.group.providers': 'Sağlayıcılar',
+  'permissions.group.providers': 'Model Türleri',
   'permissions.group.benchmarks': 'Kıyaslamalar',
   'permissions.group.cache': 'Önbellek',
   'permissions.desc.model:read': 'Modelleri ve dağıtımları görüntüle',
@@ -290,8 +329,8 @@ export default {
   'permissions.desc.settings:read': 'Sistem ayarlarını görüntüle',
   'permissions.desc.settings:write':
     'Marka, katalog ve platform varsayılanlarını değiştir',
-  'permissions.desc.provider:read': 'Model sağlayıcılarını görüntüle',
-  'permissions.desc.provider:write': 'Model sağlayıcılarını yönet',
+  'permissions.desc.provider:read': 'Model türlerini görüntüle',
+  'permissions.desc.provider:write': 'Model türlerini yönet',
   'permissions.desc.benchmark:read': 'Kıyaslamaları görüntüle',
   'permissions.desc.benchmark:write': 'Kıyaslamaları yönet',
   'permissions.desc.cache:read': 'Önbellek hızlandırmayı görüntüle',
@@ -342,6 +381,7 @@ export default {
 
   'billing.tab.invoices': 'Faturalar',
   'billing.tab.plans': 'Fiyat planları',
+  'billing.tab.catalog': 'Resmi fiyatlar',
   'billing.tab.centers': 'Maliyet merkezleri',
   'billing.invoice.org': 'Organizasyon',
   'billing.invoice.period': 'Dönem başlangıcı',
@@ -380,12 +420,32 @@ export default {
   'billing.center.principalId': 'Kimlik ID',
   'billing.item.description': 'Açıklama',
   'billing.item.quantity': 'Miktar',
+  'billing.item.unit': 'Birim',
   'billing.item.amount': 'Tutar',
   'billing.item.type': 'Tür',
   'billing.item.match': 'Eşleşme anahtarı',
   'billing.item.kind': 'Jeton türü',
   'billing.item.price': 'Birim fiyat',
+  'billing.item.priceHint': 'Token birim fiyatı 1 bin token içindir',
+  'billing.item.unitPer1k': '/ 1 bin token',
   'billing.item.add': 'Kalem ekle',
+  'billing.item.source': 'Kaynak',
+  'billing.item.source.official': 'Resmi',
+  'billing.item.source.manual': 'Manuel',
+  'billing.plan.syncOfficial': 'Resmi fiyatları senkronize et',
+  'billing.catalog.sync': 'Resmi kataloğu yenile',
+  'billing.catalog.apply': 'Bu plana yaz',
+  'billing.catalog.search': 'Model veya sağlayıcı ara',
+  'billing.catalog.provider': 'Sağlayıcı',
+  'billing.catalog.model': 'Model',
+  'billing.catalog.input': 'Girdi / 1M token',
+  'billing.catalog.output': 'Çıktı / 1M token',
+  'billing.catalog.cacheRead': 'Önbellek / 1M token',
+  'billing.catalog.adminHint': 'Sistem ayarlarında senkronize et',
+  'billing.catalog.empty':
+    'Resmi fiyat yok. Yönetici katalog senkronunu sistem ayarlarından yapabilir.',
+  'billing.catalog.synced': '{count} resmi fiyat senkronize edildi',
+  'billing.catalog.applied': '{count} fiyat kalemi yazıldı',
 
   'roles.add': 'Rol Ekle',
   'roles.edit': 'Rolü Düzenle',

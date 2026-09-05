@@ -69,7 +69,7 @@ export default {
   'usage.export.suggest.split': 'Export in {parts} CSV files',
   'usage.user.currentAccount': 'Current Account',
   'usage.table.cluster': 'Cluster',
-  'usage.table.provider': 'Provider',
+  'usage.table.provider': 'Model Type',
   'usage.table.deleted': 'Deleted',
   'usage.chart.cached': 'Cached',
   'usage.chart.uncached': 'Uncached',
@@ -78,6 +78,10 @@ export default {
 
   // --- Resource usage: shared metrics & units ---
   'usage.metric.tokens': 'Tokens',
+  'usage.metric.ttft': 'TTFT',
+  'usage.metric.latency': 'E2E latency',
+  'usage.metric.tpm': 'TPM',
+  'usage.metric.rpm': 'RPM',
   'usage.metric.input': 'Input',
   'usage.metric.output': 'Output',
   'usage.metric.gpuHours': 'GPU Hours',

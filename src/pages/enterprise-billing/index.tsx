@@ -2,7 +2,7 @@ import { StatusBadge } from '@/components/console';
 import { loadEnterprisePeople, type PersonOption } from '@/enterprise/people';
 import { queryBillingSettings } from '@/enterprise/system-settings/apis';
 import { downloadFile } from '@/utils/download-stream';
-import { request, useAccess, useIntl } from '@umijs/max';
+import { history, request, useAccess, useIntl } from '@umijs/max';
 import {
   Button,
   DatePicker,
@@ -46,6 +46,9 @@ const EnterpriseBilling: React.FC = () => {
   const [generating, setGenerating] = React.useState(false);
   const [statusFilter, setStatusFilter] = React.useState<string | undefined>();
   const [baseCurrency, setBaseCurrency] = React.useState('CNY');
+  const [catalog, setCatalog] = React.useState<any[]>([]);
+  const [catalogSearch, setCatalogSearch] = React.useState('');
+  const [catalogLoading, setCatalogLoading] = React.useState(false);
   const [planForm] = Form.useForm();
   const [itemForm] = Form.useForm();
   const [centerForm] = Form.useForm();
@@ -98,7 +101,38 @@ const EnterpriseBilling: React.FC = () => {
         }
       })
       .catch(() => undefined);
+    loadCatalog();
   }, []);
+
+  const loadCatalog = async (search?: string) => {
+    setCatalogLoading(true);
+    try {
+      const rows = await request('/billing/official-catalog', {
+        method: 'GET',
+        params: { search: search || undefined }
+      });
+      setCatalog(Array.isArray(rows) ? rows : []);
+    } finally {
+      setCatalogLoading(false);
+    }
+  };
+
+  const applyOfficialToPlan = async (plan: any) => {
+    if (!plan) return;
+    const result = await request(
+      `/billing/price-plans/${plan.id}/sync-official`,
+      { method: 'POST' }
+    );
+    message.success(
+      intl.formatMessage(
+        { id: 'billing.catalog.applied' },
+        { count: result.updated }
+      )
+    );
+    if (itemsOpen) {
+      openPlanItems(plan);
+    }
+  };
 
   const invoiceTone = (status: string) => {
     if (status === 'issued') return 'success' as const;
@@ -511,6 +545,11 @@ const EnterpriseBilling: React.FC = () => {
                           <a onClick={() => openPlanItems(row)}>
                             {intl.formatMessage({ id: 'billing.plan.items' })}
                           </a>
+                          <a onClick={() => applyOfficialToPlan(row)}>
+                            {intl.formatMessage({
+                              id: 'billing.plan.syncOfficial'
+                            })}
+                          </a>
                           <a
                             onClick={async () => {
                               await request(`/billing/price-plans/${row.id}`, {
@@ -525,6 +564,87 @@ const EnterpriseBilling: React.FC = () => {
                           </a>
                         </Space>
                       )
+                    }
+                  ]}
+                />
+              </>
+            )
+          },
+          {
+            key: 'catalog',
+            label: intl.formatMessage({ id: 'billing.tab.catalog' }),
+            children: (
+              <>
+                <Space style={{ marginBottom: 16 }} wrap>
+                  <Input.Search
+                    allowClear
+                    style={{ width: 280 }}
+                    placeholder={intl.formatMessage({
+                      id: 'billing.catalog.search'
+                    })}
+                    value={catalogSearch}
+                    onChange={(event) => setCatalogSearch(event.target.value)}
+                    onSearch={(value) => loadCatalog(value)}
+                  />
+                  {access.canSeeAdmin ? (
+                    <Button
+                      type="link"
+                      onClick={() => history.push('/settings/system')}
+                    >
+                      {intl.formatMessage({
+                        id: 'billing.catalog.adminHint'
+                      })}
+                    </Button>
+                  ) : null}
+                </Space>
+                <Table
+                  rowKey={(row) => `${row.provider}/${row.model_id}`}
+                  loading={catalogLoading}
+                  dataSource={catalog}
+                  locale={{
+                    emptyText: (
+                      <Empty
+                        description={intl.formatMessage({
+                          id: 'billing.catalog.empty'
+                        })}
+                      />
+                    )
+                  }}
+                  columns={[
+                    {
+                      title: intl.formatMessage({
+                        id: 'billing.catalog.provider'
+                      }),
+                      dataIndex: 'provider'
+                    },
+                    {
+                      title: intl.formatMessage({
+                        id: 'billing.catalog.model'
+                      }),
+                      render: (_: any, row: any) =>
+                        row.display_name || row.model_id
+                    },
+                    {
+                      title: intl.formatMessage({
+                        id: 'billing.catalog.input'
+                      }),
+                      dataIndex: 'input_usd_per_m',
+                      render: (value: number) => `$${Number(value || 0)}`
+                    },
+                    {
+                      title: intl.formatMessage({
+                        id: 'billing.catalog.output'
+                      }),
+                      dataIndex: 'output_usd_per_m',
+                      render: (value: number) => `$${Number(value || 0)}`
+                    },
+                    {
+                      title: intl.formatMessage({
+                        id: 'billing.catalog.cacheRead'
+                      }),
+                      dataIndex: 'cache_read_usd_per_m',
+                      render: (value: number) =>
+                        value == null ? '—' : `$${Number(value)}`
                     }
                   ]}
                 />
@@ -682,6 +802,19 @@ const EnterpriseBilling: React.FC = () => {
                   dataIndex: 'quantity'
                 },
                 {
+                  title: intl.formatMessage({ id: 'billing.item.unit' }),
+                  dataIndex: 'unit',
+                  render: (unit: string) => unit || '—'
+                },
+                {
+                  title: intl.formatMessage({ id: 'billing.item.price' }),
+                  dataIndex: 'unit_price',
+                  render: (value: number) => {
+                    const price = Number(value);
+                    return Number.isFinite(price) ? price.toFixed(8) : value;
+                  }
+                },
+                {
                   title: intl.formatMessage({ id: 'billing.item.amount' }),
                   render: (_: any, row: any) => {
                     const amount = Number(row.amount);
@@ -733,7 +866,11 @@ const EnterpriseBilling: React.FC = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item name="unit_price" rules={[{ required: true }]}>
+          <Form.Item
+            name="unit_price"
+            rules={[{ required: true }]}
+            extra={intl.formatMessage({ id: 'billing.item.priceHint' })}
+          >
             <InputNumber
               min={0}
               placeholder={intl.formatMessage({ id: 'billing.item.price' })}
@@ -742,6 +879,11 @@ const EnterpriseBilling: React.FC = () => {
           <Button type="primary" onClick={addItem}>
             {intl.formatMessage({ id: 'billing.item.add' })}
           </Button>
+          {activePlan ? (
+            <Button onClick={() => applyOfficialToPlan(activePlan)}>
+              {intl.formatMessage({ id: 'billing.plan.syncOfficial' })}
+            </Button>
+          ) : null}
         </Form>
         <Table
           rowKey="id"
@@ -762,7 +904,24 @@ const EnterpriseBilling: React.FC = () => {
             },
             {
               title: intl.formatMessage({ id: 'billing.item.price' }),
-              dataIndex: 'unit_price'
+              render: (_: any, row: any) =>
+                `${row.unit_price}${
+                  row.item_type === 'token'
+                    ? ` ${intl.formatMessage({ id: 'billing.item.unitPer1k' })}`
+                    : ''
+                }`
+            },
+            {
+              title: intl.formatMessage({ id: 'billing.item.source' }),
+              dataIndex: 'source',
+              render: (source: string) => (
+                <Tag>
+                  {intl.formatMessage({
+                    id: `billing.item.source.${source || 'manual'}`,
+                    defaultMessage: source || 'manual'
+                  })}
+                </Tag>
+              )
             },
             {
               title: intl.formatMessage({ id: 'common.table.operation' }),

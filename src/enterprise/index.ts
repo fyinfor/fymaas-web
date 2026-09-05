@@ -111,20 +111,6 @@ const enterprisePlugin: AppPlugin = {
     colorPrimary: getBranding().color_primary || userSettings?.colorPrimary
   }),
 
-  usage: {
-    modelsExtraColumns: [
-      {
-        key: 'estimated_cost',
-        titleId: 'usage.table.estimatedCost',
-        placement: 'before-last-active',
-        render: (record: any) =>
-          record.estimated_cost != null
-            ? `${record.estimated_cost} ${record.currency || ''}`.trim()
-            : '—'
-      }
-    ]
-  },
-
   login: {
     onUserFetched: async () => {
       await cacheMemberships();

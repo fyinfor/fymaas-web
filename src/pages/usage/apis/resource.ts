@@ -112,6 +112,8 @@ export interface ResourceBreakdownItem extends ResourceBreakdownSummary {
   // Storage volume rows: provisioned capacity + storage type.
   storage_type?: string;
   capacity_mib?: number;
+  estimated_cost?: number | null;
+  currency?: string | null;
 }
 
 export interface ResourceBreakdownResponse {
@@ -264,6 +266,8 @@ interface ServerBreakdownItem {
     capacity_mib?: number | null;
   } | null;
   metrics: ServerMetrics;
+  estimated_cost?: number | null;
+  currency?: string | null;
 }
 
 interface ServerBreakdownResponse {
@@ -321,7 +325,9 @@ function flattenItem(
 ): ResourceBreakdownItem {
   const flat: ResourceBreakdownItem = {
     ...flattenMetrics(it.metrics || {}),
-    last_active: it.metrics?.last_active ?? undefined
+    last_active: it.metrics?.last_active ?? undefined,
+    estimated_cost: it.estimated_cost ?? undefined,
+    currency: it.currency ?? undefined
   };
   if (it.date) flat.date = it.date;
   const id = it.id ?? undefined;

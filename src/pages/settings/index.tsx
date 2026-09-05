@@ -6,10 +6,8 @@ import IpAccessControl from '../ip-access-control';
 import Branding from './branding';
 import EnvironmentSettings from './environment';
 import LdapSettings from './ldap';
-import SystemSettings from './system';
 
 const TabPath = {
-  system: '/settings/system',
   environment: '/settings/environment',
   branding: '/settings/branding',
   ldap: '/settings/ldap',
@@ -19,9 +17,6 @@ const TabPath = {
 type TabKey = keyof typeof TabPath;
 
 const pathToTab = (pathname: string): TabKey => {
-  if (pathname.includes('/settings/environment')) {
-    return 'environment';
-  }
   if (pathname.includes('/settings/branding')) {
     return 'branding';
   }
@@ -31,7 +26,7 @@ const pathToTab = (pathname: string): TabKey => {
   if (pathname.includes('/settings/ip-access')) {
     return 'ipAccess';
   }
-  return 'system';
+  return 'environment';
 };
 
 const Settings: React.FC = () => {
@@ -41,7 +36,7 @@ const Settings: React.FC = () => {
   const activeKey = pathToTab(location.pathname);
 
   const handleTabChange = useMemoizedFn((key: string) => {
-    const path = TabPath[key as TabKey] || TabPath.system;
+    const path = TabPath[key as TabKey] || TabPath.environment;
     if (path !== location.pathname) {
       history.push(path);
     }
@@ -52,12 +47,6 @@ const Settings: React.FC = () => {
       access?: string;
     };
     const tabs: AccessTab[] = [
-      {
-        key: 'system',
-        access: 'canSeeAdmin',
-        label: intl.formatMessage({ id: 'systemSettings.tab.general' }),
-        children: <SystemSettings />
-      },
       {
         key: 'environment',
         access: 'canSeeAdmin',
@@ -92,7 +81,7 @@ const Settings: React.FC = () => {
   useEffect(() => {
     const keys = (items || []).map((item) => item?.key).filter(Boolean);
     if (keys.length && !keys.includes(activeKey)) {
-      const fallback = TabPath[keys[0] as TabKey] || TabPath.system;
+      const fallback = TabPath[keys[0] as TabKey] || TabPath.environment;
       history.replace(fallback);
     }
   }, [activeKey, items]);

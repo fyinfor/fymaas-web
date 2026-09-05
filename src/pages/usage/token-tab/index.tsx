@@ -97,16 +97,19 @@ const TokenTab: React.FC = () => {
       api_requests: 0,
       models_called: 0
     };
+    const fmtMs = (value?: number | null) =>
+      value == null || !Number.isFinite(Number(value))
+        ? '—'
+        : `${Math.round(Number(value))} ms`;
+    const fmtRate = (value?: number | null) =>
+      value == null || !Number.isFinite(Number(value))
+        ? '—'
+        : (formatLargeNumber(Number(value)) as string);
     return [
       {
-        label: formatLargeNumber(summary.input_tokens) as string,
-        value: intl.formatMessage({ id: 'usage.filter.inputTokens' }),
-        color: baseColorMap.baseR3
-      },
-      {
-        label: formatLargeNumber(summary.output_tokens) as string,
-        value: intl.formatMessage({ id: 'usage.filter.outputTokens' }),
-        color: baseColorMap.base
+        label: formatLargeNumber(summary.api_requests) as string,
+        value: intl.formatMessage({ id: 'usage.filter.apiRequests' }),
+        color: baseColorMap.baseR1
       },
       {
         label: formatLargeNumber(summary.total_tokens) as string,
@@ -114,14 +117,24 @@ const TokenTab: React.FC = () => {
         color: baseColorMap.baseL1
       },
       {
-        label: formatLargeNumber(summary.api_requests) as string,
-        value: intl.formatMessage({ id: 'usage.filter.apiRequests' }),
-        color: baseColorMap.baseR1
+        label: fmtRate(summary.tpm),
+        value: intl.formatMessage({ id: 'usage.metric.tpm' }),
+        color: baseColorMap.base
       },
       {
-        label: summary.models_called.toString(),
-        value: intl.formatMessage({ id: 'usage.filter.modelsUsed' }),
+        label: fmtMs(summary.avg_ttft_ms),
+        value: intl.formatMessage({ id: 'usage.metric.ttft' }),
+        color: baseColorMap.baseR3
+      },
+      {
+        label: fmtMs(summary.avg_latency_ms),
+        value: intl.formatMessage({ id: 'usage.metric.latency' }),
         color: baseColorMap.baseR2
+      },
+      {
+        label: fmtRate(summary.rpm),
+        value: intl.formatMessage({ id: 'usage.metric.rpm' }),
+        color: baseColorMap.baseL1
       }
     ];
   }, [timeSeriesData.summary]);

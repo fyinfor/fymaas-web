@@ -79,6 +79,10 @@ export default {
 
   // --- Resource usage: shared metrics & units ---
   'usage.metric.tokens': 'Token',
+  'usage.metric.ttft': 'TTFT',
+  'usage.metric.latency': 'Uçtan uca gecikme',
+  'usage.metric.tpm': 'TPM',
+  'usage.metric.rpm': 'RPM',
   'usage.metric.input': 'Girdi',
   'usage.metric.output': 'Çıktı',
   'usage.metric.gpuHours': 'GPU Saati',
