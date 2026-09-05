@@ -33,6 +33,13 @@ const PAGE_SUBTITLES: Array<{ prefix: string; id: string }> = [
   { prefix: '/access-control/roles', id: 'page.subtitle.roles' },
   { prefix: '/access-control/permissions', id: 'page.subtitle.roles' },
   { prefix: '/access-control/audit-logs', id: 'page.subtitle.audit' },
+  { prefix: '/access-control/messages', id: 'page.subtitle.adminMessages' },
+  {
+    prefix: '/access-control/announcements',
+    id: 'page.subtitle.announcements'
+  },
+  { prefix: '/messages', id: 'page.subtitle.messages' },
+  { prefix: '/announcements', id: 'page.subtitle.announcementInbox' },
   { prefix: '/access-control/system', id: 'page.subtitle.settings' },
   { prefix: '/playground', id: 'page.subtitle.playground' }
 ];

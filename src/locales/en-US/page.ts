@@ -1,6 +1,7 @@
 export default {
   'page.subtitle.dashboard': 'MaaS resources and inference overview',
-  'page.subtitle.usage': 'Model calls, TTFT, TPM and other technical metrics',
+  'page.subtitle.usage':
+    'Cross-workspace model calls, TTFT, TPM and other technical metrics',
   'page.subtitle.usageLogs':
     'Per-request tokens, latency, and completion status',
   'page.subtitle.taskLogs': 'Image and speech generation task progress',

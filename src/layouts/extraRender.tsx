@@ -5,6 +5,7 @@ import VersionInfo, { modalConfig } from '@/components/version-info';
 import HotKeys from '@/config/hotkeys';
 import externalLinks from '@/constants/external-links';
 import { getBranding } from '@/enterprise/branding/runtime';
+import InboxCenter from '@/pages/_components/inbox-center';
 import { logout } from '@/pages/login/apis';
 import { getGPUStackPlugin } from '@/plugins';
 import { platformCall } from '@/utils';
@@ -297,6 +298,20 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
         }
       },
       {
+        key: 'messages',
+        label: (
+          <span className="flex flex-center">
+            <IconFont type="icon-chat" />
+            <span className="m-l-8" style={{ marginLeft: 8 }}>
+              {intl?.formatMessage?.({ id: 'menu.messages' })}
+            </span>
+          </span>
+        ),
+        onClick: () => {
+          history.push('/messages');
+        }
+      },
+      {
         key: 'version',
         label: (
           <span className="flex flex-center">
@@ -363,6 +378,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
         <span>{intl.formatMessage({ id: 'common.command.placeholder' })}</span>
         <kbd>{platformCall().isMac ? '⌘ K' : 'Ctrl K'}</kbd>
       </SearchTrigger>
+      <InboxCenter />
       {!plugin && (
         <DropdownActions menu={{ ...helpMenu }} popupRender={helpPopupRender}>
           <IconWrapper>

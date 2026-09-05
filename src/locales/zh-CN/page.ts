@@ -1,6 +1,7 @@
 export default {
   'page.subtitle.dashboard': 'MaaS 平台资源与推理服务总览',
-  'page.subtitle.usage': '查看模型调用量、TTFT、TPM 等技术指标',
+  'page.subtitle.usage':
+    '跨工作空间查看全部资源的模型调用量、TTFT、TPM 等技术指标',
   'page.subtitle.usageLogs': '查看每次推理调用的 Token、延迟与完成状态',
   'page.subtitle.taskLogs': '查看图像、语音等生成任务的进度与结果',
   'page.subtitle.billing': '查看发票、套餐与计费明细',
