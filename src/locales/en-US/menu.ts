@@ -39,7 +39,7 @@ export default {
   'menu.accessControl.workspaces': 'Workspaces',
   'menu.profile': 'Preferences',
   'menu.login': 'Login',
-  'menu.messages': 'Messages',
+  'menu.messages': 'Notifications',
   'menu.usage': 'Usage',
   'menu.usage.usage': 'Usage',
   'menu.billingAndUsage': 'Token Service',

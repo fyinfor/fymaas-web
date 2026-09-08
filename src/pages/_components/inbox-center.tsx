@@ -1,10 +1,13 @@
-import { NotificationOutlined } from '@ant-design/icons';
-import { history, useIntl } from '@umijs/max';
+import { notificationDrawerOpenAtom } from '@/atoms/notification';
+import { BellOutlined } from '@ant-design/icons';
+import { useIntl } from '@umijs/max';
 import { useRequest } from 'ahooks';
 import { Badge } from 'antd';
+import { useAtom } from 'jotai';
 import React from 'react';
 import styled from 'styled-components';
 import { queryAnnouncementUnread } from '../announcements/apis';
+import NotificationDrawer from './notification-drawer';
 
 const IconWrapper = styled.span`
   cursor: pointer;
@@ -27,23 +30,39 @@ const IconWrapper = styled.span`
 
 const InboxCenter: React.FC = () => {
   const intl = useIntl();
-  const { data: announcementUnread } = useRequest(queryAnnouncementUnread, {
-    pollingInterval: 30000
-  });
+  const [open, setOpen] = useAtom(notificationDrawerOpenAtom);
+  const { data: announcementUnread, refresh } = useRequest(
+    queryAnnouncementUnread,
+    {
+      pollingInterval: 30000
+    }
+  );
+
+  React.useEffect(() => {
+    if (!open) {
+      refresh();
+    }
+  }, [open, refresh]);
 
   return (
-    <IconWrapper
-      title={intl.formatMessage({ id: 'inbox.announcements' })}
-      onClick={() => history.push('/announcements')}
-    >
-      <Badge
-        count={announcementUnread?.unread || 0}
-        size="small"
-        offset={[2, -2]}
+    <>
+      <IconWrapper
+        title={intl.formatMessage({ id: 'inbox.notifications' })}
+        onClick={() => {
+          setOpen(true);
+          refresh();
+        }}
       >
-        <NotificationOutlined />
-      </Badge>
-    </IconWrapper>
+        <Badge
+          count={announcementUnread?.unread || 0}
+          size="small"
+          offset={[2, -2]}
+        >
+          <BellOutlined />
+        </Badge>
+      </IconWrapper>
+      <NotificationDrawer />
+    </>
   );
 };
 

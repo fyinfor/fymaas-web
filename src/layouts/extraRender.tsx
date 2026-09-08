@@ -1,3 +1,4 @@
+import { notificationDrawerOpenAtom } from '@/atoms/notification';
 import { GPUStackVersionAtom, UpdateCheckAtom } from '@/atoms/user';
 import PluginExtraField from '@/components/plugin-extra-fields';
 import ThemeToggle from '@/components/theme-toggle';
@@ -11,6 +12,7 @@ import { getGPUStackPlugin } from '@/plugins';
 import { platformCall } from '@/utils';
 import { useModel } from '@@/plugin-model';
 import {
+  BellOutlined,
   DiscordOutlined,
   InfoCircleOutlined,
   ReadOutlined,
@@ -183,6 +185,7 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
   const [modal, contextHolder] = Modal.useModal();
   const [version] = useAtom(GPUStackVersionAtom);
   const [updateCheck] = useAtom(UpdateCheckAtom);
+  const [, setNotificationOpen] = useAtom(notificationDrawerOpenAtom);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const intl = useIntl();
   const initialInfo = useModel('@@initialState') || {
@@ -295,6 +298,20 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
         ),
         onClick: () => {
           history.push('/settings/profile');
+        }
+      },
+      {
+        key: 'messages',
+        label: (
+          <span className="flex flex-center">
+            <BellOutlined />
+            <span className="m-l-8" style={{ marginLeft: 8 }}>
+              {intl?.formatMessage?.({ id: 'menu.messages' })}
+            </span>
+          </span>
+        ),
+        onClick: () => {
+          setNotificationOpen(true);
         }
       },
       {

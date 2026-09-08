@@ -27,7 +27,7 @@ export default {
   'menu.users': '用户',
   'menu.profile': '偏好',
   'menu.login': '登录',
-  'menu.messages': '消息中心',
+  'menu.messages': '通知',
   'menu.usage': '使用量',
   'menu.usage.usage': '使用量',
   'menu.billingAndUsage': '词元服务',

@@ -236,7 +236,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       icon: 'icon-logs',
       selectedIcon: 'icon-logs',
       defaultIcon: 'icon-logs',
-      access: 'canSeeOrgAdmin',
+      access: 'canSeeAdmin',
       component: './announcements'
     },
     {
@@ -348,6 +348,13 @@ export const applyRouteExtensions = <T>(base: T): T => {
     name: 'announcementInbox',
     path: '/announcements',
     key: 'announcementInbox',
+    hideInMenu: true,
+    component: './announcements/inbox'
+  });
+  routes.splice(dashboardIndex === -1 ? 0 : dashboardIndex, 0, {
+    name: 'messages',
+    path: '/messages',
+    key: 'messages',
     hideInMenu: true,
     component: './announcements/inbox'
   });

@@ -6,9 +6,19 @@ export type AnnouncementItem = {
   body: string;
   published: boolean;
   published_at?: string | null;
+  starts_at?: string | null;
+  ends_at?: string | null;
   unread?: boolean;
   created_at: string;
   updated_at: string;
+};
+
+export type AnnouncementPayload = {
+  title: string;
+  body: string;
+  published: boolean;
+  starts_at?: string | null;
+  ends_at?: string | null;
 };
 
 export type UnreadCount = {
@@ -41,11 +51,7 @@ export async function queryAdminAnnouncements(params?: Global.SearchParams) {
   );
 }
 
-export async function createAnnouncement(data: {
-  title: string;
-  body: string;
-  published: boolean;
-}) {
+export async function createAnnouncement(data: AnnouncementPayload) {
   return request<AnnouncementItem>('/admin-announcements', {
     method: 'POST',
     data
@@ -54,7 +60,7 @@ export async function createAnnouncement(data: {
 
 export async function updateAnnouncement(
   id: number,
-  data: Partial<{ title: string; body: string; published: boolean }>
+  data: Partial<AnnouncementPayload>
 ) {
   return request<AnnouncementItem>(`/admin-announcements/${id}`, {
     method: 'PUT',

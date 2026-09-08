@@ -1,72 +1,40 @@
+import { notificationDrawerOpenAtom } from '@/atoms/notification';
+import { BellOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { Empty, List, Tag } from 'antd';
-import dayjs from 'dayjs';
+import { Button, Empty } from 'antd';
+import { useSetAtom } from 'jotai';
 import React from 'react';
 import PageBox from '../_components/page-box';
-import {
-  markAnnouncementRead,
-  queryPublishedAnnouncements,
-  type AnnouncementItem
-} from './apis';
 
 const AnnouncementInbox: React.FC = () => {
   const intl = useIntl();
-  const [items, setItems] = React.useState<AnnouncementItem[]>([]);
-
-  const load = React.useCallback(async () => {
-    const res = await queryPublishedAnnouncements();
-    setItems(res.items || []);
-  }, []);
+  const setOpen = useSetAtom(notificationDrawerOpenAtom);
 
   React.useEffect(() => {
-    load();
-  }, [load]);
+    setOpen(true);
+  }, [setOpen]);
 
   return (
     <PageBox>
-      {items.length ? (
-        <List
-          itemLayout="vertical"
-          dataSource={items}
-          renderItem={(item) => (
-            <List.Item
-              onClick={() => {
-                if (item.unread) {
-                  markAnnouncementRead(item.id).then(load);
-                }
-              }}
-            >
-              <List.Item.Meta
-                title={
-                  <>
-                    {item.title}
-                    {item.unread && (
-                      <Tag color="processing" style={{ marginLeft: 8 }}>
-                        {intl.formatMessage(
-                          { id: 'inbox.unread' },
-                          { count: 1 }
-                        )}
-                      </Tag>
-                    )}
-                  </>
-                }
-                description={
-                  item.published_at
-                    ? dayjs(item.published_at).format('YYYY-MM-DD HH:mm')
-                    : ''
-                }
-              />
-              <div style={{ whiteSpace: 'pre-wrap' }}>{item.body}</div>
-            </List.Item>
-          )}
-        />
-      ) : (
+      <div
+        style={{
+          minHeight: '28rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
         <Empty
+          image={<BellOutlined style={{ fontSize: 36 }} />}
           description={intl.formatMessage({
-            id: 'announcements.noresult.title'
+            id: 'inbox.notifications.hint'
           })}
-        />
-      )}
+        >
+          <Button type="primary" onClick={() => setOpen(true)}>
+            {intl.formatMessage({ id: 'inbox.notifications' })}
+          </Button>
+        </Empty>
+      </div>
     </PageBox>
   );
 };
