@@ -121,6 +121,10 @@ const PermissionDrawer: React.FC<PermissionDrawerProps> = ({
     const q = search.trim().toLowerCase();
     const groups = new Map<string, PermissionItem[]>();
     for (const item of catalog) {
+      // Site messaging is paused; keep announcement perms only.
+      if (item.key === 'message:read' || item.key === 'message:write') {
+        continue;
+      }
       const groupLabel = intl.formatMessage({
         id: `permissions.group.${item.group}`,
         defaultMessage: item.group

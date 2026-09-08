@@ -39,7 +39,7 @@ export default {
   'announcements.noresult.title': 'Объявлений пока нет',
   'announcements.noresult.subTitle':
     'Опубликованные объявления появятся в шапке.',
-  'permissions.group.inbox': 'Внутренняя почта',
+  'permissions.group.inbox': 'Объявления',
   'permissions.desc.message:read': 'Просмотр сообщений',
   'permissions.desc.message:write': 'Отправка сообщений',
   'permissions.desc.announcement:read': 'Просмотр объявлений',

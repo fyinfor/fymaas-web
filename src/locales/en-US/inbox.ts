@@ -40,7 +40,7 @@ export default {
   'announcements.noresult.title': 'No announcements yet',
   'announcements.noresult.subTitle':
     'Published announcements appear in the header inbox.',
-  'permissions.group.inbox': 'Inbox',
+  'permissions.group.inbox': 'Announcements',
   'permissions.desc.message:read': 'View site messages',
   'permissions.desc.message:write': 'Send site messages',
   'permissions.desc.announcement:read': 'View announcements',

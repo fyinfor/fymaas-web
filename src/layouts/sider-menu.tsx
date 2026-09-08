@@ -76,6 +76,17 @@ const useStyles = createStyles(
         display: flex;
         flex-direction: column;
       `,
+      workspacePin: css`
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(
+          --console-bg-sidebar,
+          var(--ant-color-bg-container, #fff)
+        );
+        padding-right: 8px;
+      `,
       scrollArea: css`
         flex: 1;
         min-height: 0;
@@ -423,6 +434,13 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
         'sider-menu-collapsed': collapsed
       })}
     >
+      <div className={styles.workspacePin}>
+        <PluginExtraFields
+          name="SiderWorkspaceSwitcher"
+          collapsed={collapsed}
+          context={{ collapsed }}
+        />
+      </div>
       <div
         ref={scrollRef}
         className={styles.scrollArea}
@@ -434,11 +452,6 @@ const SiderMenu: React.FC<SiderMenuProps> = (props) => {
           writeSiderScrollTop(event.currentTarget.scrollTop);
         }}
       >
-        <PluginExtraFields
-          name="SiderWorkspaceSwitcher"
-          collapsed={collapsed}
-          context={{ collapsed }}
-        />
         {menuData.map((item: MenuItem, index: number) => (
           <div key={item.key}>
             {item.children && item.children.length > 0 ? (

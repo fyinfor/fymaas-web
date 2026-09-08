@@ -38,7 +38,7 @@ export default {
   'announcements.noresult.title': 'お知らせはまだありません',
   'announcements.noresult.subTitle':
     '公開したお知らせはヘッダーの受信箱に表示されます。',
-  'permissions.group.inbox': '社内メッセージ',
+  'permissions.group.inbox': 'お知らせ',
   'permissions.desc.message:read': 'メッセージを表示',
   'permissions.desc.message:write': 'メッセージを送信',
   'permissions.desc.announcement:read': 'お知らせを表示',

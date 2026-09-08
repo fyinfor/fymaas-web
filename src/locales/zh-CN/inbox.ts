@@ -37,7 +37,7 @@ export default {
   'announcements.form.published': '立即发布',
   'announcements.noresult.title': '暂无公告',
   'announcements.noresult.subTitle': '发布公告后，组织内用户会在顶栏看到。',
-  'permissions.group.inbox': '站内通信',
+  'permissions.group.inbox': '系统公告',
   'permissions.desc.message:read': '查看站内信',
   'permissions.desc.message:write': '发送站内信',
   'permissions.desc.announcement:read': '查看系统公告',

@@ -39,7 +39,7 @@ export default {
   'announcements.noresult.title': 'Henüz duyuru yok',
   'announcements.noresult.subTitle':
     'Yayınlanan duyurular üst çubukta görünür.',
-  'permissions.group.inbox': 'Kurum içi mesajlar',
+  'permissions.group.inbox': 'Duyurular',
   'permissions.desc.message:read': 'Mesajları görüntüle',
   'permissions.desc.message:write': 'Mesaj gönder',
   'permissions.desc.announcement:read': 'Duyuruları görüntüle',

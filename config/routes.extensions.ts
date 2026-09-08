@@ -230,16 +230,6 @@ const groupAdditions: Record<string, RouteLike[]> = {
       redirect: '/workspaces'
     },
     {
-      name: 'messages',
-      path: '/access-control/messages',
-      key: 'adminMessages',
-      icon: 'icon-chat',
-      selectedIcon: 'icon-chat-filled',
-      defaultIcon: 'icon-chat',
-      access: 'canSeeOrgAdmin',
-      component: './messages/admin'
-    },
-    {
       name: 'announcements',
       path: '/access-control/announcements',
       key: 'announcements',
@@ -354,13 +344,6 @@ export const applyRouteExtensions = <T>(base: T): T => {
   const dashboardIndex = routes.findIndex(
     (route) => route?.path === '/dashboard'
   );
-  routes.splice(dashboardIndex === -1 ? 0 : dashboardIndex, 0, {
-    name: 'messages',
-    path: '/messages',
-    key: 'messages',
-    hideInMenu: true,
-    component: './messages'
-  });
   routes.splice(dashboardIndex === -1 ? 0 : dashboardIndex, 0, {
     name: 'announcementInbox',
     path: '/announcements',

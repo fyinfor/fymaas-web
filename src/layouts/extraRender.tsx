@@ -298,20 +298,6 @@ export const ExtraContent = (props: { isDarkTheme?: boolean }) => {
         }
       },
       {
-        key: 'messages',
-        label: (
-          <span className="flex flex-center">
-            <IconFont type="icon-chat" />
-            <span className="m-l-8" style={{ marginLeft: 8 }}>
-              {intl?.formatMessage?.({ id: 'menu.messages' })}
-            </span>
-          </span>
-        ),
-        onClick: () => {
-          history.push('/messages');
-        }
-      },
-      {
         key: 'version',
         label: (
           <span className="flex flex-center">
