@@ -70,7 +70,7 @@ export default {
     'Hava boşluklu ortamlar için isteğe bağlı araç aynası.',
   'runtime.section.preview': 'Çözümlenen imajlar',
   'runtime.section.preview.description':
-    'Geçerli etkili değerlerin çözdüğü referanslar. Şanghay ACR’de runner / runtime ürün ad alanına düzleştirilir.',
+    'Geçerli etkili değerlerin çözdüğü referanslar. runner / runtime, çalışma zamanı imaj ad alanına düzleştirilir.',
   'runtime.form.registry': 'Konteyner kaydı',
   'runtime.form.registry.holder': 'registry.cn-shanghai.aliyuncs.com',
   'runtime.form.imageRepo': 'İmaj deposu',
@@ -86,6 +86,8 @@ export default {
   'runtime.form.gatewayNamespace': 'Ağ geçidi ad alanı',
   'runtime.form.runtimeNamespace': 'Çalışma zamanı imaj ad alanı',
   'runtime.form.runtimeNamespace.holder': 'fyinfor',
+  'runtime.form.runtimeNamespace.help':
+    'pause, health ve runner imajlarının ad alanı. Boşsa imaj deposunun ilk parçası kullanılır.',
   'runtime.form.toolsUrl': 'Araç indirme taban URL’si',
   'runtime.form.toolsUrl.holder': 'https://mirror.example.com/tools',
   'runtime.form.toolsUrl.invalid': 'http(s) URL girin',

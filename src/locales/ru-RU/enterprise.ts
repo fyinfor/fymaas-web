@@ -70,7 +70,7 @@ export default {
     'Необязательное зеркало инструментов для изолированных сред.',
   'runtime.section.preview': 'Разрешённые образы',
   'runtime.section.preview.description':
-    'Какие ссылки получаются из текущих эффективных значений. На Shanghai ACR репозитории runner и runtime сглаживаются в пространство продукта.',
+    'Какие ссылки получаются из текущих эффективных значений. runner / runtime сглаживаются в пространство runtime-образов.',
   'runtime.form.registry': 'Реестр контейнеров',
   'runtime.form.registry.holder': 'registry.cn-shanghai.aliyuncs.com',
   'runtime.form.imageRepo': 'Репозиторий образов',
@@ -86,6 +86,8 @@ export default {
   'runtime.form.gatewayNamespace': 'Пространство шлюза',
   'runtime.form.runtimeNamespace': 'Пространство runtime-образов',
   'runtime.form.runtimeNamespace.holder': 'fyinfor',
+  'runtime.form.runtimeNamespace.help':
+    'Пространство для pause, health и runner. Если пусто — берётся первый сегмент репозитория образов.',
   'runtime.form.toolsUrl': 'URL загрузки инструментов',
   'runtime.form.toolsUrl.holder': 'https://mirror.example.com/tools',
   'runtime.form.toolsUrl.invalid': 'Укажите URL http(s)',

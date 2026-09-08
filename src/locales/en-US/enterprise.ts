@@ -72,7 +72,7 @@ export default {
     'Optional mirror for dependency tools in air-gapped environments.',
   'runtime.section.preview': 'Resolved images',
   'runtime.section.preview.description':
-    'What the current effective values resolve to. Runner and runtime repos are flattened onto the product namespace on the Shanghai ACR.',
+    'What the current effective values resolve to. Runner and runtime repos are flattened onto the runtime image namespace.',
   'runtime.form.registry': 'Container registry',
   'runtime.form.registry.holder': 'registry.cn-shanghai.aliyuncs.com',
   'runtime.form.imageRepo': 'Image repository',
@@ -88,6 +88,8 @@ export default {
   'runtime.form.gatewayNamespace': 'Gateway namespace',
   'runtime.form.runtimeNamespace': 'Runtime image namespace',
   'runtime.form.runtimeNamespace.holder': 'fyinfor',
+  'runtime.form.runtimeNamespace.help':
+    'Namespace for pause, health, and runner images. Change it here at any time. When empty, the first segment of the image repository is used.',
   'runtime.form.toolsUrl': 'Tools download base URL',
   'runtime.form.toolsUrl.holder': 'https://mirror.example.com/tools',
   'runtime.form.toolsUrl.invalid': 'Enter an http(s) URL',

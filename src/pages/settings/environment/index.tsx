@@ -294,7 +294,16 @@ const EnvironmentSettings: React.FC = () => {
                 label={intl.formatMessage({
                   id: 'runtime.form.runtimeNamespace'
                 })}
-                extra={fieldHint('runtime_container_namespace')}
+                extra={
+                  <>
+                    {fieldHint('runtime_container_namespace')}
+                    <div>
+                      {intl.formatMessage({
+                        id: 'runtime.form.runtimeNamespace.help'
+                      })}
+                    </div>
+                  </>
+                }
               >
                 <Input
                   allowClear

@@ -68,7 +68,7 @@ export default {
   'runtime.section.downloads.description': '离线环境可选的依赖工具镜像地址。',
   'runtime.section.preview': '解析预览',
   'runtime.section.preview.description':
-    '按当前生效值解析出的镜像引用。上海 ACR 上 runner / runtime 会打平到产品命名空间。',
+    '按当前生效值解析出的镜像引用。runner / runtime 会打平到「运行时镜像命名空间」。',
   'runtime.form.registry': '镜像仓库',
   'runtime.form.registry.holder': 'registry.cn-shanghai.aliyuncs.com',
   'runtime.form.imageRepo': '镜像仓库路径',
@@ -83,6 +83,8 @@ export default {
   'runtime.form.gatewayNamespace': '网关命名空间',
   'runtime.form.runtimeNamespace': '运行时镜像命名空间',
   'runtime.form.runtimeNamespace.holder': 'fyinfor',
+  'runtime.form.runtimeNamespace.help':
+    'pause、health、runner 镜像使用的仓库命名空间，可随时修改。留空则取镜像仓库路径的第一段。',
   'runtime.form.toolsUrl': '工具下载地址',
   'runtime.form.toolsUrl.holder': 'https://mirror.example.com/tools',
   'runtime.form.toolsUrl.invalid': '请填写 http(s) 地址',

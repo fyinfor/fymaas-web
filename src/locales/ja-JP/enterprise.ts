@@ -70,7 +70,7 @@ export default {
     'エアギャップ環境向けの依存ツールミラーです。',
   'runtime.section.preview': '解決結果',
   'runtime.section.preview.description':
-    '現在の有効値から解決されるイメージ参照です。上海 ACR では runner / runtime は製品名前空間に平坦化されます。',
+    '現在の有効値から解決されるイメージ参照です。runner / runtime はランタイムイメージ名前空間に平坦化されます。',
   'runtime.form.registry': 'コンテナレジストリ',
   'runtime.form.registry.holder': 'registry.cn-shanghai.aliyuncs.com',
   'runtime.form.imageRepo': 'イメージリポジトリ',
@@ -86,6 +86,8 @@ export default {
   'runtime.form.gatewayNamespace': 'ゲートウェイ名前空間',
   'runtime.form.runtimeNamespace': 'ランタイムイメージ名前空間',
   'runtime.form.runtimeNamespace.holder': 'fyinfor',
+  'runtime.form.runtimeNamespace.help':
+    'pause / health / runner イメージの名前空間です。空欄ならイメージリポジトリの第一セグメントを使います。',
   'runtime.form.toolsUrl': 'ツールダウンロード URL',
   'runtime.form.toolsUrl.holder': 'https://mirror.example.com/tools',
   'runtime.form.toolsUrl.invalid': 'http(s) の URL を入力してください',
