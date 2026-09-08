@@ -1,10 +1,10 @@
 import { getOrgById } from '@/atoms/user';
 import { MetaChip } from '@/components/console';
 import { SimpleSelect } from '@gpustack/core-ui';
-import { nsLocal } from '@gpustack/core-ui/utils';
 import { useAccess, useIntl } from '@umijs/max';
 import { Form, Select } from 'antd';
 import React from 'react';
+import { readCurrentWorkspaceId } from './workspace-storage';
 import {
   formatWorkspaceName,
   loadMyWorkspaces,
@@ -38,18 +38,7 @@ export const CreateOrgScopeField: React.FC<{
   const intl = useIntl();
   const access = useAccess();
   const options = useWorkspaceOptions();
-  const current = React.useMemo(() => {
-    try {
-      const raw =
-        nsLocal.get('currentWorkspaceId') ||
-        nsLocal.get('currentOrganizationId');
-      if (!raw) return undefined;
-      const value = JSON.parse(raw);
-      return typeof value === 'number' ? value : undefined;
-    } catch {
-      return undefined;
-    }
-  }, []);
+  const current = readCurrentWorkspaceId() ?? undefined;
 
   if (context?.action === 'edit' || context?.action === 'update') {
     return null;
@@ -57,7 +46,12 @@ export const CreateOrgScopeField: React.FC<{
   if (!access.canSeeAdmin && !access.canSeeOrgAdmin) {
     return null;
   }
-  if (options.length <= 1 && current) {
+
+  // Create flows run inside the workspace already selected in the
+  // sidebar. Switching workspace is a navigation action, not a
+  // per-form choice — showing a picker here lets an admin silently
+  // create a resource in another tenant.
+  if (current) {
     return (
       <Form.Item name="owner_principal_id" hidden initialValue={current}>
         <input type="hidden" />
@@ -72,7 +66,6 @@ export const CreateOrgScopeField: React.FC<{
         id: 'workspaces.form.scope',
         defaultMessage: 'Workspace'
       })}
-      initialValue={current}
     >
       <Select
         allowClear={!!access.canSeeAdmin}
