@@ -176,6 +176,10 @@ export default {
   'models.table.apiAccessInfo.apikey': 'Ключ API',
   'models.table.apiAccessInfo.selectKey': 'Выберите ключ API',
   'models.table.apiAccessInfo.noKey': 'Нет доступных ключей API',
+  'models.table.apiAccessInfo.keyMissing':
+    'Для этого ключа не сохранён полный текст, поэтому пример нельзя заполнить автоматически. Вставьте полный ключ или создайте новый.',
+  'models.table.apiAccessInfo.pasteKey':
+    'Вставьте полный ключ API, чтобы подставить его в пример',
   'models.table.apiAccessInfo.openaiCompatible': 'Совместимо с OpenAI',
   'models.table.apiAccessInfo.anthropicCompatible': 'Совместимо с Anthropic',
   'models.table.apiAccessInfo.jinaCompatible': 'Совместимо с Jina',

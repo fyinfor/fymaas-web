@@ -173,6 +173,10 @@ export default {
   'models.table.apiAccessInfo.apikey': 'API Anahtarı',
   'models.table.apiAccessInfo.selectKey': 'API anahtarı seçin',
   'models.table.apiAccessInfo.noKey': 'Kullanılabilir API anahtarı yok',
+  'models.table.apiAccessInfo.keyMissing':
+    'Bu anahtarın tam değeri kaydedilmediği için örnek otomatik doldurulamaz. Tam anahtarı yapıştırın veya yenisini oluşturun.',
+  'models.table.apiAccessInfo.pasteKey':
+    'Örneğe doldurmak için tam API anahtarını yapıştırın',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI Uyumlu',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic Uyumlu',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina Uyumlu',

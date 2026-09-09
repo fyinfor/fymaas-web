@@ -166,6 +166,9 @@ export default {
   'models.table.apiAccessInfo.apikey': 'API 密钥',
   'models.table.apiAccessInfo.selectKey': '选择 API 密钥',
   'models.table.apiAccessInfo.noKey': '暂无可用密钥',
+  'models.table.apiAccessInfo.keyMissing':
+    '这把密钥创建时未保存完整值，无法自动填入示例。请粘贴完整密钥，或重新创建后再选择。',
+  'models.table.apiAccessInfo.pasteKey': '粘贴完整 API 密钥以填入示例',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI 兼容',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic 兼容',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina 兼容',

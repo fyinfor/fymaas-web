@@ -2,9 +2,9 @@ import { OPENAI_COMPATIBLE } from '@/config/settings';
 import { queryApisKeysList } from '@/pages/api-keys/apis';
 import { ListItem as ApiKeyItem } from '@/pages/api-keys/config/types';
 import { MODEL_PROXY } from '@/pages/playground/apis';
-import { HighlightCode, IconFont, ScrollerModal } from '@gpustack/core-ui';
+import { CopyButton, IconFont, ScrollerModal } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
-import { Alert, Button, Select, Table, Tabs, Tag } from 'antd';
+import { Alert, Button, Input, Select, Table, Tabs, Tag } from 'antd';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
@@ -27,15 +27,6 @@ const secretOf = (item?: ApiKeyItem) =>
     ''
   ).trim();
 
-const LANG_MAP: Record<AccessLanguage, string> = {
-  curl: 'bash',
-  javascript: 'javascript',
-  go: 'go',
-  python: 'python',
-  java: 'java',
-  csharp: 'csharp'
-};
-
 const MetaRow = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -53,6 +44,27 @@ const SectionTitle = styled.div`
 
 const CreateButton = styled(Button)`
   padding-inline: 0;
+`;
+
+const CodeBlock = styled.div`
+  position: relative;
+  border: 1px solid var(--ant-color-border);
+  border-radius: 8px;
+  background: var(--ant-color-fill-quaternary);
+  pre {
+    margin: 0;
+    padding: 16px 44px 16px 16px;
+    overflow: auto;
+    font-size: 12px;
+    line-height: 1.65;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre;
+  }
+  .copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
 `;
 
 const KeyRow = styled.div`
@@ -85,7 +97,7 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
   const [language, setLanguage] = useState<AccessLanguage>('curl');
   const [apiKeys, setApiKeys] = useState<ApiKeyItem[]>([]);
   const [selectedKeyId, setSelectedKeyId] = useState<number>();
-  const [apiKey, setApiKey] = useState(PLACEHOLDER_KEY);
+  const [pastedKey, setPastedKey] = useState('');
   const [loadingKeys, setLoadingKeys] = useState(false);
 
   const category = data?.categories?.[0];
@@ -100,9 +112,14 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
   const isRanker = _.includes(data?.categories, modelCategoriesMap.reranker);
   const isLLM = _.includes(data?.categories, modelCategoriesMap.llm);
 
+  const selectedKey = apiKeys.find((item) => item.id === selectedKeyId);
+  const storedSecret = secretOf(selectedKey);
+  const apiKey = storedSecret || pastedKey.trim() || PLACEHOLDER_KEY;
+  const needPaste = Boolean(selectedKeyId) && !storedSecret;
+
   const applyKey = (item?: ApiKeyItem) => {
     setSelectedKeyId(item?.id);
-    setApiKey(secretOf(item) || PLACEHOLDER_KEY);
+    setPastedKey('');
   };
 
   const keyOptions = useMemo(
@@ -228,9 +245,7 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
           notFoundContent={intl.formatMessage({
             id: 'models.table.apiAccessInfo.noKey'
           })}
-          getPopupContainer={(trigger) =>
-            (trigger.parentElement as HTMLElement) || document.body
-          }
+          getPopupContainer={() => document.body}
           onChange={(id?: number | null) => {
             applyKey(
               id == null ? undefined : apiKeys.find((item) => item.id === id)
@@ -248,6 +263,24 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
           <IconFont type="icon-external-link" className="font-size-14" />
         </CreateButton>
       </KeyRow>
+      <div style={{ display: needPaste ? 'block' : 'none', marginBottom: 16 }}>
+        <Alert
+          type="info"
+          showIcon
+          style={{ marginBottom: 8 }}
+          message={intl.formatMessage({
+            id: 'models.table.apiAccessInfo.keyMissing'
+          })}
+        />
+        <Input.Password
+          style={{ maxWidth: 420 }}
+          placeholder={intl.formatMessage({
+            id: 'models.table.apiAccessInfo.pasteKey'
+          })}
+          value={pastedKey}
+          onChange={(event) => setPastedKey(event.target.value)}
+        />
+      </div>
 
       {data?.generic_proxy ? (
         <div>{GenericProxyCommandCode}</div>
@@ -267,14 +300,12 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
               label: item.label
             }))}
           />
-          <HighlightCode
-            theme="light"
-            lang={LANG_MAP[language]}
-            code={examples[language]}
-            copyValue={examples[language]}
-            copyable
-            xScrollable
-          />
+          <CodeBlock>
+            <pre>{examples[language]}</pre>
+            <span className="copy">
+              <CopyButton text={examples[language]} type="text" size="small" />
+            </span>
+          </CodeBlock>
 
           <SectionTitle style={{ marginTop: 20 }}>
             {intl.formatMessage({

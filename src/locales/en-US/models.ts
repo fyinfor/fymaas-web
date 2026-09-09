@@ -174,6 +174,10 @@ export default {
   'models.table.apiAccessInfo.apikey': 'API Key',
   'models.table.apiAccessInfo.selectKey': 'Select an API key',
   'models.table.apiAccessInfo.noKey': 'No API keys available',
+  'models.table.apiAccessInfo.keyMissing':
+    'This key was created before the full value was stored, so it cannot be filled automatically. Paste the complete key or create a new one.',
+  'models.table.apiAccessInfo.pasteKey':
+    'Paste the full API key to fill the example',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI Compatible',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic Compatible',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina Compatible',
