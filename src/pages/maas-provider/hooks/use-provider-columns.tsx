@@ -86,7 +86,9 @@ const useProviderColumns = (
         minWidth: 100,
         render: (value: ProviderModel[]) => {
           const models = value || [];
-          const known = models.filter((item) => item.accessible !== null);
+          const known = models.filter(
+            (item) => typeof item.accessible === 'boolean'
+          );
           const ready = known.filter((item) => item.accessible).length;
           if (!models.length) {
             return (
@@ -116,9 +118,13 @@ const useProviderColumns = (
         minWidth: 160,
         render: (_value: string, record: MaasProviderItem) => {
           const endpoint =
-            record.config?.openaiCustomUrl ||
-            record.config?.claudeCustomUrl ||
-            record.proxy_url;
+            record.config?.type === 'tokease'
+              ? record.config?.tokeaseRegion === 'intl'
+                ? 'https://www.tokease.com/v1'
+                : 'https://www.tokease.cn/v1'
+              : record.config?.openaiCustomUrl ||
+                record.config?.claudeCustomUrl ||
+                record.proxy_url;
           return (
             <AutoTooltip ghost>
               <span

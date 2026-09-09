@@ -5,11 +5,23 @@ export default {
   'apikeys.button.create': 'Add API Key',
   'apikeys.button.edit': 'Edit API Key',
   'apikeys.title.save': 'Save API Key',
-  'apikeys.form.expiretime': 'Expiration',
+  'apikeys.title.created': 'API key created',
+  'apikeys.form.editorDescription':
+    'The name is for your own reference. Pick an expiry date from the calendar, or mark the key as never expiring.',
+  'apikeys.form.expiretime': 'Expiration date',
+  'apikeys.form.expirePlaceholder': 'Select an expiration date',
+  'apikeys.form.expireHint':
+    'The key expires at 23:59:59 on that day. Use the shortcuts for 7 days, 1 month, or 6 months.',
   'apikeys.form.apikey': 'API Key',
+  'apikeys.button.copySecret': 'Copy key',
   'apikeys.table.name': 'Key Name',
   'apikeys.table.save.tips':
-    'Make sure to copy your key immediately. You will not be able to see it again.',
+    'The middle digits are hidden by default. Click the key to copy it; you can view or copy it again from the list later.',
+  'apikeys.table.copyHint': 'Click to copy the full key',
+  'apikeys.table.copyUnavailable':
+    'The full key must come from the server. Restart the backend and create a new key.',
+  'apikeys.table.showKey': 'Show key',
+  'apikeys.table.hideKey': 'Hide key',
   'apikeys.form.expiration.7days': '7 days',
   'apikeys.form.expiration.1month': '1 month',
   'apikeys.form.expiration.6months': '6 months',

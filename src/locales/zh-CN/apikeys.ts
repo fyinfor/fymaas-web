@@ -5,10 +5,23 @@ export default {
   'apikeys.button.create': '添加 API 密钥',
   'apikeys.button.edit': '编辑 API 密钥',
   'apikeys.title.save': '保存 API 密钥',
-  'apikeys.form.expiretime': '过期时间',
+  'apikeys.title.created': 'API 密钥已创建',
+  'apikeys.form.editorDescription':
+    '名称用于辨认这把密钥。到期日可从日历选择，也可勾选永不过期。',
+  'apikeys.form.expiretime': '到期日期',
+  'apikeys.form.expirePlaceholder': '选择到期日期',
+  'apikeys.form.expireHint':
+    '到期日当天 23:59:59 失效。左侧快捷项可一键填入 7 天 / 1 个月 / 6 个月。',
   'apikeys.form.apikey': 'API 密钥',
+  'apikeys.button.copySecret': '复制密钥',
   'apikeys.table.name': '密钥名称',
-  'apikeys.table.save.tips': '确保立即复制您的密钥。您将无法再次看到它！',
+  'apikeys.table.save.tips':
+    '默认隐藏中间几位。点击密钥即可复制；之后也可在列表中随时查看或复制。',
+  'apikeys.table.copyHint': '点击复制完整密钥',
+  'apikeys.table.copyUnavailable':
+    '完整密钥需由服务端返回。请重启后端后新建一把密钥。',
+  'apikeys.table.showKey': '显示密钥',
+  'apikeys.table.hideKey': '隐藏密钥',
   'apikeys.form.expiration.7days': '7天',
   'apikeys.form.expiration.1month': '1个月',
   'apikeys.form.expiration.6months': '6个月',

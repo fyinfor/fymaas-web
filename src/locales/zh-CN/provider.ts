@@ -29,6 +29,14 @@ export default {
   'providers.form.rules.models': '请选择至少一个模型',
   'providers.form.rules.tokens': '请输入有效的 API Key',
   'providers.form.rules.model': '请选择模型',
+  'providers.form.models.fetchFailedTitle': '无法拉取模型列表',
+  'providers.form.models.fetchFailedReason': '原因',
+  'providers.form.models.fetchFailedProvider': '提供商',
+  'providers.form.models.fetchFailedStatus': '状态码',
+  'providers.form.models.fetchFailedHelp': '参考文档',
+  'providers.form.models.fetchFailedDetail': '详细信息',
+  'providers.form.models.fetchFailedHint': '可直接输入模型名称',
+  'providers.form.models.fetchFailedUnknown': '未知错误',
   'providers.form.rules.absoluteHttpUrl':
     '请输入带协议的完整地址（如有端口需一并写明），例如 https://gateway.example.com:8080',
   'providers.form.rules.openaiCustomUrl':
@@ -46,5 +54,10 @@ export default {
   'providers.form.modelVersion.tips': '用于指定 Triton Server 中的模型版本。',
   'providers.form.tritonDomain': 'Triton Server 域名',
   'providers.form.tritonDomain.tips': 'Triton Server 部署的指定请求的域名。',
-  'providers.form.awsRegion': 'AWS 区域'
+  'providers.form.awsRegion': 'AWS 区域',
+  'providers.form.tokeaseRegion': '区域',
+  'providers.form.tokeaseRegion.tips':
+    '国内优先使用 https://www.tokease.cn，海外使用 https://www.tokease.com',
+  'providers.form.tokeaseRegion.cn': '国内（tokease.cn）',
+  'providers.form.tokeaseRegion.intl': '海外（tokease.com）'
 };

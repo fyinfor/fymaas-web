@@ -10,7 +10,7 @@ import { useIntl } from '@umijs/max';
 import { Form } from 'antd';
 import ProviderLogo from '../components/provider-logo';
 import { useFormContext } from '../config/form-context';
-import { maasProviderOptions } from '../config/providers';
+import { maasProviderOptions, ProviderEnum } from '../config/providers';
 import { FormData } from '../config/types';
 import providerTypeStyles from '../styles/provider-type.less';
 import ProviderConfigs from './provider-configs';
@@ -49,7 +49,10 @@ const Basic: React.FC<{
   const handleProviderTypeChange = (value: string) => {
     // setFieldValue replaces the value at the path; setFieldsValue would deep
     // merge and leave the previous type's config fields behind
-    form.setFieldValue('config', { type: value });
+    form.setFieldValue('config', {
+      type: value,
+      ...(value === ProviderEnum.TOKEASE ? { tokeaseRegion: 'cn' } : {})
+    });
     form.setFieldValue('models', []);
     form.setFieldValue('api_key', '');
     form.setFieldValue('api_tokens', []);

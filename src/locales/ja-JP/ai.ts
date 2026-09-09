@@ -28,6 +28,7 @@ export default {
   'ai.provider.qwen': 'Alibaba Cloud Model Studio',
   'ai.provider.spark': 'Spark',
   'ai.provider.stepfun': 'StepFun',
+  'ai.provider.tokease': 'Tokease 词易',
   'ai.provider.together-ai': 'TogetherAI',
   'ai.provider.triton': 'Triton',
   'ai.provider.yi': 'Yi',

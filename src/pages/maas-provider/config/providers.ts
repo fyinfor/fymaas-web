@@ -1,4 +1,5 @@
 export enum ProviderEnum {
+  TOKEASE = 'tokease',
   AI360 = 'ai360',
   AZURE = 'azure',
   BAICHUAN = 'baichuan',
@@ -35,6 +36,7 @@ export enum ProviderEnum {
 }
 
 export const ProviderI18nKeyMap: Record<ProviderEnum, string> = {
+  [ProviderEnum.TOKEASE]: 'ai.provider.tokease',
   [ProviderEnum.AI360]: 'ai.provider.ai360',
   [ProviderEnum.AZURE]: 'ai.provider.azure',
   [ProviderEnum.BAICHUAN]: 'ai.provider.baichuan',
@@ -71,6 +73,7 @@ export const ProviderI18nKeyMap: Record<ProviderEnum, string> = {
 };
 
 export const ProviderDescriptionMap: Record<ProviderEnum, string> = {
+  [ProviderEnum.TOKEASE]: 'tokease, 词易, tokenfactory, token factory',
   [ProviderEnum.QWEN]: 'qwen, bailian, ali,alicloud,百炼, 阿里, 阿里云百炼'
 } as Record<ProviderEnum, string>;
 

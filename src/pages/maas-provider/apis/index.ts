@@ -55,7 +55,8 @@ export async function queryProviderModels(
     {
       method: 'post',
       data: params.data,
-      cancelToken: options?.token
+      cancelToken: options?.token,
+      skipErrorHandler: true
     }
   );
 }
@@ -78,7 +79,8 @@ export async function queryProviderModelsInEditing(
     {
       method: 'POST',
       data: params.data,
-      cancelToken: options?.token
+      cancelToken: options?.token,
+      skipErrorHandler: true
     }
   );
 }

@@ -176,6 +176,24 @@ export default {
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic Compatible',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina Compatible',
   'models.table.apiAccessInfo.gotoCreate': 'Go to Create',
+  'models.table.apiAccessInfo.proxyHint':
+    'Connect directly to this site and disable system proxies or VPNs so they do not interfere with model requests.',
+  'models.table.apiAccessInfo.examples': 'Request Example',
+  'models.table.apiAccessInfo.schemaTitle': 'Response Schema',
+  'models.table.apiAccessInfo.schema.name': 'Field',
+  'models.table.apiAccessInfo.schema.type': 'Type',
+  'models.table.apiAccessInfo.schema.example': 'Example',
+  'models.table.apiAccessInfo.schema.desc': 'Description',
+  'models.table.apiAccessInfo.schema.id':
+    'Unique ID for this completion request',
+  'models.table.apiAccessInfo.schema.object': 'Returned object type',
+  'models.table.apiAccessInfo.schema.created':
+    'Unix timestamp when the response was created',
+  'models.table.apiAccessInfo.schema.model': 'Model name actually used',
+  'models.table.apiAccessInfo.schema.choices': 'Generated candidate results',
+  'models.table.apiAccessInfo.schema.usage': 'Token usage for this request',
+  'models.table.apiAccessInfo.schema.data':
+    'Returned embeddings or result list',
   'models.search.parts': '{n} parts',
   'models.search.evaluate.error': 'An error occurred during evaluation: ',
   'models.ollama.deprecated.title': 'Deprecation Notice',

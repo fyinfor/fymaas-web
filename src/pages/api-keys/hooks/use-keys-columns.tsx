@@ -15,6 +15,7 @@ import { MenuProps, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
+import ApiKeySecret from '../components/api-key-secret';
 import { ListItem } from '../config/types';
 import type { APIKeyConfigAction } from '../plugin';
 
@@ -156,12 +157,15 @@ const useModelsColumns = ({
       ...pluginRendered,
       {
         title: intl.formatMessage({ id: 'apikeys.table.key' }),
-        dataIndex: 'masked_value',
-        key: 'masked_value',
-        render: (text: string, record: ListItem) => (
-          <AutoTooltip ghost style={{ maxWidth: 200 }}>
-            {text || '-'}
-          </AutoTooltip>
+        dataIndex: 'value',
+        key: 'value',
+        width: 320,
+        ellipsis: false,
+        render: (_text: string, record: ListItem) => (
+          <ApiKeySecret
+            value={record.value}
+            maskedValue={record.masked_value}
+          />
         )
       },
       {

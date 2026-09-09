@@ -39,6 +39,33 @@ const useProviderRequiredFields = () => {
   };
 
   const providerRequiredFieldsMap: Record<string, RequiredFields[]> = {
+    [ProviderEnum.TOKEASE]: [
+      {
+        type: 'Select',
+        name: 'tokeaseRegion',
+        required: true,
+        label: {
+          text: 'providers.form.tokeaseRegion',
+          locale: true
+        },
+        hint: {
+          text: 'providers.form.tokeaseRegion.tips',
+          locale: true
+        },
+        options: [
+          {
+            label: 'providers.form.tokeaseRegion.cn',
+            value: 'cn',
+            locale: true
+          },
+          {
+            label: 'providers.form.tokeaseRegion.intl',
+            value: 'intl',
+            locale: true
+          }
+        ]
+      }
+    ],
     [ProviderEnum.OPENAI]: [
       {
         type: 'Input',

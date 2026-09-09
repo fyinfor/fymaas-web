@@ -33,6 +33,14 @@ export default {
   'providers.form.rules.models': 'Please select at least one model',
   'providers.form.rules.tokens': 'Please enter a valid API Key',
   'providers.form.rules.model': 'Please select a model',
+  'providers.form.models.fetchFailedTitle': 'Could not load the model list',
+  'providers.form.models.fetchFailedReason': 'Reason',
+  'providers.form.models.fetchFailedProvider': 'Provider',
+  'providers.form.models.fetchFailedStatus': 'Status',
+  'providers.form.models.fetchFailedHelp': 'Documentation',
+  'providers.form.models.fetchFailedDetail': 'Details',
+  'providers.form.models.fetchFailedHint': 'You can type a model name instead',
+  'providers.form.models.fetchFailedUnknown': 'Unknown error',
   'providers.form.rules.absoluteHttpUrl':
     'Please enter an absolute http(s) URL, including the port if there is one, e.g. https://gateway.example.com:8080',
   'providers.form.rules.openaiCustomUrl':
@@ -52,5 +60,10 @@ export default {
     'Specifies the model version used in Triton Server.',
   'providers.form.tritonDomain.tips':
     'The domain used to send requests to the Triton Server deployment.',
-  'providers.form.awsRegion': 'AWS Region'
+  'providers.form.awsRegion': 'AWS Region',
+  'providers.form.tokeaseRegion': 'Region',
+  'providers.form.tokeaseRegion.tips':
+    'China uses https://www.tokease.cn; overseas uses https://www.tokease.com',
+  'providers.form.tokeaseRegion.cn': 'China (tokease.cn)',
+  'providers.form.tokeaseRegion.intl': 'Overseas (tokease.com)'
 };

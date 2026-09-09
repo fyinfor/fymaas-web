@@ -53,6 +53,11 @@ export interface RequiredFields {
   };
   required?: boolean;
   placeholder?: string;
+  options?: {
+    label: string;
+    value: string;
+    locale?: boolean;
+  }[];
   // tooltip on the label
   description?: {
     text: string;

@@ -5,11 +5,23 @@ export default {
   'apikeys.button.create': '新しいAPIキーを作成',
   'apikeys.button.edit': 'APIキーを編集',
   'apikeys.title.save': 'APIキーを保存',
-  'apikeys.form.expiretime': '有効期限',
+  'apikeys.title.created': 'API key created',
+  'apikeys.form.editorDescription':
+    'The name is for your own reference. Pick an expiry date from the calendar, or mark the key as never expiring.',
+  'apikeys.form.expiretime': 'Expiration date',
+  'apikeys.form.expirePlaceholder': 'Select an expiration date',
+  'apikeys.form.expireHint':
+    'The key expires at 23:59:59 on that day. Use the shortcuts for 7 days, 1 month, or 6 months.',
   'apikeys.form.apikey': 'APIキー',
+  'apikeys.button.copySecret': 'Copy key',
   'apikeys.table.name': 'キー名',
   'apikeys.table.save.tips':
-    'キーをすぐにコピーしてください。一度閉じると再表示はできません。',
+    'The middle digits are hidden by default. Click the key to copy it; you can view or copy it again from the list later.',
+  'apikeys.table.copyHint': 'Click to copy the full key',
+  'apikeys.table.copyUnavailable':
+    'The full key must come from the server. Restart the backend and create a new key.',
+  'apikeys.table.showKey': 'Show key',
+  'apikeys.table.hideKey': 'Hide key',
   'apikeys.form.expiration.7days': '7日間',
   'apikeys.form.expiration.1month': '1ヶ月',
   'apikeys.form.expiration.6months': '6ヶ月',

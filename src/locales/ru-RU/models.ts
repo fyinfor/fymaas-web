@@ -178,6 +178,23 @@ export default {
   'models.table.apiAccessInfo.anthropicCompatible': 'Совместимо с Anthropic',
   'models.table.apiAccessInfo.jinaCompatible': 'Совместимо с Jina',
   'models.table.apiAccessInfo.gotoCreate': 'Перейти к созданию',
+  'models.table.apiAccessInfo.proxyHint':
+    'Подключайтесь к сайту напрямую и отключите системный прокси или VPN, чтобы они не мешали запросам к модели.',
+  'models.table.apiAccessInfo.examples': 'Пример запроса',
+  'models.table.apiAccessInfo.schemaTitle': 'Структура ответа',
+  'models.table.apiAccessInfo.schema.name': 'Поле',
+  'models.table.apiAccessInfo.schema.type': 'Тип',
+  'models.table.apiAccessInfo.schema.example': 'Пример',
+  'models.table.apiAccessInfo.schema.desc': 'Описание',
+  'models.table.apiAccessInfo.schema.id':
+    'Уникальный идентификатор этого запроса',
+  'models.table.apiAccessInfo.schema.object': 'Тип возвращаемого объекта',
+  'models.table.apiAccessInfo.schema.created': 'Unix-время создания ответа',
+  'models.table.apiAccessInfo.schema.model': 'Фактически использованная модель',
+  'models.table.apiAccessInfo.schema.choices':
+    'Сгенерированные варианты ответа',
+  'models.table.apiAccessInfo.schema.usage': 'Расход токенов на этот запрос',
+  'models.table.apiAccessInfo.schema.data': 'Список векторов или результатов',
   'models.search.parts': '{n} частей',
   'models.search.evaluate.error': 'Возникла ошибка при вычислении: ',
   'models.ollama.deprecated.title': 'Объявление об устаревании',

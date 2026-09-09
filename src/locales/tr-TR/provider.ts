@@ -33,6 +33,14 @@ export default {
   'providers.form.rules.models': 'Lütfen en az bir model seçin',
   'providers.form.rules.tokens': 'Lütfen geçerli bir API Anahtarı girin',
   'providers.form.rules.model': 'Lütfen bir model seçin',
+  'providers.form.models.fetchFailedTitle': 'Could not load the model list',
+  'providers.form.models.fetchFailedReason': 'Reason',
+  'providers.form.models.fetchFailedProvider': 'Provider',
+  'providers.form.models.fetchFailedStatus': 'Status',
+  'providers.form.models.fetchFailedHelp': 'Documentation',
+  'providers.form.models.fetchFailedDetail': 'Details',
+  'providers.form.models.fetchFailedHint': 'You can type a model name instead',
+  'providers.form.models.fetchFailedUnknown': 'Unknown error',
   'providers.form.rules.absoluteHttpUrl':
     'Lütfen şema içeren tam bir http(s) adresi girin (varsa portu da ekleyin), örneğin https://gateway.example.com:8080',
   'providers.form.rules.openaiCustomUrl':
@@ -52,5 +60,10 @@ export default {
     "Triton Server'da kullanılan model sürümünü belirtir.",
   'providers.form.tritonDomain.tips':
     'Triton Server dağıtımına istek göndermek için kullanılan alan adı.',
-  'providers.form.awsRegion': 'AWS Bölgesi'
+  'providers.form.awsRegion': 'AWS Bölgesi',
+  'providers.form.tokeaseRegion': 'Bölge',
+  'providers.form.tokeaseRegion.tips':
+    'China uses https://www.tokease.cn; overseas uses https://www.tokease.com',
+  'providers.form.tokeaseRegion.cn': 'China (tokease.cn)',
+  'providers.form.tokeaseRegion.intl': 'Overseas (tokease.com)'
 };

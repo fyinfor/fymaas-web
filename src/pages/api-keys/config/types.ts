@@ -2,7 +2,7 @@ export interface ListItem {
   name: string;
   description: string;
   id: number;
-  value: string;
+  value?: string;
   masked_value?: string;
   user_id?: number;
   user_name?: string;
@@ -22,10 +22,9 @@ export interface ListItem {
 export interface FormData {
   name: string;
   allowed_type: 'all' | 'custom' | 'management';
-  key_type: 'auto' | 'custom';
   description: string;
   allowed_model_names: string[];
-  expires_in: number | null;
-  custom?: string;
+  expires_at?: any;
+  expires_never?: boolean;
   scope?: string[];
 }

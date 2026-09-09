@@ -30,6 +30,7 @@ import openrouter from '@/assets/providers-logo/openrouter.svg';
 import spark from '@/assets/providers-logo/spark.svg';
 import stepfun from '@/assets/providers-logo/stepfun.svg';
 import togetherai from '@/assets/providers-logo/together.svg';
+import tokease from '@/assets/providers-logo/tokease.svg';
 import yi from '@/assets/providers-logo/yi.svg';
 import zhipuai from '@/assets/providers-logo/zhipu.svg';
 import { ProviderEnum } from '../config/providers';
@@ -65,6 +66,7 @@ const ProviderLogoMap: Record<string, string> = {
   [ProviderEnum.SPARK]: spark,
   [ProviderEnum.STEPFUN]: stepfun,
   [ProviderEnum.TOGETHERAI]: togetherai,
+  [ProviderEnum.TOKEASE]: tokease,
   [ProviderEnum.ZHIPUAI]: zhipuai,
   [ProviderEnum.GITHUB]: github,
   [ProviderEnum.TRITON]: triton,

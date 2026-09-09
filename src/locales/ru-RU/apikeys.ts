@@ -5,11 +5,23 @@ export default {
   'apikeys.button.create': 'Создать API-ключ',
   'apikeys.button.edit': 'Редактировать API-ключ',
   'apikeys.title.save': 'Сохранить API-ключ',
-  'apikeys.form.expiretime': 'Срок действия',
+  'apikeys.title.created': 'API key created',
+  'apikeys.form.editorDescription':
+    'The name is for your own reference. Pick an expiry date from the calendar, or mark the key as never expiring.',
+  'apikeys.form.expiretime': 'Expiration date',
+  'apikeys.form.expirePlaceholder': 'Select an expiration date',
+  'apikeys.form.expireHint':
+    'The key expires at 23:59:59 on that day. Use the shortcuts for 7 days, 1 month, or 6 months.',
   'apikeys.form.apikey': 'API-ключ',
+  'apikeys.button.copySecret': 'Copy key',
   'apikeys.table.name': 'Название ключа',
   'apikeys.table.save.tips':
-    'Обязательно скопируйте ключ сразу. Вы не сможете увидеть его снова.',
+    'The middle digits are hidden by default. Click the key to copy it; you can view or copy it again from the list later.',
+  'apikeys.table.copyHint': 'Click to copy the full key',
+  'apikeys.table.copyUnavailable':
+    'The full key must come from the server. Restart the backend and create a new key.',
+  'apikeys.table.showKey': 'Show key',
+  'apikeys.table.hideKey': 'Hide key',
   'apikeys.form.expiration.7days': '7 дней',
   'apikeys.form.expiration.1month': '1 месяц',
   'apikeys.form.expiration.6months': '6 месяцев',

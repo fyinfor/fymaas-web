@@ -2,7 +2,6 @@ import { PageAction } from '@/config';
 import { PageActionType } from '@/config/types';
 import {
   AlertBlockInfo,
-  Input as CInput,
   ColumnWrapper,
   CopyButton,
   GSDrawer,
@@ -10,13 +9,14 @@ import {
   useSubmitLock
 } from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
-import { Form, Tag } from 'antd';
+import { Form } from 'antd';
+import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import _ from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { createApisKey, updateApisKey } from '../../apis';
-import { expirationOptions } from '../../config';
 import { FormData, ListItem } from '../../config/types';
+import ApiKeySecret from '../api-key-secret';
 import APIKeyForm from './form';
 
 const ModalFooterStyle = {
@@ -53,59 +53,21 @@ const AddModal: React.FC<AddModalProps> = ({
     allowed_model_names: string[];
   }>({} as any);
 
-  const getExpireValue = (val: number | null) => {
-    const expires_in = val;
-    if (expires_in === -1) {
+  const toExpiresInSeconds = (data: FormData) => {
+    if (data.expires_never || !data.expires_at) {
       return 0;
     }
-    const selected = expirationOptions.find(
-      (item) => expires_in === item.value
-    );
-
-    const d1 = dayjs().add(
-      selected?.value as number,
-      `${selected?.type}` as never
-    );
-    const d2 = dayjs();
-    const res = d1.diff(d2, 'second');
-    return res;
-  };
-
-  // 7d, 1m, 6m, -1
-  const parseExpireValue = (data: ListItem) => {
-    const createdAt = dayjs(data.created_at);
-    const expiresAt = dayjs(data.expires_at);
-
-    if (!data.expires_at) {
-      return -1;
-    }
-
-    const diffInDays = expiresAt.diff(createdAt, 'day');
-
-    if (diffInDays < 10) {
-      return 7;
-    }
-
-    if (diffInDays < 60) {
-      return 1;
-    }
-
-    return 6;
+    const expiresAt = dayjs(data.expires_at as Dayjs).endOf('day');
+    return Math.max(expiresAt.diff(dayjs(), 'second'), 1);
   };
 
   const createAPIKey = async (data: FormData) => {
     const params = {
-      ...data,
-      expires_in: getExpireValue(data.expires_in)
+      ..._.omit(data, ['expires_at', 'expires_never', 'key_type', 'custom']),
+      expires_in: toExpiresInSeconds(data)
     };
     const res = await createApisKey({ data: params });
     onOk();
-    // if custom value
-    if (data.custom) {
-      onCancel();
-      return;
-    }
-
     setAPIKeyValue(res.value);
     setShowKey(true);
   };
@@ -131,7 +93,7 @@ const AddModal: React.FC<AddModalProps> = ({
           await createAPIKey(data);
         } else if (action === PageAction.EDIT && currentData?.id) {
           await updateAPIKey({
-            ..._.omit(data, ['expires_in'])
+            ..._.omit(data, ['expires_at', 'expires_never', 'expires_in'])
           });
         }
       } catch (error) {
@@ -180,21 +142,23 @@ const AddModal: React.FC<AddModalProps> = ({
   const initValues = () => {
     if (action === PageAction.CREATE && open) {
       form.setFieldsValue({
-        expires_in: 1
+        expires_never: false,
+        expires_at: dayjs().add(1, 'month')
       });
     }
     if (action === PageAction.EDIT && currentData && open) {
-      parseExpireValue(currentData as ListItem);
       const isLegacyAllScope = currentData.scope?.includes('*');
       const normalizedAllowedModelNames = isLegacyAllScope
         ? []
         : currentData.allowed_model_names || [];
+      const hasExpiry = Boolean(currentData.expires_at);
       form.setFieldsValue({
         name: currentData.name,
         description: currentData.description,
         scope: ['inference'],
         allowed_type: normalizedAllowedModelNames.length ? 'custom' : 'all',
-        expires_in: parseExpireValue(currentData as ListItem),
+        expires_never: !hasExpiry,
+        expires_at: hasExpiry ? dayjs(currentData.expires_at) : undefined,
         allowed_model_names: normalizedAllowedModelNames
       });
     }
@@ -217,7 +181,7 @@ const AddModal: React.FC<AddModalProps> = ({
   return (
     <GSDrawer
       title={
-        !showKey ? title : intl.formatMessage({ id: 'apikeys.title.save' })
+        !showKey ? title : intl.formatMessage({ id: 'apikeys.title.created' })
       }
       open={open}
       onClose={onCancel}
@@ -292,33 +256,41 @@ const AddModal: React.FC<AddModalProps> = ({
             ></APIKeyForm>
           )}
           {showKey && action === PageAction.CREATE && (
-            <Form.Item>
-              <div>
-                <Tag
-                  variant="filled"
-                  color="error"
-                  style={{
-                    padding: '6px 8px',
-                    marginBottom: 16,
-                    width: '100%'
-                  }}
-                >
-                  {intl.formatMessage({ id: 'apikeys.table.save.tips' })}
-                </Tag>
+            <div>
+              <p
+                style={{
+                  margin: '0 0 16px',
+                  color: 'var(--ant-color-text-secondary)',
+                  fontSize: 13,
+                  lineHeight: 1.6
+                }}
+              >
+                {intl.formatMessage({ id: 'apikeys.table.save.tips' })}
+              </p>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '12px 14px',
+                  border: '1px solid var(--ant-color-border)',
+                  borderRadius: 8,
+                  background: 'var(--ant-color-fill-quaternary)'
+                }}
+              >
+                <ApiKeySecret block value={apikeyValue} />
               </div>
-              <CInput.Input
-                label={intl.formatMessage({ id: 'apikeys.form.apikey' })}
-                value={apikeyValue}
-                addAfter={
-                  <CopyButton
-                    text={apikeyValue}
-                    shape="default"
-                    size="middle"
-                    type="text"
-                  ></CopyButton>
-                }
-              ></CInput.Input>
-            </Form.Item>
+              <div style={{ marginTop: 16 }}>
+                <CopyButton
+                  text={apikeyValue}
+                  shape="default"
+                  size="middle"
+                  type="default"
+                >
+                  {intl.formatMessage({ id: 'apikeys.button.copySecret' })}
+                </CopyButton>
+              </div>
+            </div>
           )}
         </Form>
       </ColumnWrapper>

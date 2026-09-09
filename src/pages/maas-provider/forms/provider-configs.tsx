@@ -1,4 +1,8 @@
-import { Input as CInput, Password } from '@gpustack/core-ui';
+import {
+  Input as CInput,
+  Password,
+  Select as SealSelect
+} from '@gpustack/core-ui';
 import { useIntl } from '@umijs/max';
 import { Form } from 'antd';
 import { useFormContext } from '../config/form-context';
@@ -56,6 +60,19 @@ const ProviderConfigs = () => {
                     description={renderDescription(item)}
                     placeholder={item.placeholder}
                   ></Password>
+                )}
+                {item.type === 'Select' && (
+                  <SealSelect
+                    required={item.required}
+                    label={renderLabel(item)}
+                    description={renderDescription(item)}
+                    options={(item.options || []).map((option) => ({
+                      value: option.value,
+                      label: option.locale
+                        ? intl.formatMessage({ id: option.label })
+                        : option.label
+                    }))}
+                  />
                 )}
               </Form.Item>
             );

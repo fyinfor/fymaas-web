@@ -175,6 +175,23 @@ export default {
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic Uyumlu',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina Uyumlu',
   'models.table.apiAccessInfo.gotoCreate': 'Oluşturmaya Git',
+  'models.table.apiAccessInfo.proxyHint':
+    'Bu siteye doğrudan bağlanın; sistem vekil sunucusunu veya VPN’i kapatın, aksi halde model isteği kesintiye uğrayabilir.',
+  'models.table.apiAccessInfo.examples': 'İstek örneği',
+  'models.table.apiAccessInfo.schemaTitle': 'Yanıt veri yapısı',
+  'models.table.apiAccessInfo.schema.name': 'Alan',
+  'models.table.apiAccessInfo.schema.type': 'Tür',
+  'models.table.apiAccessInfo.schema.example': 'Örnek',
+  'models.table.apiAccessInfo.schema.desc': 'Açıklama',
+  'models.table.apiAccessInfo.schema.id':
+    'Bu tamamlanma isteğinin benzersiz kimliği',
+  'models.table.apiAccessInfo.schema.object': 'Dönen nesne türü',
+  'models.table.apiAccessInfo.schema.created':
+    'Yanıtın oluşturulduğu Unix zaman damgası',
+  'models.table.apiAccessInfo.schema.model': 'Gerçekte kullanılan model adı',
+  'models.table.apiAccessInfo.schema.choices': 'Üretilen aday sonuçlar',
+  'models.table.apiAccessInfo.schema.usage': 'Bu isteğin token kullanımı',
+  'models.table.apiAccessInfo.schema.data': 'Dönen vektör veya sonuç listesi',
   'models.search.parts': '{n} parça',
   'models.search.evaluate.error': 'Değerlendirme sırasında bir hata oluştu: ',
   'models.ollama.deprecated.title': 'Kullanımdan Kaldırma Bildirimi',
