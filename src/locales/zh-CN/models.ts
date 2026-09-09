@@ -164,6 +164,8 @@ export default {
   'models.table.apiAccessInfo.endpoint': '接入地址',
   'models.table.apiAccessInfo.modelName': '模型名称',
   'models.table.apiAccessInfo.apikey': 'API 密钥',
+  'models.table.apiAccessInfo.selectKey': '选择 API 密钥',
+  'models.table.apiAccessInfo.noKey': '暂无可用密钥',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI 兼容',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic 兼容',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina 兼容',

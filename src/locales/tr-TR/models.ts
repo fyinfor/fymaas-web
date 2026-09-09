@@ -171,6 +171,8 @@ export default {
   'models.table.apiAccessInfo.endpoint': "Erişim URL'si",
   'models.table.apiAccessInfo.modelName': 'Model Adı',
   'models.table.apiAccessInfo.apikey': 'API Anahtarı',
+  'models.table.apiAccessInfo.selectKey': 'API anahtarı seçin',
+  'models.table.apiAccessInfo.noKey': 'Kullanılabilir API anahtarı yok',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI Uyumlu',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic Uyumlu',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina Uyumlu',

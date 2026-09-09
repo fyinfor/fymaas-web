@@ -172,6 +172,8 @@ export default {
   'models.table.apiAccessInfo.endpoint': 'アクセスURL',
   'models.table.apiAccessInfo.modelName': 'モデル名',
   'models.table.apiAccessInfo.apikey': 'APIキー',
+  'models.table.apiAccessInfo.selectKey': 'APIキーを選択',
+  'models.table.apiAccessInfo.noKey': '利用可能なAPIキーがありません',
   'models.table.apiAccessInfo.openaiCompatible': 'OpenAI互換',
   'models.table.apiAccessInfo.anthropicCompatible': 'Anthropic互換',
   'models.table.apiAccessInfo.jinaCompatible': 'Jina互換',

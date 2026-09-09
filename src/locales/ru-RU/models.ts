@@ -174,6 +174,8 @@ export default {
   'models.table.apiAccessInfo.endpoint': 'URL доступа',
   'models.table.apiAccessInfo.modelName': 'Имя модели',
   'models.table.apiAccessInfo.apikey': 'Ключ API',
+  'models.table.apiAccessInfo.selectKey': 'Выберите ключ API',
+  'models.table.apiAccessInfo.noKey': 'Нет доступных ключей API',
   'models.table.apiAccessInfo.openaiCompatible': 'Совместимо с OpenAI',
   'models.table.apiAccessInfo.anthropicCompatible': 'Совместимо с Anthropic',
   'models.table.apiAccessInfo.jinaCompatible': 'Совместимо с Jina',

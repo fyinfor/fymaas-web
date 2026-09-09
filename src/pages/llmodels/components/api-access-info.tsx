@@ -1,9 +1,10 @@
 import { OPENAI_COMPATIBLE } from '@/config/settings';
 import { queryApisKeysList } from '@/pages/api-keys/apis';
+import { ListItem as ApiKeyItem } from '@/pages/api-keys/config/types';
 import { MODEL_PROXY } from '@/pages/playground/apis';
 import { HighlightCode, IconFont, ScrollerModal } from '@gpustack/core-ui';
 import { useIntl, useNavigate } from '@umijs/max';
-import { Alert, Button, Table, Tabs, Tag } from 'antd';
+import { Alert, Button, Select, Table, Tabs, Tag } from 'antd';
 import _ from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
@@ -16,6 +17,16 @@ import {
   schemaForCategory,
   type AccessLanguage
 } from './api-access-examples';
+
+const PLACEHOLDER_KEY = 'YOUR_API_KEY';
+
+const maskKey = (value?: string, fallback?: string) => {
+  const secret = (value || '').trim();
+  if (secret.length > 12) {
+    return `${secret.slice(0, 6)}••••${secret.slice(-4)}`;
+  }
+  return fallback || '';
+};
 
 const LANG_MAP: Record<AccessLanguage, string> = {
   curl: 'bash',
@@ -45,6 +56,23 @@ const CreateButton = styled(Button)`
   padding-inline: 0;
 `;
 
+const KeyRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  .label {
+    flex: none;
+    font-weight: 500;
+  }
+  .selector {
+    flex: 1;
+    min-width: 240px;
+    max-width: 420px;
+  }
+`;
+
 interface ApiAccessInfoProps {
   open: boolean;
   data: ListItem;
@@ -56,7 +84,10 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
   const navigate = useNavigate();
   const { GenericProxyCommandCode, openProxyModal } = useGenericProxy();
   const [language, setLanguage] = useState<AccessLanguage>('curl');
-  const [apiKey, setApiKey] = useState('YOUR_API_KEY');
+  const [apiKeys, setApiKeys] = useState<ApiKeyItem[]>([]);
+  const [selectedKeyId, setSelectedKeyId] = useState<number>();
+  const [apiKey, setApiKey] = useState(PLACEHOLDER_KEY);
+  const [loadingKeys, setLoadingKeys] = useState(false);
 
   const category = data?.categories?.[0];
   const origin = window.location.origin;
@@ -69,7 +100,25 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
 
   const isRanker = _.includes(data?.categories, modelCategoriesMap.reranker);
   const isLLM = _.includes(data?.categories, modelCategoriesMap.llm);
-  const hasRealKey = apiKey !== 'YOUR_API_KEY';
+
+  const applyKey = (item?: ApiKeyItem) => {
+    setSelectedKeyId(item?.id);
+    setApiKey(item?.value?.trim() || PLACEHOLDER_KEY);
+  };
+
+  const keyOptions = useMemo(
+    () =>
+      apiKeys.map((item) => {
+        const preview = maskKey(item.value, item.masked_value);
+        return {
+          value: item.id,
+          disabled: !item.value?.trim(),
+          label: preview ? `${item.name}  ${preview}` : item.name,
+          title: item.name
+        };
+      }),
+    [apiKeys]
+  );
 
   const examples = useMemo(
     () =>
@@ -96,18 +145,28 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
   useEffect(() => {
     if (!open) {
       setLanguage('curl');
-      setApiKey('YOUR_API_KEY');
+      setApiKeys([]);
+      applyKey(undefined);
       return;
     }
     let cancelled = false;
-    queryApisKeysList({ page: 1, perPage: 50 })
+    setLoadingKeys(true);
+    queryApisKeysList({ page: 1, perPage: 100 })
       .then((res) => {
-        const value = res.items?.find((item) => item.value)?.value;
-        if (!cancelled && value) {
-          setApiKey(value);
+        if (cancelled) return;
+        const items = res.items || [];
+        setApiKeys(items);
+        applyKey(items.find((item) => item.value?.trim()));
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setApiKeys([]);
+          applyKey(undefined);
         }
       })
-      .catch(() => undefined);
+      .finally(() => {
+        if (!cancelled) setLoadingKeys(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -156,19 +215,40 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
             )}
           </>
         )}
-        {!hasRealKey && (
-          <CreateButton
-            type="link"
-            size="small"
-            onClick={() => navigate('/usage/api-keys')}
-          >
-            {intl.formatMessage({
-              id: 'models.table.apiAccessInfo.gotoCreate'
-            })}
-            <IconFont type="icon-external-link" className="font-size-14" />
-          </CreateButton>
-        )}
       </MetaRow>
+      <KeyRow>
+        <span className="label">
+          {intl.formatMessage({ id: 'models.table.apiAccessInfo.apikey' })}
+        </span>
+        <Select
+          className="selector"
+          showSearch
+          allowClear
+          loading={loadingKeys}
+          optionFilterProp="title"
+          placeholder={intl.formatMessage({
+            id: 'models.table.apiAccessInfo.selectKey'
+          })}
+          value={selectedKeyId ?? null}
+          options={keyOptions}
+          notFoundContent={intl.formatMessage({
+            id: 'models.table.apiAccessInfo.noKey'
+          })}
+          onChange={(id?: number) => {
+            applyKey(apiKeys.find((item) => item.id === id));
+          }}
+        />
+        <CreateButton
+          type="link"
+          size="small"
+          onClick={() => navigate('/usage/api-keys')}
+        >
+          {intl.formatMessage({
+            id: 'models.table.apiAccessInfo.gotoCreate'
+          })}
+          <IconFont type="icon-external-link" className="font-size-14" />
+        </CreateButton>
+      </KeyRow>
 
       {data?.generic_proxy ? (
         <div>{GenericProxyCommandCode}</div>
