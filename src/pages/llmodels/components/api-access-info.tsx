@@ -20,13 +20,12 @@ import {
 
 const PLACEHOLDER_KEY = 'YOUR_API_KEY';
 
-const maskKey = (value?: string, fallback?: string) => {
-  const secret = (value || '').trim();
-  if (secret.length > 12) {
-    return `${secret.slice(0, 6)}••••${secret.slice(-4)}`;
-  }
-  return fallback || '';
-};
+const secretOf = (item?: ApiKeyItem) =>
+  (
+    item?.value ||
+    (item as ApiKeyItem & { key_prefix?: string })?.key_prefix ||
+    ''
+  ).trim();
 
 const LANG_MAP: Record<AccessLanguage, string> = {
   curl: 'bash',
@@ -103,20 +102,15 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
 
   const applyKey = (item?: ApiKeyItem) => {
     setSelectedKeyId(item?.id);
-    setApiKey(item?.value?.trim() || PLACEHOLDER_KEY);
+    setApiKey(secretOf(item) || PLACEHOLDER_KEY);
   };
 
   const keyOptions = useMemo(
     () =>
-      apiKeys.map((item) => {
-        const preview = maskKey(item.value, item.masked_value);
-        return {
-          value: item.id,
-          disabled: !item.value?.trim(),
-          label: preview ? `${item.name}  ${preview}` : item.name,
-          title: item.name
-        };
-      }),
+      apiKeys.map((item) => ({
+        value: item.id,
+        label: item.name
+      })),
     [apiKeys]
   );
 
@@ -156,7 +150,7 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
         if (cancelled) return;
         const items = res.items || [];
         setApiKeys(items);
-        applyKey(items.find((item) => item.value?.trim()));
+        applyKey(items.find((item) => secretOf(item)) || items[0]);
       })
       .catch(() => {
         if (!cancelled) {
@@ -225,7 +219,7 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
           showSearch
           allowClear
           loading={loadingKeys}
-          optionFilterProp="title"
+          optionFilterProp="label"
           placeholder={intl.formatMessage({
             id: 'models.table.apiAccessInfo.selectKey'
           })}
@@ -234,8 +228,13 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
           notFoundContent={intl.formatMessage({
             id: 'models.table.apiAccessInfo.noKey'
           })}
-          onChange={(id?: number) => {
-            applyKey(apiKeys.find((item) => item.id === id));
+          getPopupContainer={(trigger) =>
+            (trigger.parentElement as HTMLElement) || document.body
+          }
+          onChange={(id?: number | null) => {
+            applyKey(
+              id == null ? undefined : apiKeys.find((item) => item.id === id)
+            );
           }}
         />
         <CreateButton
