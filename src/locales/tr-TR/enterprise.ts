@@ -3,6 +3,7 @@ export default {
   'menu.settings.branding': 'Marka',
   'menu.settings.ldap': 'Dizin',
   'menu.settings.environment': 'Ortam',
+  'menu.settings.tokenService': 'Token API',
   'menu.settings.profile': 'Kişisel',
 
   'systemSettings.page.description':
@@ -19,6 +20,7 @@ export default {
   'systemSettings.message.saved': 'Sistem ayarları kaydedildi',
   'systemSettings.tab.general': 'Genel',
   'systemSettings.tab.environment': 'Ortam',
+  'systemSettings.tab.tokenService': 'Token API',
   'systemSettings.section.catalog': 'Resmi katalog',
   'systemSettings.section.catalog.description':
     'Resmi liste fiyatlarını models.dev veya llm-metadata’den alın. Sunucu başlangıçta indirmez; yalnızca yönetici buradan senkronize eder. Varsayılan olarak yalnızca mevcut satırlar güncellenir.',
@@ -128,6 +130,34 @@ export default {
   'ldap.test': 'Bağlantıyı dene',
   'ldap.test.ok': 'Dizine bağlanıldı',
   'ldap.message.saved': 'Dizin ayarları kaydedildi',
+
+  'tokenService.page.description':
+    'Token hizmeti istemcileri için OpenAI uyumlu model listesi yayınlayın. Kimlik doğrulamalı liste her zaman açıktır; genel katalog buradan açılır.',
+  'tokenService.section.catalog': 'Model listesi',
+  'tokenService.section.catalog.description':
+    'Token ağ geçitleri, SDK’ler ve katalog sayfaları kullanılabilir modelleri bu uç noktalardan keşfeder.',
+  'tokenService.paths':
+    'Kimlik doğrulamalı liste {compat}; genel liste {pub} ve /v2/public/models',
+  'tokenService.form.publicEnabled': 'Genel model listesini aç',
+  'tokenService.form.publicEnabled.help':
+    'Açıkken genel katalog API anahtarı olmadan alınabilir; token ağ geçidi üst modelleri listeleyebilir.',
+  'tokenService.form.readyOnly': 'Yalnızca hazır modeller',
+  'tokenService.form.readyOnly.help':
+    'Kapatınca henüz hazır örneği olmayan rotalar da listelenir.',
+  'tokenService.form.publicAccessOnly':
+    'Yalnızca Public erişim politikalı modeller',
+  'tokenService.form.publicAccessOnly.help':
+    'Açıkken genel katalog yalnızca erişim politikası Public olan rotaları içerir.',
+  'tokenService.section.endpoint': 'Genel adresler',
+  'tokenService.section.endpoint.description':
+    'İstemcilere gösterilen API kökü, örneğin token ağ geçidi upstream’i.',
+  'tokenService.form.apiEndpoint': 'API uç noktası',
+  'tokenService.form.apiEndpoint.help':
+    'Örneğin https://api.example.com/v1. Boş bırakılırsa konsol mevcut site origin’ini kullanır.',
+  'tokenService.form.apiDocsUrl': 'API belgesi URL’si',
+  'tokenService.form.url.invalid':
+    'http:// veya https:// ile başlayan bir URL girin',
+  'tokenService.message.saved': 'Token API ayarları kaydedildi',
 
   'branding.page.description':
     'Platformu kendi ürününüz hâline getirin: ad, logolar, renkler ve bağlantılar. Değişiklikler tüm kullanıcılar için geçerli olur.',

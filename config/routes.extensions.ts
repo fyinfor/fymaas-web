@@ -38,6 +38,14 @@ const enterpriseRoutes: RouteLike[] = [
       },
       {
         name: 'system',
+        path: '/settings/token-service',
+        key: 'tokenService',
+        hideInMenu: true,
+        access: 'canSeeAdmin',
+        component: './settings'
+      },
+      {
+        name: 'system',
         path: '/settings/branding',
         key: 'branding',
         hideInMenu: true,
@@ -270,6 +278,7 @@ const groupAdditions: Record<string, RouteLike[]> = {
       component: './settings',
       subMenu: [
         '/settings/environment',
+        '/settings/token-service',
         '/settings/branding',
         '/settings/ldap',
         '/settings/ip-access'

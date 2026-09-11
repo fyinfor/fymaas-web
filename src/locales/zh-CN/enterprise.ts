@@ -5,6 +5,7 @@ export default {
   'menu.settings.branding': '品牌定制',
   'menu.settings.ldap': '目录认证',
   'menu.settings.environment': '运行环境',
+  'menu.settings.tokenService': '词元服务',
   'menu.settings.profile': '个人设置',
 
   'systemSettings.page.description':
@@ -21,6 +22,7 @@ export default {
   'systemSettings.message.saved': '系统设置已保存',
   'systemSettings.tab.general': '通用',
   'systemSettings.tab.environment': '运行环境',
+  'systemSettings.tab.tokenService': '词元服务',
   'systemSettings.section.catalog': '官方目录',
   'systemSettings.section.catalog.description':
     '从 models.dev 或 llm-metadata 拉取官方标价。启动时不会自动联网，仅管理员在此手动同步。默认只更新库中已有模型。',
@@ -122,6 +124,31 @@ export default {
   'ldap.test': '测试连接',
   'ldap.test.ok': '已成功绑定目录',
   'ldap.message.saved': '目录配置已保存',
+
+  'tokenService.page.description':
+    '作为词元服务对外提供 OpenAI 兼容的模型列表。鉴权列表始终可用；公开目录可在此开关。',
+  'tokenService.section.catalog': '模型列表',
+  'tokenService.section.catalog.description':
+    '词元网关、SDK 和广场页通过这些接口发现可用模型。',
+  'tokenService.paths':
+    '鉴权列表 {compat}；公开列表 {pub} 与 /v2/public/models',
+  'tokenService.form.publicEnabled': '开放公开模型列表',
+  'tokenService.form.publicEnabled.help':
+    '开启后无需 API Key 即可调用公开列表，供词元网关拉取上游模型。',
+  'tokenService.form.readyOnly': '仅列出已就绪模型',
+  'tokenService.form.readyOnly.help': '关闭后也会列出还没有就绪实例的路由。',
+  'tokenService.form.publicAccessOnly': '仅列出公开访问策略的模型',
+  'tokenService.form.publicAccessOnly.help':
+    '开启后公开目录只包含访问策略为「公开」的路由。',
+  'tokenService.section.endpoint': '对外地址',
+  'tokenService.section.endpoint.description':
+    '展示给客户端的 API 根地址，例如词元网关的上游入口。',
+  'tokenService.form.apiEndpoint': 'API 端点',
+  'tokenService.form.apiEndpoint.help':
+    '例如 https://api.example.com/v1。留空则控制台使用当前站点地址。',
+  'tokenService.form.apiDocsUrl': 'API 文档地址',
+  'tokenService.form.url.invalid': '请填写以 http:// 或 https:// 开头的地址',
+  'tokenService.message.saved': '词元服务设置已保存',
 
   'branding.page.description':
     '将平台定制成你自己的产品：名称、标识、配色与相关链接。设置对所有用户生效。',

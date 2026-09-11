@@ -3,6 +3,7 @@ export default {
   'menu.settings.branding': 'ブランディング',
   'menu.settings.ldap': 'ディレクトリ認証',
   'menu.settings.environment': '実行環境',
+  'menu.settings.tokenService': 'トークン API',
   'menu.settings.profile': '個人設定',
 
   'systemSettings.page.description':
@@ -19,6 +20,7 @@ export default {
   'systemSettings.message.saved': 'システム設定を保存しました',
   'systemSettings.tab.general': '一般',
   'systemSettings.tab.environment': '実行環境',
+  'systemSettings.tab.tokenService': 'トークン API',
   'systemSettings.section.catalog': '公式カタログ',
   'systemSettings.section.catalog.description':
     'models.dev または llm-metadata から公式価格を取得します。起動時は取得しません。管理者がここで手動同期します。既定では既存行だけ更新します。',
@@ -129,6 +131,33 @@ export default {
   'ldap.test': '接続テスト',
   'ldap.test.ok': 'ディレクトリへのバインドに成功しました',
   'ldap.message.saved': 'ディレクトリ設定を保存しました',
+
+  'tokenService.page.description':
+    'トークンサービス向けに OpenAI 互換のモデル一覧を公開します。認証付き一覧は常に利用でき、公開カタログはここで切り替えます。',
+  'tokenService.section.catalog': 'モデル一覧',
+  'tokenService.section.catalog.description':
+    'トークンゲートウェイ、SDK、カタログページはこれらのエンドポイントで利用可能なモデルを発見します。',
+  'tokenService.paths':
+    '認証付き一覧 {compat}；公開一覧 {pub} と /v2/public/models',
+  'tokenService.form.publicEnabled': '公開モデル一覧を開放する',
+  'tokenService.form.publicEnabled.help':
+    'オンにすると API Key なしで公開一覧を取得でき、トークンゲートウェイが上流モデルを列挙できます。',
+  'tokenService.form.readyOnly': '準備完了のモデルのみ',
+  'tokenService.form.readyOnly.help':
+    'オフにすると、まだ準備完了インスタンスがないルートも含まれます。',
+  'tokenService.form.publicAccessOnly': '公開アクセスポリシーのモデルのみ',
+  'tokenService.form.publicAccessOnly.help':
+    'オンにすると、公開カタログにはアクセスポリシーが Public のルートだけが含まれます。',
+  'tokenService.section.endpoint': '公開アドレス',
+  'tokenService.section.endpoint.description':
+    'クライアントに表示する API ルート。トークンゲートウェイの上流入口など。',
+  'tokenService.form.apiEndpoint': 'API エンドポイント',
+  'tokenService.form.apiEndpoint.help':
+    '例: https://api.example.com/v1。空欄の場合、コンソールは現在のサイト origin を使います。',
+  'tokenService.form.apiDocsUrl': 'API ドキュメント URL',
+  'tokenService.form.url.invalid':
+    'http:// または https:// で始まる URL を入力してください',
+  'tokenService.message.saved': 'トークン API 設定を保存しました',
 
   'branding.page.description':
     'プラットフォームを自社製品としてカスタマイズします。名称、ロゴ、配色、リンクを設定でき、変更は全ユーザーに適用されます。',

@@ -3,6 +3,7 @@ export default {
   'menu.settings.branding': 'Брендирование',
   'menu.settings.ldap': 'Каталог',
   'menu.settings.environment': 'Среда',
+  'menu.settings.tokenService': 'Token API',
   'menu.settings.profile': 'Личные',
 
   'systemSettings.page.description':
@@ -19,6 +20,7 @@ export default {
   'systemSettings.message.saved': 'Системные настройки сохранены',
   'systemSettings.tab.general': 'Общие',
   'systemSettings.tab.environment': 'Среда',
+  'systemSettings.tab.tokenService': 'Token API',
   'systemSettings.section.catalog': 'Официальный каталог',
   'systemSettings.section.catalog.description':
     'Загрузка официальных цен из models.dev или llm-metadata. При запуске сервер ничего не скачивает — синхронизирует только администратор. По умолчанию обновляются только уже существующие строки.',
@@ -129,6 +131,33 @@ export default {
   'ldap.test': 'Проверить соединение',
   'ldap.test.ok': 'Привязка к каталогу выполнена',
   'ldap.message.saved': 'Настройки каталога сохранены',
+
+  'tokenService.page.description':
+    'Публикуйте список моделей в формате OpenAI для клиентов token-сервиса. Авторизованный список всегда доступен; публичный каталог включается здесь.',
+  'tokenService.section.catalog': 'Список моделей',
+  'tokenService.section.catalog.description':
+    'Шлюзы, SDK и каталоги обнаруживают доступные модели через эти эндпоинты.',
+  'tokenService.paths':
+    'Авторизованный список {compat}; публичный список {pub} и /v2/public/models',
+  'tokenService.form.publicEnabled': 'Открыть публичный список моделей',
+  'tokenService.form.publicEnabled.help':
+    'Если включено, публичный каталог можно получить без API-ключа, чтобы шлюз мог перечислить модели.',
+  'tokenService.form.readyOnly': 'Только готовые модели',
+  'tokenService.form.readyOnly.help':
+    'Выключите, чтобы включать маршруты без готовых экземпляров.',
+  'tokenService.form.publicAccessOnly': 'Только маршруты с политикой Public',
+  'tokenService.form.publicAccessOnly.help':
+    'Если включено, в публичный каталог попадают только маршруты с политикой Public.',
+  'tokenService.section.endpoint': 'Публичные адреса',
+  'tokenService.section.endpoint.description':
+    'Корень API, который показывают клиентам, например как upstream шлюза.',
+  'tokenService.form.apiEndpoint': 'API endpoint',
+  'tokenService.form.apiEndpoint.help':
+    'Например https://api.example.com/v1. Пустое значение — origin текущего сайта в консоли.',
+  'tokenService.form.apiDocsUrl': 'URL документации API',
+  'tokenService.form.url.invalid':
+    'Укажите URL, начинающийся с http:// или https://',
+  'tokenService.message.saved': 'Настройки Token API сохранены',
 
   'branding.page.description':
     'Настройте платформу под собственный продукт: название, логотипы, цвета и ссылки. Изменения применяются ко всем пользователям.',

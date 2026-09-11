@@ -6,9 +6,11 @@ import IpAccessControl from '../ip-access-control';
 import Branding from './branding';
 import EnvironmentSettings from './environment';
 import LdapSettings from './ldap';
+import TokenServiceSettings from './token-service';
 
 const TabPath = {
   environment: '/settings/environment',
+  tokenService: '/settings/token-service',
   branding: '/settings/branding',
   ldap: '/settings/ldap',
   ipAccess: '/settings/ip-access'
@@ -17,6 +19,9 @@ const TabPath = {
 type TabKey = keyof typeof TabPath;
 
 const pathToTab = (pathname: string): TabKey => {
+  if (pathname.includes('/settings/token-service')) {
+    return 'tokenService';
+  }
   if (pathname.includes('/settings/branding')) {
     return 'branding';
   }
@@ -52,6 +57,12 @@ const Settings: React.FC = () => {
         access: 'canSeeAdmin',
         label: intl.formatMessage({ id: 'systemSettings.tab.environment' }),
         children: <EnvironmentSettings />
+      },
+      {
+        key: 'tokenService',
+        access: 'canSeeAdmin',
+        label: intl.formatMessage({ id: 'systemSettings.tab.tokenService' }),
+        children: <TokenServiceSettings />
       },
       {
         key: 'branding',

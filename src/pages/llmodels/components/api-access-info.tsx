@@ -1,4 +1,8 @@
 import { OPENAI_COMPATIBLE } from '@/config/settings';
+import {
+  queryPublicSiteConfig,
+  resolveApiOrigin
+} from '@/enterprise/models-catalog/apis';
 import { queryApisKeysList } from '@/pages/api-keys/apis';
 import { ListItem as ApiKeyItem } from '@/pages/api-keys/config/types';
 import { MODEL_PROXY } from '@/pages/playground/apis';
@@ -100,8 +104,9 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
   const [pastedKey, setPastedKey] = useState('');
   const [loadingKeys, setLoadingKeys] = useState(false);
 
+  const [apiOrigin, setApiOrigin] = useState(window.location.origin);
   const category = data?.categories?.[0];
-  const origin = window.location.origin;
+  const origin = apiOrigin;
   const endPoint = useMemo(() => {
     if (!data?.generic_proxy) {
       return `${origin}/${OPENAI_COMPATIBLE}`;
@@ -158,11 +163,23 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
     if (!open) {
       setLanguage('curl');
       setApiKeys([]);
+      setApiOrigin(window.location.origin);
       applyKey(undefined);
       return;
     }
     let cancelled = false;
     setLoadingKeys(true);
+    queryPublicSiteConfig()
+      .then((config) => {
+        if (!cancelled) {
+          setApiOrigin(resolveApiOrigin(config.api_endpoint));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setApiOrigin(window.location.origin);
+        }
+      });
     queryApisKeysList({ page: 1, perPage: 100 })
       .then((res) => {
         if (cancelled) return;

@@ -5,6 +5,7 @@ export default {
   'menu.settings.branding': 'Branding',
   'menu.settings.ldap': 'Directory',
   'menu.settings.environment': 'Environment',
+  'menu.settings.tokenService': 'Token API',
   'menu.settings.profile': 'Personal',
 
   'systemSettings.page.description':
@@ -21,6 +22,7 @@ export default {
   'systemSettings.message.saved': 'System settings saved',
   'systemSettings.tab.general': 'General',
   'systemSettings.tab.environment': 'Environment',
+  'systemSettings.tab.tokenService': 'Token API',
   'systemSettings.section.catalog': 'Official catalog',
   'systemSettings.section.catalog.description':
     'Pull official list prices from models.dev or llm-metadata. The server does not fetch on startup; only an admin can sync here. By default only rows already in the catalog are updated.',
@@ -130,6 +132,33 @@ export default {
   'ldap.test': 'Test connection',
   'ldap.test.ok': 'Bound to the directory',
   'ldap.message.saved': 'Directory settings saved',
+
+  'tokenService.page.description':
+    'Expose an OpenAI-compatible model list for token-service clients. The authenticated list is always on; the public catalog is optional.',
+  'tokenService.section.catalog': 'Model list',
+  'tokenService.section.catalog.description':
+    'Token gateways, SDKs and catalog pages discover available models through these endpoints.',
+  'tokenService.paths':
+    'Authenticated list {compat}; public list {pub} and /v2/public/models',
+  'tokenService.form.publicEnabled': 'Publish public model list',
+  'tokenService.form.publicEnabled.help':
+    'When on, the public catalog can be fetched without an API key so a token gateway can list upstream models.',
+  'tokenService.form.readyOnly': 'Ready models only',
+  'tokenService.form.readyOnly.help':
+    'Turn off to include routes that do not yet have a ready instance.',
+  'tokenService.form.publicAccessOnly': 'Public-access routes only',
+  'tokenService.form.publicAccessOnly.help':
+    'When on, the public catalog includes only routes whose access policy is Public.',
+  'tokenService.section.endpoint': 'Public addresses',
+  'tokenService.section.endpoint.description':
+    'The API root shown to clients, for example as a token-gateway upstream.',
+  'tokenService.form.apiEndpoint': 'API endpoint',
+  'tokenService.form.apiEndpoint.help':
+    'For example https://api.example.com/v1. Leave empty to use the current site origin in the console.',
+  'tokenService.form.apiDocsUrl': 'API docs URL',
+  'tokenService.form.url.invalid':
+    'Enter a URL that starts with http:// or https://',
+  'tokenService.message.saved': 'Token API settings saved',
 
   'branding.page.description':
     'Make the platform your own product: name, logos, colours and links. Changes apply to every user.',
