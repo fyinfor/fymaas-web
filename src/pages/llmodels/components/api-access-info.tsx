@@ -114,8 +114,9 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
 
   const selectedKey = apiKeys.find((item) => item.id === selectedKeyId);
   const storedSecret = secretOf(selectedKey);
-  const apiKey = storedSecret || pastedKey.trim() || PLACEHOLDER_KEY;
   const needPaste = Boolean(selectedKeyId) && !storedSecret;
+  const apiKey =
+    storedSecret || (needPaste ? pastedKey.trim() : '') || PLACEHOLDER_KEY;
 
   const applyKey = (item?: ApiKeyItem) => {
     setSelectedKeyId(item?.id);
@@ -263,24 +264,31 @@ const ApiAccessInfo = ({ open, data, onClose }: ApiAccessInfoProps) => {
           <IconFont type="icon-external-link" className="font-size-14" />
         </CreateButton>
       </KeyRow>
-      <div style={{ display: needPaste ? 'block' : 'none', marginBottom: 16 }}>
-        <Alert
-          type="info"
-          showIcon
-          style={{ marginBottom: 8 }}
-          message={intl.formatMessage({
-            id: 'models.table.apiAccessInfo.keyMissing'
-          })}
-        />
-        <Input.Password
-          style={{ maxWidth: 420 }}
-          placeholder={intl.formatMessage({
-            id: 'models.table.apiAccessInfo.pasteKey'
-          })}
-          value={pastedKey}
-          onChange={(event) => setPastedKey(event.target.value)}
-        />
-      </div>
+      {needPaste ? (
+        <div style={{ marginBottom: 16 }}>
+          <Alert
+            type="info"
+            showIcon
+            style={{ marginBottom: 8 }}
+            message={intl.formatMessage({
+              id: 'models.table.apiAccessInfo.keyMissing'
+            })}
+          />
+          <Input
+            style={{ maxWidth: 420 }}
+            name="fymaas-example-api-key"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            placeholder={intl.formatMessage({
+              id: 'models.table.apiAccessInfo.pasteKey'
+            })}
+            value={pastedKey}
+            onChange={(event) => setPastedKey(event.target.value)}
+          />
+        </div>
+      ) : null}
 
       {data?.generic_proxy ? (
         <div>{GenericProxyCommandCode}</div>
