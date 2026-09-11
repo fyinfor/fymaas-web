@@ -67,6 +67,8 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
           path: |
             ${{ github.workspace }}/node_modules
+      - name: Align nginx proxy with umi
+        run: node --test tests/nginx-proxy-align.test.mjs
       - name: Build
         run: scripts/build
       - name: Determine Version
