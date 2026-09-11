@@ -157,6 +157,12 @@ export default {
   'tokenService.form.apiDocsUrl': 'API ドキュメント URL',
   'tokenService.form.url.invalid':
     'http:// または https:// で始まる URL を入力してください',
+  'tokenService.section.examples': 'リクエスト例',
+  'tokenService.section.examples.description':
+    'コピーしてモデル一覧を取得できます。認証リストには API キーが必要で、公開リストは不要です。',
+  'tokenService.examples.base': 'ベース URL：{origin}',
+  'tokenService.examples.public': '公開リスト',
+  'tokenService.examples.compat': '認証リスト',
   'tokenService.message.saved': 'トークン API 設定を保存しました',
 
   'branding.page.description':

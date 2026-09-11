@@ -158,6 +158,12 @@ export default {
   'tokenService.form.apiDocsUrl': 'API docs URL',
   'tokenService.form.url.invalid':
     'Enter a URL that starts with http:// or https://',
+  'tokenService.section.examples': 'Request examples',
+  'tokenService.section.examples.description':
+    'Copy and run these calls to list models. The authenticated list needs an API key; the public list does not.',
+  'tokenService.examples.base': 'Base URL: {origin}',
+  'tokenService.examples.public': 'Public list',
+  'tokenService.examples.compat': 'Authenticated list',
   'tokenService.message.saved': 'Token API settings saved',
 
   'branding.page.description':

@@ -157,6 +157,12 @@ export default {
   'tokenService.form.apiDocsUrl': 'API belgesi URL’si',
   'tokenService.form.url.invalid':
     'http:// veya https:// ile başlayan bir URL girin',
+  'tokenService.section.examples': 'İstek örnekleri',
+  'tokenService.section.examples.description':
+    'Kopyalayıp model listesini çağırabilirsiniz. Kimlik doğrulamalı liste için API anahtarı gerekir; genel liste gerekmez.',
+  'tokenService.examples.base': 'Taban URL: {origin}',
+  'tokenService.examples.public': 'Genel liste',
+  'tokenService.examples.compat': 'Kimlik doğrulamalı liste',
   'tokenService.message.saved': 'Token API ayarları kaydedildi',
 
   'branding.page.description':

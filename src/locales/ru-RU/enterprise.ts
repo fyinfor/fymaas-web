@@ -157,6 +157,12 @@ export default {
   'tokenService.form.apiDocsUrl': 'URL документации API',
   'tokenService.form.url.invalid':
     'Укажите URL, начинающийся с http:// или https://',
+  'tokenService.section.examples': 'Примеры запросов',
+  'tokenService.section.examples.description':
+    'Скопируйте и выполните запросы для списка моделей. Авторизованный список требует API-ключ; публичный — нет.',
+  'tokenService.examples.base': 'Базовый URL: {origin}',
+  'tokenService.examples.public': 'Публичный список',
+  'tokenService.examples.compat': 'Авторизованный список',
   'tokenService.message.saved': 'Настройки Token API сохранены',
 
   'branding.page.description':

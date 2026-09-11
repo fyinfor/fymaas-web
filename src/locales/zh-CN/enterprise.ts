@@ -148,6 +148,12 @@ export default {
     '例如 https://api.example.com/v1。留空则控制台使用当前站点地址。',
   'tokenService.form.apiDocsUrl': 'API 文档地址',
   'tokenService.form.url.invalid': '请填写以 http:// 或 https:// 开头的地址',
+  'tokenService.section.examples': '接口访问样例',
+  'tokenService.section.examples.description':
+    '复制后可直接调用模型列表。鉴权列表需要 API 密钥；公开列表无需鉴权。',
+  'tokenService.examples.base': '当前基址：{origin}',
+  'tokenService.examples.public': '公开列表',
+  'tokenService.examples.compat': '鉴权列表',
   'tokenService.message.saved': '词元服务设置已保存',
 
   'branding.page.description':
